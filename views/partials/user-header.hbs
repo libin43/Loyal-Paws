@@ -2,7 +2,7 @@
 
 <header class="header">
 	<div class="header_inner d-flex flex-row align-items-center justify-content-start">
-		<div class="logo"><a href="#">PawsIndia</a></div>
+		<div class="logo"><a href="#">Loyal Paws</a></div>
 		<nav class="main_nav">
 			<ul>
 				<li><a href="/">Home</a></li>
@@ -10,55 +10,22 @@
 					<div class="dropdown">
 						<button class="btn btn-light" type="button" id="dropdownMenuButton"
 							data-toggle="dropdown" >
-							DOG
+							SHOP
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="/dog-food">Dog Food</a>
-							<a class="dropdown-item" href="#">Dog Habitat</a>
-							<a class="dropdown-item" href="#">Dog accessories</a>
+							{{#each category_data}}
+							<a class="dropdown-item" href="">{{this.category}}</a>
+							
+							{{/each}}
 						</div>
 					</div>
 				</li>
 
-				<li>
-					<div class="dropdown">
-						<button class="btn btn-light" type="button" id="dropdownMenuButton"
-							data-toggle="dropdown" >
-							CAT
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#">Cat Food</a>
-							<a class="dropdown-item" href="#">Cat Habitat</a>
-							<a class="dropdown-item" href="#">Cat accessories</a>
-						</div>
-					</div>
-				</li>
-				<li>
-					<div class="dropdown">
-						<button class="btn btn-light" type="button" id="dropdownMenuButton"
-							data-toggle="dropdown" >
-							FISH
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#">Fish Food</a>
-							<a class="dropdown-item" href="#">Fish Habitat</a>
-							<a class="dropdown-item" href="#">Fish accessories</a>
-						</div>
-					</div>
-				</li>
-				<li>
-					<div class="dropdown">
-						<button class="btn btn-light" type="button" id="dropdownMenuButton"
-							data-toggle="dropdown" >
-							BIRD
-						</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#">Bird Food</a>
-							<a class="dropdown-item" href="#">Bird Habitat</a>
-							<a class="dropdown-item" href="#">Bird accessories</a>
-						</div>
-					</div>
-				</li>
+				<li><a href="/">About Us</a></li>
+				<li><a href="/">Contact</a></li>
+
+				
+				
 				
 			</ul>
 		</nav>
@@ -124,10 +91,8 @@
 		<nav class="menu_nav">
 			<ul class="menu_mm">
 				<li class="menu_mm"><a href="">Home</a></li>
-				<li class="menu_mm"><a href="#">Dog</a></li>
-				<li class="menu_mm"><a href="#">Cat</a></li>
-				<li class="menu_mm"><a href="#">Fish</a></li>
-				<li class="menu_mm"><a href="#">Bird</a></li>
+				<li class="menu_mm"><a href="#">Shop</a></li>
+				
 			</ul>
 		</nav>
 	</div>

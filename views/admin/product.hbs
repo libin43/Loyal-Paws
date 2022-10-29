@@ -1,0 +1,98 @@
+
+
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>PRODUCT MANAGEMENT</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">General</li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section">
+      <div class="row">
+        <div class="col-12">
+
+          <div class="card ">
+            <div class="card-body">
+              <h5 class="card-title">Table</h5>
+
+            <div class="row pb-3 ">
+                <a class="w-25" href="/admin/add-product"> {{!-- user adding option --}}
+                    <button type="button" class="btn btn-success">Add Product +</button>
+                </a>
+            </div>
+
+              <!-- PRODUCT Table -->
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">NO</th>
+                    <th scope="col">IMAGE</th>
+                    <th scope="col">PRODUCT NAME</th>
+                    <th scope="col">PRICE</th>
+                    <th scope="col">CATEGORY NAME</th>
+                    <th scope="col">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each product_data}}
+
+           
+                  <tr>
+                    <th scope="row">{{@index}}</th>
+                    <td><img style="width: 50px;height: 50px;" src="../product-images/{{this._id}}.jpg" alt=""></td>
+                    <td>{{this.product}}</td>
+                    <td>RS. {{this.price}}</td>
+                     <td>{{this.category}}</td>
+                    <td>
+                        <a href="/admin/edit-product?id={{this._id}}" class="btn btn-primary">Edit</a>
+                        <a href="/admin/delete-product/{{this._id}}" class="btn btn-danger"
+                            onclick="return confirm ('Are you sure to delete {{this.product}}?')">Delete</a>
+                    </td>
+                  </tr>
+         
+                  {{/each}}
+                </tbody>
+              </table>
+              <!-- End PRODUCT Table Example -->
+            </div>
+          </div>
+
+        
+
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

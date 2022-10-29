@@ -1,11 +1,11 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var hbs = require('express-handlebars')
-var session = require('express-session')
-var db = require('./config/connection')
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const hbs = require('express-handlebars')
+const session = require('express-session')
+const db = require('./config/connection')
 
 db.connect((err)=>{
   if(err){
@@ -15,10 +15,12 @@ db.connect((err)=>{
   }
 })
 
-var adminRouter = require('./routes/admin');
-var userRouter = require('./routes/users');
 
-var app = express();
+const adminRouter = require('./routes/admin');
+const userRouter = require('./routes/users');
+const fileUpload = require('express-fileupload');
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +33,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//uploadfile
+app.use(fileUpload())
 
 //session
 app.use(session({secret:'Key',cookie:{maxAge:6000000000}}))

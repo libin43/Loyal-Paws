@@ -44,7 +44,13 @@
                     <td>{{this.email}}</td>
                     <td>{{this.phone}}</td>
                  
-                    <td><button style="background-color: rgb(255, 59, 59);">Block</button> <button style="background-color: rgb(66, 174, 66);">Unblock</button></td>
+                    <td>
+                      {{#if this.block}}
+                       <button style="background-color: rgb(66, 174, 66);"><a style="text-decoration: none; color: inherit;" href="/admin/usermanagement/unblock/{{this._id}}">Unblock</a> </button>
+                     {{else}}
+                      <button style="background-color: rgb(252, 0, 0);"><a style="text-decoration: none; color: inherit;" href="/admin/usermanagement/block/{{this._id}}">Block</a> </button> 
+                     {{/if}} 
+                    </td>
                     <td>delete</td>
                   </tr>
                   {{/each}}

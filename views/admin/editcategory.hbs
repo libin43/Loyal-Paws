@@ -1,0 +1,52 @@
+
+
+  <main id="main" class="main">
+
+
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title"><h2>Edit Category</h2></h2>
+
+              <!-- Horizontal Form -->
+              <form action="/admin/update-category/{{catID._id}}" method="post" enctype="multipart/form-data">
+                <div class="row mb-3">
+                  <label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>
+                  <div class="col-sm-10 w-50">
+                    <input name="category" value="{{catID.category}}" type="text" class="form-control" id="inputText">
+                  </div>
+                </div>
+               
+              
+                
+                <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-10">
+                
+                        <input name="description" value="{{catID.description}}"  class="form-control" id="inputText" type="text"> </input>
+                    </div>
+                </div>
+               
+                <div class="row mb-3">
+                    <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
+                    <div class="col-sm-10 w-75">
+                        <img id="imgView" src="/category-images/{{catID._id}}.jpg" alt="" style="width: 50px;height: 50px;">
+                        <input type="file" class="form-control" name="image" onchange="viewImage(event)">
+                    </div>
+                </div>
+
+             
+               
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Update</button>
+                  <button type="reset" class="btn btn-secondary">Cancel</button>
+                </div>
+              </form><!-- End Horizontal Form -->
+
+            </div>
+          </div>
+          
+          <script>
+            function viewImage(event){
+                document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+            }
+          </script>

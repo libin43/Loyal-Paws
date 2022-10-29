@@ -18,6 +18,7 @@
 	</div>
 
 	<!-- Promo -->
+	
 
 	<div class="promo">
 		<div class="container">
@@ -25,53 +26,62 @@
 				<div class="col">
 					<div class="section_title_container text-center">
 						<div class="section_subtitle">only the best</div>
-						<div class="section_title">promo prices</div>
+						<div class="section_title">categories</div>
 					</div>
 				</div>
 			</div>
 			<div class="row promo_container">
 
 				<!-- Promo Item -->
-				<div class="col-lg-4 promo_col">
+				    {{!-- <section class="slider">
+        <ul id="autoWidth" class="cs-hidden">
+         
+            <li class="item-a">
+               
+                <div class="box">
+                 
+                    <div class="slide-img">
+                        <img alt="1" src="images/1.jpg">
+                      
+                        <div class="overlay">
+                          
+                            <a href="#" class="buy-btn">Buy Now</a>
+                        </div>
+                    </div>
+                   
+                    <div class="detail-box">
+                        
+                        <div class="type">
+                            <a href="#">Rabbed Cardigan</a>
+                            <span>Noe Arrival</span>
+                        </div>
+                      
+                        <a href="#" class="price">$23</a>
+
+                    </div>
+
+                </div>
+            </li>
+		</ul>
+			</section>
+			 --}}
+
+				{{#each category_data}}
+				<div class="col-lg-4 promo_col p-2">
 					<div class="promo_item">
 						<div class="promo_image">
-							<img src="images/doggy accessories.webp" alt="">
+							<img style="height:300px ;" src="../category-images/{{this._id}}.jpg" alt="">
 							<div class="promo_content promo_content_1 ">
-								<div class="promo_title">-30% off</div>
-								<div class="promo_subtitle">on all accessories</div>
+								<div class="promo_title">{{this.category}}</div>
+								<div class="promo_subtitle">on all items</div>
 							</div>
 						</div>
 						<div class="promo_link"><a href="#">Shop Now</a></div>
 					</div>
 				</div>
+				{{/each}}
 
-				<!-- Promo Item -->
-				<div class="col-lg-4 promo_col">
-					<div class="promo_item">
-						<div class="promo_image">
-							<img src="images/Love Birds Fruit Blend.jpg" alt="">
-							<div class="promo_content promo_content_2">
-								<div class="promo_title">-35% off</div>
-								<div class="promo_subtitle">Bird Foods</div>
-							</div>
-						</div>
-						<div class="promo_link"><a href="#">Shop Now</a></div>
-					</div>
-				</div>
-
-				<!-- Promo Item -->
-				<div class="col-lg-4 promo_col">
-					<div class="promo_item">
-						<div class="promo_image">
-							<img src="images/whiskas chicken gravy kitten.webp" alt="">
-							<div class="promo_content promo_content_3">
-								<div class="promo_title">-25% off</div>
-								<div class="promo_subtitle">Cat Foods</div>
-							</div>
-						</div>
-						<div class="promo_link"><a href="#">Shop Now</a></div>
-					</div>
-				</div>
+				
 
 			</div>
 		</div>
@@ -85,17 +95,20 @@
 				<div class="col">
 					<div class="section_title_container text-center">
 						<div class="section_subtitle">only the best</div>
-						<div class="section_title">new arrivals</div>
+						<div class="section_title">new arrived products</div>
 					</div>
 				</div>
 			</div>
 			<div class="row products_container">
 
 				<!-- Product -->
+				
+				{{#each prod_data}}
 				<div class="col-lg-4 product_col">
-					<div class="product">
+					<a href="/viewproduct?id={{this._id}}">
+						<div class="product w-100 ">
 						<div class="product_image">
-							<img src="images/Small dog habitat.webp" alt="">
+							<img style="height: 250px;" src="../product-images/{{this._id}}.jpg" alt="">
 						</div>
 						<div class="rating rating_4">
 							<i class="fa fa-star"></i>
@@ -106,8 +119,8 @@
 						</div>
 						<div class="product_content clearfix">
 							<div class="product_info">
-								<div class="product_name"><a href="product.html">Puppies sofa bed</a></div>
-								<div class="product_price">$45.00</div>
+								<div class="product_name"><a href="product.html">{{this.product}}</a></div>
+								<div class="product_price">RS. {{this.price}}</div>
 							</div>
 							<div class="product_options">
 								<div class="product_buy product_option"><img src="images/shopping-bag-white.svg" alt=""></div>
@@ -115,59 +128,15 @@
 							</div>
 						</div>
 					</div>
+					</a>
 				</div>
+				{{/each}}
 
 				<!-- Product -->
-				<div class="col-lg-4 product_col">
-					<div class="product">
-						<div class="product_image">
-							<img src="images/Small cat sofa bed.webp" alt="">
-						</div>
-						<div class="rating rating_4">
-							<i class="fa fa-star"></i>
-							<i class="fa fa-star"></i>
-							<i class="fa fa-star"></i>
-							<i class="fa fa-star"></i>
-							<i class="fa fa-star"></i>
-						</div>
-						<div class="product_content clearfix">
-							<div class="product_info">
-								<div class="product_name"><a href="product.html">Cat sleep home</a></div>
-								<div class="product_price">$35.00</div>
-							</div>
-							<div class="product_options">
-								<div class="product_buy product_option"><img src="images/shopping-bag-white.svg" alt=""></div>
-								<div class="product_fav product_option">&hearts;</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			
 
 				<!-- Product -->
-				<div class="col-lg-4 product_col">
-					<div class="product">
-						<div class="product_image">
-							<img src="images/Aquarium air pump.webp" alt="">
-						</div>
-						<div class="rating rating_4">
-							<i class="fa fa-star"></i>
-							<i class="fa fa-star"></i>
-							<i class="fa fa-star"></i>
-							<i class="fa fa-star"></i>
-							<i class="fa fa-star"></i>
-						</div>
-						<div class="product_content clearfix">
-							<div class="product_info">
-								<div class="product_name"><a href="product.html">Aquarium Air Pump</a></div>
-								<div class="product_price">$145.00</div>
-							</div>
-							<div class="product_options">
-								<div class="product_buy product_option"><img src="images/shopping-bag-white.svg" alt=""></div>
-								<div class="product_fav product_option">&hearts;</div>
-							</div>
-						</div>
-					</div>
-				</div>
+			
 
 			</div>
 		</div>
@@ -208,6 +177,7 @@
 				<!-- Gallery Item -->
 				<div class="owl-item gallery_item">
 					<a class="colorbox" href="images/gallery_1.jpg">
+					
 						<img src="images/gallery_1.jpg" alt="">
 					</a>
 				</div>
@@ -245,6 +215,7 @@
 					<a class="colorbox" href="images/gallery_6.jpg">
 						<img src="images/gallery_6.jpg" alt="">
 					</a>
+					
 				</div>
 
 			</div>
@@ -308,32 +279,7 @@
 
 	<!-- Newsletter -->
 
-	<div class="newsletter">
-		<div class="newsletter_content">
-			<div class="newsletter_image" style="background-image:url(images/newsletter.jpg)"></div>
-			<div class="container">
-				<div class="row">
-					<div class="col">
-						<div class="section_title_container text-center">
-							<div class="section_subtitle">only the best</div>
-							<div class="section_title">subscribe for a 20% discount</div>
-						</div>
-					</div>
-				</div>
-				<div class="row newsletter_container">
-					<div class="col-lg-10 offset-lg-1">
-						<div class="newsletter_form_container">
-							<form action="#">
-								<input type="email" class="newsletter_input" required="required" placeholder="E-mail here">
-								<button type="submit" class="newsletter_button">subscribe</button>
-							</form>
-						</div>
-						<div class="newsletter_text">Integer ut imperdiet erat. Quisque ultricies lectus tellus, eu tristique magna pharetra nec. Fusce vel lorem libero. Integer ex mi, facilisis sed nisi ut, vestib ulum ultrices nulla. Aliquam egestas tempor leo.</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	
 
 	<!-- Footer -->
 

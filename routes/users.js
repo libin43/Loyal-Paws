@@ -2,6 +2,8 @@ var express = require('express');
 const { response } = require('../app');
 var router = express.Router();
 var userHelpers = require('../helpers/user-helpers')
+var categoryHelpers = require('../helpers/category-helpers')
+var productHelpers = require('../helpers/product-helpers')
 
 //Signup
 router.get('/signup',(req,res)=>{
@@ -42,9 +44,15 @@ router.post('/signin',(req,res)=>{
 
 
 //Home
+
 router.get('/', function(req, res, next) {
   if(req.session.loggedIn){
-    res.render('user/index')
+    categoryHelpers.getAllCategory().then((category_data)=>{
+      productHelpers.getAllProduct().then((prod_data)=>{
+        res.render('user/index',{category_data,prod_data})
+      })
+     
+})
   }else{
     res.redirect('/signin')
   }
@@ -57,6 +65,17 @@ router.get('/', function(req, res, next) {
 router.get('/dog-food',function(req,res,next){
   res.render('user/dogfood')
 })
+
+//View Product
+router.get('/viewproduct/',async(req,res)=>{
+  let prodID = await productHelpers.getProductDetails(req.query.id)
+    console.log(prodID)
+    categoryHelpers.getAllCategory().then((category_data)=>{
+      res.render('user/viewproduct',{prodID,category_data})
+})
+ 
+})
+
 
 //Logout
 router.get('/logout',(req,res)=>{

@@ -1,0 +1,76 @@
+
+
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1> SUB-CATEGORY MANAGEMENT</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">General</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-12">
+
+          <div class="card ">
+            <div class="card-body">
+              <h5 class="card-title">Table</h5>
+
+            <div class="row pb-3 ">
+                <a class="w-25" href="/admin/add-category"> {{!-- user adding option --}}
+                    <button type="button" class="btn btn-success">Add Sub-Category +</button>
+                </a>
+            </div>
+
+              <!-- Default Table -->
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">NO</th>
+                    <th scope="col">IMAGE</th>
+                    <th scope="col">SUB-CATEGORY NAME</th>
+                    <th scope="col">CATEGORY NAME</th>
+                    <th scope="col">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+           
+                  <tr>
+                    <th scope="row"></th>
+                    <td><img style="width: 50px;height: 50px;" src="../category-images/.jpg" alt=""></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <a href="/admin/edit-category" class="btn btn-primary">Edit</a>
+                        <a href="/admin/delete-category" class="btn btn-danger"
+                            onclick="return confirm ('Are you sure to delete ?')">Delete</a>
+                    </td>
+                  </tr>
+         
+
+                </tbody>
+              </table>
+              <!-- End Default Table Example -->
+            </div>
+          </div>
+
+        
+
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+
+
+

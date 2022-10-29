@@ -12,6 +12,7 @@ module.exports ={
             resolve({status:false})
 
         }else{
+                      
             userData.password =await bcrypt.hash(userData.password,10)
             db.get().collection(collection.USER_COLLECTION).insertOne(userData).then((response)=>{
             resolve({status:true})
@@ -29,6 +30,11 @@ module.exports ={
         let response={}
         let user = await db.get().collection(collection.USER_COLLECTION).findOne({email:userLogged.email})
         if(user){
+            if(user.block){  //userblocking
+                console.log(user.block)
+                console.log('login blocked')
+                resolve({status:false})
+            }
             bcrypt.compare(userLogged.password,user.password).then((status)=>{
                 if(status){
                     console.log('login success')
