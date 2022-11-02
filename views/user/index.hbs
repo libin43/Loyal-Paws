@@ -122,9 +122,11 @@
 								<div class="product_name"><a href="product.html">{{this.product}}</a></div>
 								<div class="product_price">RS. {{this.price}}</div>
 							</div>
-							<div class="product_options">
-								<div class="product_buy product_option"><img src="images/shopping-bag-white.svg" alt=""></div>
-								<div class="product_fav product_option">&hearts;</div>
+							<div class="product_options"><!-- replaced a tag with button for ajax -->
+								<Button onclick="addToCart('{{this._id}}')"  class="btn"><div class="product_buy product_option"><img src="images/shopping-bag-white.svg" alt=""></div></Button>
+							
+								<Button class="btn"><div class="product_fav product_option">&hearts;</div></Button>
+								
 							</div>
 						</div>
 					</div>

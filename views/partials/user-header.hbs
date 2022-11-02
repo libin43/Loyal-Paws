@@ -39,12 +39,12 @@
 			</div>
 			<div class="shopping">
 				<!-- Cart -->
-				<a href="#">
+				<a href="/cart">
 					<div class="cart">
 						<img src="images/shopping-bag.svg" alt="">
 						<div class="cart_num_container">
 							<div class="cart_num_inner">
-								<div class="cart_num">1</div>
+								<div class="cart_num" id="cart-count">{{cartCount}}</div>
 							</div>
 						</div>
 					</div>
@@ -61,11 +61,16 @@
 					</div>
 				</a>
 				<!-- Avatar -->
-				<a href="/logout">
-					<div class="avatar">
+				<div class="dropdown">
+					<button class="dropbtn"><div class="avatar">
 						<img src="images/avatar.svg" alt="">
+						<span style="text-decoration: none;color: black;">{{userName}}</span>
+					</div></button>
+					<div class="dropdown-content">
+						<a class="dropdown-item" href="/logout">Logout</a>
 					</div>
-				</a>
+				</div>
+				
 			</div>
 		</div>
 

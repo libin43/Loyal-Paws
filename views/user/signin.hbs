@@ -34,14 +34,23 @@
                     <button class="btn btn-dark btn-lg btn-block" type="submit">Login</button>
                   </div>
 
+                  {{#if userBlocked}}
+                  <span style="color: red;">Your account has been Blocked </span>
+                  {{/if}}
+                  
+                   {{#if wrongPass}}
+                  <span style="color: red;">Incorrect Password </span>
+                  {{/if}}
+
                   {{#if error}}
+                  <div class="section text-danger text-center">
+                    Sorry, your email and password doesnot match.
+                  </div>
+                  {{/if}}
 
-                        <div class="section text-danger text-center">
-                            Sorry, your email and password doesnot match.
-                        </div>
-                        {{/if}}
-
-                  <a class="small text-muted" href="#!">Forgot password?</a>
+                  <div class="forgot">
+                    <a class="small text-muted" href="/forgot-password">Forgot password?</a>
+                  </div>
                   <p class="mb-5 pb-lg-2" style="color: #393f81;">Don't have an account? <a href="/signup"
                       style="color: #393f81;">Register here</a></p>
                   <a href="#!" class="small text-muted">Terms of use.</a>
