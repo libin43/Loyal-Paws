@@ -11,7 +11,7 @@
 	<!-- Home -->
 
 	<div class="home">
-		<div class="home_background parallax-window" data-parallax="scroll" data-image-src="images/cart.jpg" data-speed="0.8"></div>
+		<div class="home_background parallax-window" data-parallax="scroll" data-image-src=" " data-speed="0.8"></div>
 		<div class="container">
 			<div class="row">
 				<div class="col">
@@ -48,7 +48,7 @@
 							<div class="cart_bar_title_content_inner d-flex flex-row align-items-center justify-content-end">
 								<div class="cart_bar_title_price">Price</div>
 								<div class="cart_bar_title_quantity">Quantity</div>
-								<div class="cart_bar_title_total">Total</div>
+								
 								<div class="cart_bar_title_button"></div>
 							</div>
 						</div>
@@ -60,31 +60,40 @@
 					<div class="cart_products">
 						{{#each products}}
                         <ul>
+							
 							<li class=" cart_product d-flex flex-md-row flex-column align-items-md-center align-items-start justify-content-start">
 								<!-- Product Image -->
-								<div class="cart_product_image"><img style="width:100px ;height:100px ;" src="../product-images/{{this._id}}.jpg" alt=""></div>
+								<div class="cart_product_image"><img style="width:100px ;height:100px ;" src="../product-images/{{this.cartItems.imageMany.[0]}}" alt=""></div>
 								<!-- Product Name -->
-								<div class="cart_product_name"><a href="product.html">{{this.product}}</a></div>
+								<div class="cart_product_name"><a href="product.html">{{this.cartItems.product}}</a></div>
 								<div class="cart_product_info ml-auto">
 									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
+								    
+									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
+
 										<!-- Product Price -->
-										<div class="cart_product_price">Rs. {{this.price}}</div>
+										<div class="cart_product_price">Rs. {{this.cartItems.price}}</div>
+									
 										<!-- Product Quantity -->
 										<div class="product_quantity_container">
 											<div class="product_quantity clearfix">
-												<input id="quantity_input" type="text" pattern="[0-9]*" value="1">
-												<div class="quantity_buttons">
-													<div id="quantity_inc_button" class="quantity_inc quantity_control"><i class="fa fa-caret-up" aria-hidden="true"></i></div>
-													<div id="quantity_dec_button" class="quantity_dec quantity_control"><i class="fa fa-caret-down" aria-hidden="true"></i></div>
-												</div>
-											</div>
-										</div>
+										<button style="width: 25px;" onclick="changeQuantity('{{this._id}}','{{this.cartItems._id}}','{{../userID}}',-1)" class="cart-item-count  rounded ">-</button>
+
+
+										<span class="p-2" id="{{this.cartItems._id}}">{{this.quantity}}</span>
+
+
+										<button style="width: 25px;" onclick="changeQuantity('{{this._id}}','{{this.cartItems._id}}','{{../userID}}',1)"class="cart-item-count  rounded">+</button>
+                                         </div>
+                                      </div>
+
 										<!-- Products Total Price -->
-										<div class="cart_product_total">$35.00</div>
+										
 										<!-- Product Cart Trash Button -->
 										<div class="cart_product_button">
-											<button class="cart_product_remove"><img src="images/trash.png" alt=""></button>
+											<button class="cart_product_remove" onclick="deleteProduct('{{this._id}}','{{this.cartItems._id}}')" ><img src="images/trash.png" alt=""></button>
 										</div>
+                                      </div>
 									</div>
 								</div>
 							</li>
@@ -128,10 +137,10 @@
 							</li>
 							<li class="d-flex flex-row align-items-center justify-content-start">
 								<div class="cart_total_title">Total</div>
-								<div class="cart_total_price ml-auto">$40.00</div>
+								<div class="cart_total_price ml-auto"><span id="total">{{total}}</span></div>
 							</li>
 						</ul>
-						<button class="cart_total_button">proceed to checkout</button>
+						<a href="/checkout"><button class="cart_total_button">proceed to checkout</button></a>
 					</div>
 				</div>
 			</div>
@@ -142,7 +151,7 @@
 
 	<div class="newsletter">
 		<div class="newsletter_content">
-			<div class="newsletter_image parallax-window" data-parallax="scroll" data-image-src="images/cart_nl.jpg" data-speed="0.8"></div>
+			<div class="newsletter_image parallax-window" data-parallax="scroll" data-image-src="" data-speed="0.8"></div>
 			<div class="container">
 				<div class="row options">
 
@@ -247,3 +256,5 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		</div>
 	</footer>
 </div>
+
+

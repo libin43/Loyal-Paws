@@ -4,9 +4,36 @@ const adminHelpers = require('../helpers/admin-helpers');
 const categoryHelpers = require('../helpers/category-helpers')
 const productHelpers = require('../helpers/product-helpers')
 var router = express.Router();
-var fileUpload = require('express-fileupload');
+
 const { addProduct } = require('../helpers/product-helpers');
 const { Router } = require('express');
+const multer = require('multer')
+/************************multer  */
+const multerStorageCategory = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "./public/category-images");
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname)
+    }
+  })
+  const uploadOne = multer({ storage: multerStorageCategory });
+  const uploadSingleFile = uploadOne.fields([{ name: 'image', maxCount: 1 }])
+  uploadOne
+  
+  /****************************** */
+
+  const multerStorageProduct = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, "./public/product-images");
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + '-' + file.originalname)
+    }
+  })
+  const uploadMany = multer({ storage: multerStorageProduct });
+//   const uploadMultiFile = uploadMany.fields([{ name: 'imageMany', maxCount: 4 }])
+//   uploadMany
 
 const emailAdmin='libinbiji43@gmail.com'
 const passwordAdmin='1234'
@@ -82,18 +109,16 @@ router.get('/category',(req,res)=>{
 router.get('/add-category',(req,res)=>{
     res.render('admin/addcategory',{layout:'adminlayout',admin:true})
 })
-router.post('/add-category',(req,res)=>{
-    console.log(req.body)
-    console.log(req.files.image)
-    categoryHelpers.addCategory(req.body).then((ID)=>{
-        let img = req.files?.image
+router.post('/add-category',uploadSingleFile,(req,res)=>{
+    console.log('kllllllllllllllllllllllllllllllllllllll')
+  
+    req.body.image = req.files.image[0].filename
+    categoryHelpers.addCategory(req.body)
       
-        img.mv('./public/category-images/'+ID+'.jpg',(err,done)=>{
-            if(!err){
-                res.redirect('/admin/category')
-            }else{console.log('errorrrr')}
-        })
-    })
+         
+  res.redirect('/admin/category')       
+        
+ 
    
 })
 
@@ -108,16 +133,22 @@ router.get('/edit-category/',async(req,res)=>{
   })
 
   // click update
-  router.post('/update-category/:id',(req,res)=>{
+  router.post('/update-category/:id',uploadSingleFile,async(req,res)=>{
+    if(req.files.image==null){
+        
+        Image1 = await categoryHelpers.fetchImage(req.params.id)
+        console.log(Image1)
+    }
+    else{
+        Image1 = await req.files.image[0].filename
+        console.log(Image1)
+    }
+    req.body.image = Image1
     categoryHelpers.updateCategory(req.params.id,req.body).then(()=>{
         res.redirect('/admin/category')
-        //update image
-        let ID = req.params.id
-        if(req.files?.image){
-            let img = req.files?.image
-      
-            img.mv('./public/category-images/'+ID+'.jpg')
-        }     
+     
+  
+         
         
   })
 
@@ -140,9 +171,9 @@ router.get('/subcategory',(req,res)=>{
 
 //PRODUCT MANAGEMENT
 router.get('/product',(req,res)=>{
-    productHelpers.getAllProduct().then((product_data)=>[
+    productHelpers.getAllProduct().then((product_data)=>{
         res.render('admin/product',{layout:'adminlayout',admin:true,product_data})
-    ])
+    })
 })
 
 //add product
@@ -154,17 +185,25 @@ router.get('/add-product',(req,res)=>{
    
 })
 
-router.post('/add-product',(req,res)=>{
-    console.log(req.body)
-    console.log(req.files.image)
+router.post('/add-product',uploadMany.array('imageMany'),(req,res)=>{
+    console.log(req.files,'incoming............');
+    let imageMany=[]
+    req.files.forEach((value,index)=>{
+        imageMany.push(value.filename)
+    })
+    console.log(imageMany);
+    // imageMany = req.files.imageMany[0].filename
+    // req.body.imageMany = imageMany
+    req.body.imageMany = imageMany
+    console.log(req.body.imageMany,'imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+     req.body.price = parseInt(req.body.price)
+     console.log(req.body)
     productHelpers.addProduct(req.body).then((ID)=>{
-        let img = req.files?.image
-      
-        img.mv('./public/product-images/'+ID+'.jpg',(err,done)=>{
-            if(!err){
-                res.redirect('/admin/product')
-            }else{console.log('errorrrr')}
-        })
+        console.log(ID,'hai likku')
+       
+     res.redirect('/admin/product')
+            
+       
     })
 })
 
@@ -181,16 +220,30 @@ router.get('/edit-product/',async(req,res)=>{
   })
 
   // click update
-  router.post('/update-product/:id',(req,res)=>{
+  router.post('/update-product/:id',uploadMany.array('imageMany'),async(req,res)=>{
+    console.log(req.files,'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+    let imageMany=[]
+    if(req.files.length==0){
+        console.log('common if');
+        
+        imageMany = await productHelpers.fetchImages(req.params.id)
+        console.log(imageMany)
+    }
+    else{
+        console.log('common else');
+     
+    req.files.forEach((value,index)=>{
+        imageMany.push(value.filename)
+    })
+        console.log(imageMany)
+    }
+    
+    req.body.imageMany =  imageMany
+    console.log(req.body,'haaai broooooooo');
     productHelpers.updateProduct(req.params.id,req.body).then(()=>{
         res.redirect('/admin/product')
         //update image
-        let ID = req.params.id
-        if(req.files?.image){
-            let img = req.files?.image
-      
-            img.mv('./public/product-images/'+ID+'.jpg')
-        }     
+          
         
   })
 
@@ -201,6 +254,20 @@ router.get('/delete-product/:id',(req,res)=>{
     let prodID = req.params.id
     productHelpers.deleteProduct(prodID).then((response)=>{
         res.redirect('/admin/product')
+    })
+})
+
+//Order Management
+router.get('/order-management', async(req,res)=>{
+    let orderLists = await adminHelpers.getAllOrders()
+   
+    res.render('admin/ordermanagement',{layout:'adminlayout',admin:true,orderLists})
+})
+
+//update Order Status
+router.post('/change-order-status',(req,res)=>{
+    adminHelpers.updateOrder(req.body.orderID,req.body.orderStatus).then(()=>{
+        res.json({status:true})
     })
 })
 

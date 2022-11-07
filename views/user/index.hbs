@@ -70,13 +70,13 @@
 				<div class="col-lg-4 promo_col p-2">
 					<div class="promo_item">
 						<div class="promo_image">
-							<img style="height:300px ;" src="../category-images/{{this._id}}.jpg" alt="">
+							<img style="height:300px ;" src="../category-images/{{this.image}}" alt="">
 							<div class="promo_content promo_content_1 ">
 								<div class="promo_title">{{this.category}}</div>
 								<div class="promo_subtitle">on all items</div>
 							</div>
 						</div>
-						<div class="promo_link"><a href="#">Shop Now</a></div>
+						<div class="promo_link"><a href="/category?name={{this.category}}">Shop Now</a></div>
 					</div>
 				</div>
 				{{/each}}
@@ -108,7 +108,7 @@
 					<a href="/viewproduct?id={{this._id}}">
 						<div class="product w-100 ">
 						<div class="product_image">
-							<img style="height: 250px;" src="../product-images/{{this._id}}.jpg" alt="">
+							<img style="height: 250px;" src="../product-images/{{this.imageMany.[0]}}" alt="">
 						</div>
 						<div class="rating rating_4">
 							<i class="fa fa-star"></i>

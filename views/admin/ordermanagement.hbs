@@ -1,0 +1,83 @@
+
+
+
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1> ORDER MANAGEMENT</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">General</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-12">
+
+          <div class="card ">
+            <div class="card-body">
+              <h5 class="card-title">Table</h5>
+
+           
+
+              <!-- Default Table -->
+              <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">NO</th>
+                        <th scope="col">MOBILE</th>
+                        <th scope="col">DATE</th>
+                        <th scope="col">PAYMENT</th>
+                        <th scope="col">NET AMOUNT</th>
+                         <th scope="col">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                 {{#each orderLists}}
+                  <tr>
+                    <th scope="row" class="create_index"></th>
+                     <td>{{this.deliveryDetails.mobile}}</td>
+                    <td>{{this.date}}</td>
+                   
+                    <td>{{this.paymentMethod}}</td>
+                    <td>{{this.totalAmount}}</td>
+                    <td><select onchange="changeOrderStatus('{{this._id}}')" name="orderstatus" id="{{this._id}}" class="form-select" id="floatingSelect">
+                        <option selected value="{{this.status}}">{{this.status}}</option>
+                        <option value="Placed">Placed</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="On the Way">On the Way</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </td>
+                  </tr>
+                  {{/each}}
+
+                </tbody>
+              </table>
+              <!-- End Default Table Example -->
+            </div>
+          </div>
+
+        
+
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <script>
+var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
+</script>
+
+
+
+

@@ -1,16 +1,17 @@
-var options1 = {
-    width: 400,
-    zoomWidth: 1500,
-    offset: {vertical: 10, horizontal: 0}
-};
 
-// If the width and height of the image are not known or to adjust the image to the container of it
-var options2 = {
-    width: 400,
-    zoomWidth: 1400,
-    zoomPosition:"original",
+
+
+
+    console.log("hi")
+    var options = {
+    width: 250, // required
+    zoomWidth: 300,
+    scale: 0.7,
+    offset:{
+      vertical:70,
+      horizontal:-200,
+   
+    }
     
-    offset: {vertical: 0, horizontal: 10}
 };
-
-new ImageZoom(document.getElementById("img-container"), options2);
+new ImageZoom(document.getElementById("img-container"), options);

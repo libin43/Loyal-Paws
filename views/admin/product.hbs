@@ -46,8 +46,8 @@
 
            
                   <tr>
-                    <th scope="row">{{@index}}</th>
-                    <td><img style="width: 50px;height: 50px;" src="../product-images/{{this._id}}.jpg" alt=""></td>
+                    <th scope="row" class="create_index"></th>
+                    <td><img style="width: 50px;height: 50px;" src="../product-images/{{this.imageMany.[0]}}" alt=""></td>
                     <td>{{this.product}}</td>
                     <td>RS. {{this.price}}</td>
                      <td>{{this.category}}</td>
@@ -73,6 +73,10 @@
     </section>
 
   </main><!-- End #main -->
+  <script>
+var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
+</script>
+
 
 
 

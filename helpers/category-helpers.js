@@ -44,6 +44,7 @@ module.exports ={
                 $set:{
                     category: categoryDetails.category,
                     description: categoryDetails.description,
+                    image:categoryDetails.image
                     
                 }
             }).then((response)=>{
@@ -52,5 +53,13 @@ module.exports ={
 
         })
 
+     },
+
+     fetchImage:(catID)=>{
+        return new Promise(async(resolve,reject)=>{
+            let data = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:objectId(catID)})
+            console.log(data)
+            resolve(data.image)
+        })
      }
 }

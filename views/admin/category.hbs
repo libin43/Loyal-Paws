@@ -44,8 +44,8 @@
 
                  {{#each category_data}}
                   <tr>
-                    <th scope="row">{{@index}}</th>
-                    <td><img style="width: 50px;height: 50px;" src="../category-images/{{this._id}}.jpg" alt=""></td>
+                    <th scope="row" class="create_index"></th>
+                    <td><img style="width: 50px;height: 50px;" src="../category-images/{{this.image}}" alt=""></td>
                     <td>{{this.category}}</td>
                     <td>{{this.description}}</td>
                     <td>
@@ -70,6 +70,11 @@
     </section>
 
   </main><!-- End #main -->
+
+  <script>
+var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
+</script>
+
 
 
 

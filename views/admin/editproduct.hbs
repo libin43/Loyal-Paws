@@ -46,13 +46,13 @@
 
                              <div class="col-md-3">
                                 <div class="form-floating mb-3">
-                                    <select  value="{{prodID.category}}"  name="category" class="form-select" id="floatingSelect" aria-label="State">
-                                         
+                                    <select name="category" class="form-select" id="floatingSelect" aria-label="State">
+                                        <option value="{{prodID.category}}">{{prodID.category}}</option>
                                         {{#each category_data}}
-                                       
+                                    
                                         <option value="{{this.category}}">{{this.category}}</option>
                                         {{/each}}
-                                        
+                                    
                                     </select>
                                     <label for="floatingSelect">Category</label>
                                 </div>
@@ -60,7 +60,7 @@
                            
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <input name="price" type="text" class="form-control" id="floatingCity" value="{{prodID.price}}"
+                                    <input name="price" type="number" class="form-control" id="floatingCity" value="{{prodID.price}}"
                                         placeholder="City">
                                     <label for="floatingCity">Price</label>
                                 </div>
@@ -71,8 +71,8 @@
                         <div class="row mb-3">
                             <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
                             <div class="col-sm-10 w-75">
-                                <img id="imgView" src="/product-images/{{prodID._id}}.jpg" alt="" style="width: 50px;height: 50px;">
-                                <input type="file" class="form-control" name="image" onchange="viewImage(event)">
+                                <img id="imgView" src="/product-images/{{prodID.imageMany.[0]}}" alt="" style="width: 50px;height: 50px;">
+                                <input type="file" class="form-control" name="imageMany"  multiple onchange="viewImage(event)">
                             </div>
                         </div>
                            

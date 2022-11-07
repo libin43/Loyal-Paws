@@ -69,7 +69,7 @@ router.post('/signin',(req,res)=>{
 //Otp get
 router.get('/forgot-password',(req,res)=>{
 
-  res.render('user/forgotpassword')
+  res.render('user/forgotpassword',{newuser:true})
 })
 
 
@@ -104,7 +104,7 @@ router.post('/forgot-password', (req, res) => {
 
 //Otp verify
 router.get('/enter-otp',(req,res)=>{
-  res.render('user/enterOtp')
+  res.render('user/enterOtp',{newuser:true})
 })
 
 router.post('/enter-otp',(req,res)=>{
@@ -140,8 +140,9 @@ router.get('/', verifyLogin, async function(req, res, next) {
 
 
 //Dog Food
-router.get('/dog-food',function(req,res,next){
-  res.render('user/dogfood')
+router.get('/category/',async(req,res)=>{
+  let prod_cat = await productHelpers.getProductFromCategory(req.query.name)
+  res.render('user/dogfood',{prod_cat})
 })
 
 //View Product
@@ -167,12 +168,72 @@ router.get('/add-to-cart/:id',verifyLogin,(req,res)=>{
 router.get('/cart',verifyLogin,async(req,res)=>{
   const userID = req.session.user._id
   let userName = req.session.user.name
+  let total = await userHelpers.totalPrice(userID)
   let products = await userHelpers.getCart(userID)
   console.log(products)
-  res.render('user/cart',{products,userName})
+  res.render('user/cart',{products,total,userID,userName})
+})
+
+//Change Product quantity ajax 
+router.post('/change-product-quantity',(req,res)=>{
+  console.log(req.body);
+  userHelpers.changeProductQuantity(req.body).then(async(response)=>{
+    response.totalView = await userHelpers.totalPrice(req.body.user)
+    res.json(response)
+  })
+})
+
+//delete Product ajax
+router.post('/delete-cart-product',(req,res)=>{
+  console.log(req.body)
+  userHelpers.deleteCartProduct(req.body).then((response)=>{
+    res.json(response)
+  })
+})
+
+//Checkout 
+
+
+router.get('/checkout',async(req,res)=>{
+  let total = await userHelpers.totalPrice(req.session.user._id)
+  res.render('user/checkout',{total,useR:req.session.user})
+})
+//Order Address,details everything sent and new order collection created and cart deleted
+router.post('/checkout',async(req,res)=>{
+  console.log(req.body);
+  let products = await userHelpers.getCartProductList(req.body.userID)
+  let totalPrice = await userHelpers.totalPrice(req.body.userID)
+  userHelpers.placeOrder(req.body,products,totalPrice).then((response)=>{
+    res.json({status:true})
+  })
+  console.log(req.body);
+  
 })
 
 
+//Order Placed
+router.get('/order-placed',(req,res)=>{
+  res.render('user/orderplaced')
+})
+
+
+//view orders
+router.get('/view-orders',async(req,res)=>{
+  let userID = req.session.user._id
+  let orderDetail=await userHelpers.getOrderDetails(userID)
+  res.render('user/vieworders',{orderDetail})
+})
+
+//view order products
+router.get('/view-order-products/:id',async(req,res)=>{
+  let userName = req.session.user.name
+  let orderProducts = await userHelpers.getOrderProductDetails(req.params.id)
+  
+  let commonDetail=orderProducts[0]
+  commonDetail.date=commonDetail.date.toDateString()
+  console.log(commonDetail)
+  res.render('user/viewOrderProducts',{orderProducts,userName,commonDetail})
+})
 //Logout
 router.get('/logout',(req,res)=>{
   req.session.destroy()

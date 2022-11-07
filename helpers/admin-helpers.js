@@ -29,5 +29,31 @@ module.exports={
         })
     })
    },
+
+   getAllOrders:()=>{
+    return new Promise(async(resolve,reject)=>{
+        let orderLists = await db.get().collection(collection.ORDER_COLLECTION).find().sort({_id:-1}).toArray()
+        console.log(orderLists[0])
+        resolve(orderLists)
+
+    })
+},
+
+updateOrder:(orderID,orderStats)=>{
+    return new Promise((resolve,reject)=>{
+        db.get().collection(collection.ORDER_COLLECTION).updateOne(
+            {_id:objectId(orderID)},
+            {
+                $set:{
+                    status:orderStats
+                }
+            }
+            ).then((response)=>{
+                resolve('success')
+            })
+    })
+}
+
+   
    
 }

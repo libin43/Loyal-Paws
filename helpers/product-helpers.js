@@ -14,6 +14,7 @@ module.exports ={
     getAllProduct:()=>{
         return new Promise(async(resolve,reject)=>{
             let prod_data = await db.get().collection(collection.PRODUCT_COLLECTION).find().toArray()
+            console.log(prod_data);
             resolve(prod_data) 
         })
     },
@@ -36,6 +37,7 @@ module.exports ={
      },
 
      updateProduct:(prodID,productDetails)=>{
+        productDetails.price = parseInt(productDetails.price)
         return new Promise((resolve,reject)=>{
             db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectId(prodID)},{
                 $set:{
@@ -43,7 +45,8 @@ module.exports ={
                     product: productDetails.product,
                     description: productDetails.description,
                     category:productDetails.category,
-                    price:productDetails.price
+                    price:productDetails.price,
+                    imageMany:productDetails.imageMany
                     
                 }
             }).then((response)=>{
@@ -52,5 +55,23 @@ module.exports ={
 
         })
 
+     },
+
+     
+     fetchImages:(prodID)=>{
+        return new Promise(async(resolve,reject)=>{
+            let data = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:objectId(prodID)})
+            console.log(data)
+            resolve(data.imageMany)
+        })
+     },
+
+     getProductFromCategory:(catName)=>{
+        return new Promise(async(resolve,reject)=>{
+            let prodCat = await db.get().collection(collection.PRODUCT_COLLECTION).find({category:catName}).toArray()
+            console.log(prodCat,'hai testtttttttttttttttt')
+            resolve(prodCat)
+        })
+       
      }
 }

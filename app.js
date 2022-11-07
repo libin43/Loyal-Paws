@@ -18,7 +18,7 @@ db.connect((err)=>{
 
 const adminRouter = require('./routes/admin');
 const userRouter = require('./routes/users');
-const fileUpload = require('express-fileupload');
+
 
 const app = express();
 
@@ -33,8 +33,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-//uploadfile
-app.use(fileUpload())
+
+
 
 //session
 app.use(session({secret:'Key',cookie:{maxAge:6000000000}}))
