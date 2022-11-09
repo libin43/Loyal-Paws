@@ -1,10 +1,11 @@
 var express = require('express');
 const { response } = require('../app');
 var router = express.Router();
-const userHelpers = require('../helpers/user-helpers')
-const categoryHelpers = require('../helpers/category-helpers')
+const userHelpers = require('../helpers/user-helpers');
+const categoryHelpers = require('../helpers/category-helpers');
 const productHelpers = require('../helpers/product-helpers');
 const otpHelpers = require('../helpers/otp-helpers');
+const paypalHelpers = require('../helpers/paypal-helpers')
 
 //VerifyLogin
 const verifyLogin =(req,res,next)=>{
@@ -138,6 +139,12 @@ router.get('/', verifyLogin, async function(req, res, next) {
 });
 
 
+//User Profile
+router.get('/user-profile',(req,res)=>{
+  res.render('user/userProfile')
+})
+
+
 
 //Dog Food
 router.get('/category/',async(req,res)=>{
@@ -168,9 +175,14 @@ router.get('/add-to-cart/:id',verifyLogin,(req,res)=>{
 router.get('/cart',verifyLogin,async(req,res)=>{
   const userID = req.session.user._id
   let userName = req.session.user.name
-  let total = await userHelpers.totalPrice(userID)
   let products = await userHelpers.getCart(userID)
-  console.log(products)
+  let total = 0
+
+  if (products.length > 0) {
+     total = await userHelpers.totalPrice(userID)
+    console.log(products)
+  
+  }
   res.render('user/cart',{products,total,userID,userName})
 })
 
@@ -199,15 +211,95 @@ router.get('/checkout',async(req,res)=>{
   res.render('user/checkout',{total,useR:req.session.user})
 })
 //Order Address,details everything sent and new order collection created and cart deleted
+//Theres also razorpay integration
 router.post('/checkout',async(req,res)=>{
   console.log(req.body);
   let products = await userHelpers.getCartProductList(req.body.userID)
   let totalPrice = await userHelpers.totalPrice(req.body.userID)
-  userHelpers.placeOrder(req.body,products,totalPrice).then((response)=>{
-    res.json({status:true})
+  userHelpers.placeOrder(req.body,products,totalPrice).then((orderID)=>{
+
+    if(req.body['payment-method']== 'COD'){
+      res.json({codSuccess:true})
+    }
+
+//Paypal    
+    else if(req.body['payment-method']== 'PAYPAL'){
+
+      // create payment object for paypal
+      var payment = {
+        "intent": "authorize",
+        "payer": {
+          "payment_method": "paypal"
+        },
+        "redirect_urls": {
+          "return_url": "http://localhost:7000/order-placed",
+          "cancel_url": "http://localhost:7000/payment-failed"
+        },
+        "transactions": [{
+          "amount": {
+            "total": totalPrice,
+            "currency": "USD"
+          },
+          "description": " a book on mean stack "
+        }]
+      }
+      //Paypal Helper
+      paypalHelpers.createOrder(payment)
+      .then(( transaction )=>{
+        console.log(transaction,'hello')
+
+        let id = transaction.id;
+        let links = transaction.links;
+        let counter = links.length; 
+        
+        while( counter -- ) {
+            if ( links[counter].method == 'REDIRECT') {
+              transaction.pay =true
+               // redirect to paypal where user approves the transaction 
+              transaction.linkto = links[counter].href
+             
+
+              transaction.orderId = orderID
+              transaction.paypalSuccess = true
+              userHelpers.changePaymentOrderStatus(orderID).then(()=>{
+                
+                res.json(transaction)
+              })   
+                
+            }
+        }
+      })
+      .catch((err)=>{
+        console.log(err);
+      })
+    }
+//Razorpay
+    else{
+      userHelpers.generateRazorpay(orderID,totalPrice).then((response)=>{
+        res.json(response)
+      })
+    }
+   
   })
   console.log(req.body);
-  
+})
+
+//
+
+
+//verifyPayment            //In receipt we have order id 
+router.post('/verify-payment',(req,res)=>{
+  console.log('verifying');
+  userHelpers.verifyPayment(req.body).then(()=>{
+    userHelpers.changePaymentOrderStatus(req.body['order[receipt]']).then(()=>{
+      res.json({status:true})
+    })
+    
+
+  }).catch((err)=>{
+    res.json({status:false})
+  })
+  console.log(req.body);
 })
 
 
