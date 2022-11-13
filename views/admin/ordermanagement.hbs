@@ -49,11 +49,35 @@
                     <td>{{this.totalAmount}}</td>
                     <td><select onchange="changeOrderStatus('{{this._id}}')" name="orderstatus" id="{{this._id}}" class="form-select" id="floatingSelect">
                         <option selected value="{{this.status}}">{{this.status}}</option>
-                        <option value="Placed">Placed</option>
+
+                        {{#isEqual this.status 'Placed'}}
                         <option value="Shipped">Shipped</option>
                         <option value="On the Way">On the Way</option>
                         <option value="Delivered">Delivered</option>
                         <option value="Cancelled">Cancelled</option>
+                        {{/isEqual}}
+
+                        {{#isEqual this.status 'Shipped'}}
+                        
+                        <option value="On the Way">On the Way</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                        {{/isEqual}}
+
+                        {{#isEqual this.status 'On the way'}}
+                       
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                        {{/isEqual}}
+
+                         {{#isEqual this.status 'Delivered'}}
+                       
+                        {{/isEqual}}
+
+                        {{#isEqual this.status 'Cancelled'}}
+                       
+                        {{/isEqual}}
+
                         </select>
                     </td>
                   </tr>

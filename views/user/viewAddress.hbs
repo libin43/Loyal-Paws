@@ -1,0 +1,62 @@
+<div class="container">
+<div style="margin-top: 2em;">
+    <button style="margin-top: 5em;" class="btn btn-dark"><a href="/add-address?id={{user}}">Add Address</a></button>
+
+</div>
+
+ {{#each allAddress}}
+  <div style="margin-top:5em; float: left; margin-left: 1em;" class="col-12 card" style="width: 18rem;">
+  <div class=" card-body">
+    <h5 class="card-title">Name : {{this.firstName}} {{this.lastName}}</h5>
+    {{!-- <h6 class="card-subtitle mb-2 text-muted">Name</h6> --}}
+    <p class="card-text">Phone No : {{this.mobile}}</p>
+    <p class="card-text">Street Address : {{this.address}}</p>
+    <p class="card-text">Town : {{this.town}}</p>
+    <p class="card-text">Pincode : {{this.pin}}</p>
+    
+    <button class="card-link btn btn-dark" onclick="deleteAddress('{{this._id}}')">Delete</button>
+    
+  </div>
+</div>
+ {{/each}}
+
+
+</div>
+
+<script>
+  //Delete User Address
+function deleteAddress(addressID){
+  swal({
+  title: "Are you sure?",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    swal("Poof! Your address has been deleted!", {
+      icon: "success",
+      
+    });
+       $.ajax({
+    url: '/delete-address',
+    data: {
+      addressID,
+    },
+    method: 'post',
+    success:(response)=>{
+      if(response){
+       
+        location.reload()
+      }
+    }
+  })
+
+  } else {
+   
+  }
+});
+
+}
+
+</script>

@@ -35,40 +35,46 @@
 				<!-- Billing Details -->
 				<div class="col-lg-6">
 					<div class="billing">
+						<div class="form-group">
+							<label for="demo_overview">Add from Existing Address *</label>
+							<select onchange="selectedAddress()"  id="address" class="form-control" data-role="select-dropdown" required>
+								<!-- options -->
+								<option selected value="{{this._id}}">Add from Existing Address</option>
+
+								{{#each allAddress}}
+						
+						         
+								<option value="{{this._id}}">{{this.firstName}} {{this.lastName}}, {{this.mobile}}, {{this.address}}, {{this.town}}, {{this.pin}}</option>
+								
+								{{/each}}
+								
+								
+								
+							</select>
+						</div>
 						<div class="checkout_title">billing details</div>
 						<div class="checkout_form_container">
 							
 								<div class="d-flex flex-lg-row flex-column align-items-start justify-content-between">
-									<input type="text" name="fname" class="checkout_input checkout_input_50" placeholder="First Name" required="required">
-									<input type="text" name="lname" class="checkout_input checkout_input_50" placeholder="Last Name" required="required">
+									<input type="text" id="first" name="fname" class="checkout_input checkout_input_50" placeholder="First Name" required="required">
+									<input type="text" id="last" name="lname" class="checkout_input checkout_input_50" placeholder="Last Name" required="required">
 								</div>
 								
-								<input type="text" class="checkout_input" placeholder="E-mail" required="required">
-								<select name="country" id="country" class="country_select checkout_input">
+								{{!-- <input type="text" class="checkout_input" placeholder="E-mail" required="required"> --}}
+								{{!-- <select name="country" id="country" class="country_select checkout_input">
 									<option>India</option>
 									<option>United Kingdom</option>
 									<option>U.A.E</option>
-								</select>
-								<input type="text" name="address" class="checkout_input" placeholder="Address" required="required">
-								<input type="text" name="town" class="checkout_input" placeholder="Town" required="required">
+								</select> --}}
+								<input type="text" id="street" name="address" class="checkout_input" placeholder="Address" required="required">
+								<input type="text" id="town" name="town" class="checkout_input" placeholder="Town" required="required">
 								<div class="d-flex flex-lg-row flex-column align-items-start justify-content-between">
-									<input type="text" name="pin" class="checkout_input checkout_input_50" placeholder="Zipcode" required="required">
-									<input type="text" name="mobile" class="checkout_input checkout_input_50" placeholder="Phone No" required="required">
+									<input type="text" id="pin" name="pin" class="checkout_input checkout_input_50" placeholder="Zipcode" required="required">
+									<input type="text" id="mobile" name="mobile" class="checkout_input checkout_input_50" placeholder="Phone No" required="required">
 								</div>
-								<input type="text" name="userID" id="" value='{{useR._id}}' hidden >
+								<input type="text" name="userID" id="" value='{{useR}}' hidden >
 								<textarea name="comment" id="checkout_comment" class="checkout_comment" placeholder="Leave a comment about your order"></textarea>
-								<div class="billing_options">
-									<div class="billing_account">
-										<input type="checkbox" id="checkbox_account" name="regular_checkbox" class="regular_checkbox checkbox_account">
-										<label for="checkbox_account"><img src="images/checked.png" alt=""></label>
-										<span>Create an account</span>
-									</div>
-									<div class="billing_shipping">
-										<input type="checkbox" id="checkbox_shipping" name="regular_checkbox" class="regular_checkbox checkbox_shipping">
-										<label for="checkbox_shipping"><img src="images/checked.png" alt=""></label>
-										<span>Ship to a different address</span>
-									</div>
-								</div>
+									
 							
 						</div>
 					</div>
@@ -290,6 +296,25 @@ function verifyPayment(payment,order){
 	})
 }
 
+function selectedAddress(){
+	let e = document.getElementById('address');
+    let addressID = e.value;
+
+	$.ajax({
+		url: '/selected-address/'+addressID,
+		
+		method: 'get',
+		success:(response)=>{
+			document.getElementById('first').value = response.firstName,
+			document.getElementById('last').value = response.lastName,
+			document.getElementById('street').value = response.address
+			document.getElementById('town').value = response.town
+			document.getElementById('pin').value = response.pin
+			document.getElementById('mobile').value = response.mobile
+		}
+	})
+
+}
 
 
 </script>

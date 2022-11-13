@@ -7,6 +7,7 @@ const hbs = require('express-handlebars')
 const session = require('express-session')
 const db = require('./config/connection')
 
+
 db.connect((err)=>{
   if(err){
     console.log('Connection Error')
@@ -26,7 +27,17 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.engine('hbs',hbs.engine({extname:'hbs',defaultLayout:'userlayout',layoutsDir:__dirname+'/views/layout',partialsDir:__dirname+'/views/partials/'}))
+//In this we are attaching helpers with a helper condition
+
+app.engine('hbs',hbs.engine({extname:'hbs',defaultLayout:'userlayout',layoutsDir:__dirname+'/views/layout',partialsDir:__dirname+'/views/partials/',
+helpers:{
+  isEqual: (status, value, options) => {
+  if (status == value) {
+    return options.fn(this)
+  }
+  return options.inverse(this)
+}}
+}))
 
 app.use(logger('dev'));
 app.use(express.json());

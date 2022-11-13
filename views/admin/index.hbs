@@ -35,14 +35,14 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Sales <span>| Today</span></h5>
+                  <h5 class="card-title">Sales</h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                       <i class="bi bi-cart"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>145</h6>
+                      <h6>{{sales}}</h6>
                       <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
 
                     </div>
@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="card-body">
-                  <h5 class="card-title">Revenue <span>| This Month</span></h5>
+                  <h5 class="card-title">Revenue </h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -151,13 +151,13 @@
                     document.addEventListener("DOMContentLoaded", () => {
                       new ApexCharts(document.querySelector("#reportsChart"), {
                         series: [{
-                          name: 'Sales',
-                          data: [31, 40, 28, 51, 42, 82, 56],
+                          name: 'COD',
+                          data: [100,100,100,90,90,10,10] 
                         }, {
-                          name: 'Revenue',
+                          name: 'ONLINE',
                           data: [11, 32, 45, 32, 34, 52, 41]
                         }, {
-                          name: 'Customers',
+                          name: 'PAYPAL',
                           data: [15, 11, 32, 18, 9, 24, 11]
                         }],
                         chart: {
@@ -509,7 +509,7 @@
 
           <!-- Website Traffic -->
           <div class="card">
-            <div class="filter">
+            {{!-- <div class="filter">
               <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                 <li class="dropdown-header text-start">
@@ -520,10 +520,10 @@
                 <li><a class="dropdown-item" href="#">This Month</a></li>
                 <li><a class="dropdown-item" href="#">This Year</a></li>
               </ul>
-            </div>
+            </div> --}}
 
             <div class="card-body pb-0">
-              <h5 class="card-title">Website Traffic <span>| Today</span></h5>
+              <h5 class="card-title">Weekly Payment Trends</h5>
 
               <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
 
@@ -557,25 +557,18 @@
                         show: false
                       },
                       data: [{
-                          value: 1048,
-                          name: 'Search Engine'
+                          value: {{payments.cod}},
+                          name: 'Cash On Delivery'
                         },
                         {
-                          value: 735,
-                          name: 'Direct'
+                          value: {{payments.online}},
+                          name: 'Razor-Pay'
                         },
                         {
-                          value: 580,
-                          name: 'Email'
-                        },
-                        {
-                          value: 484,
-                          name: 'Union Ads'
-                        },
-                        {
-                          value: 300,
-                          name: 'Video Ads'
+                          value: {{payments.paypal}},
+                          name: 'Paypal'
                         }
+                       
                       ]
                     }]
                   });

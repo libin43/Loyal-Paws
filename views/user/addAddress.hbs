@@ -1,0 +1,32 @@
+<div class="container">
+    <form action="/add-address?id={{userID}}" method="post">
+        <div style="margin-top: 10em;" class="checkout_form_container">
+    
+        <div class="d-flex flex-lg-row flex-column align-items-start justify-content-between">
+            <input type="text" name="fname" class="checkout_input checkout_input_50" placeholder="First Name"
+                required="required">
+            <input type="text" name="lname" class="checkout_input checkout_input_50" placeholder="Last Name"
+                required="required">
+        </div>
+    
+        
+        {{!-- <select name="country" id="country" class="country_select checkout_input">
+            <option>India</option>
+            <option>United Kingdom</option>
+            <option>U.A.E</option>
+        </select> --}}
+        <input type="text" name="address" class="checkout_input" placeholder="Address" required="required">
+        <input type="text" name="town" class="checkout_input" placeholder="Town" required="required">
+        <div class="d-flex flex-lg-row flex-column align-items-start justify-content-between">
+            <input type="text" name="pin" class="checkout_input checkout_input_50" placeholder="Zipcode"
+                required="required">
+            <input type="text" name="mobile" class="checkout_input checkout_input_50" placeholder="Phone No"
+                required="required">
+        </div>
+
+        <button class="btn btn-primary">Submit</button>
+    
+    
+    </div>
+    </form>
+</div>

@@ -3,6 +3,7 @@ const { response } = require('../app');
 const adminHelpers = require('../helpers/admin-helpers');
 const categoryHelpers = require('../helpers/category-helpers')
 const productHelpers = require('../helpers/product-helpers')
+const chartHelpers = require('../helpers/chart-helpers')
 var router = express.Router();
 
 const { addProduct } = require('../helpers/product-helpers');
@@ -44,11 +45,20 @@ router.get('/',function(req,res){
     res.render('admin/login',{layout:'adminlayout',adlogin:true})
 })
 //Admin Home
-router.get('/dashboard', function(req, res, next){
+router.get('/dashboard', async(req, res)=>{
+ 
     if(req.session.loggedIn){
-        res.render('admin/index',{layout:'adminlayout',admin:true})
+
+        let payments = await  chartHelpers.getPaymentGraph() 
+
+        let sales = await chartHelpers.getTotalSales()
+
+        // let revenue = await chartHelpers.getTotalRevenue()
+
+        res.render('admin/index',{layout:'adminlayout',admin:true, payments, sales})
     }
     else{
+        
         res.redirect('/admin')
     }
     

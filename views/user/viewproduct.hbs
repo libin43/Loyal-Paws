@@ -146,7 +146,12 @@
 									</li>
 								</ul>
 							</div>
-							<div class="button cart_button"><a href="#">add to cart</a></div>
+							{{#if userName}}
+							<div  class="button cart_button "><a href="#">add to cart</a></div>
+							{{/if}}
+							{{#if guestUser}}
+							<div><button class="btn"><a href="">ADD TO CART</a></button></div>
+							{{/if}}
 						</div>
 					</div>
 				</div>

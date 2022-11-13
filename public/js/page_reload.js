@@ -6,9 +6,30 @@ function addToCart(prodID){
         method: 'get',
         success: (response)=>{   
             if(response.status){
+                swal("Item Added To Cart!", "Your Item has been added!", "success");
                let count = $('#cart-count').html()
                count = parseInt(count)+1
                $('#cart-count').html(count)
+            }
+            else{
+                swal({
+                    title: "Login To Continue !",
+                    // text: "Once deleted, you will not be able to recover this imaginary file!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                  })
+                  .then((willDelete) => {
+                    if (willDelete) {
+                    //   swal("Poof! Your imaginary file has been deleted!", {
+                    //     icon: "success",
+                    //   });
+                      location.href = '/signin'
+                    } else {
+                      swal("Login Required !");
+                    }
+                  });
+              
             }
             
         }
@@ -30,7 +51,9 @@ function changeQuantity(cartId,prodId,userId,count){
         method: 'post',
         success:(response)=>{
             if(response.removeProduct){
-                alert('Product removed from cart')
+                // alert('Product removed from cart')
+                // location.reload()
+                swal("Item Deleted!", "Your item removed from cart!", "success");
                 location.reload()
             }else{
                 document.getElementById(prodId).innerHTML=quantity+count
@@ -42,21 +65,47 @@ function changeQuantity(cartId,prodId,userId,count){
     })
 }
 
-function deleteProduct(cartId,prodId){
-    $.ajax({
-        url:'/delete-cart-product',
-        data:{
-            cart:cartId,
-            product:prodId
-        },
-        method: 'post',
-        success:(response)=>{
-            if(response.deleteProduct){
-                alert('Product removed from Cart')
-                location.reload()
-            }
-        }
+//Delete icon function
+function deleteProduct(cartId, prodId) {
+
+    swal({
+        title: "Are you sure?",
+        // text: "Once deleted, you will not be able to recover this imaginary file!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
     })
+        .then((willDelete) => {
+            if (willDelete) {
+                swal("Your item has been deleted!", {
+                    icon: "success",
+                });
+
+                $.ajax({
+
+
+                    url: '/delete-cart-product',
+                    data: {
+                        cart: cartId,
+                        product: prodId
+                    },
+                    method: 'post',
+                    success: (response) => {
+                        if (response.deleteProduct) {
+                            // swal("Item Deleted!", "Your item removed from cart!", "success");
+                            // alert('Product removed from Cart')
+                            location.reload()
+
+                        }
+                    }
+                })
+
+
+            } else {
+                //   swal("Your imaginary file is safe!");
+            }
+        });
+
 }
 
 //function for updating order status
@@ -79,5 +128,4 @@ function changeOrderStatus(orderId){
         }
     })
 }
-
 

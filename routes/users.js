@@ -5,7 +5,23 @@ const userHelpers = require('../helpers/user-helpers');
 const categoryHelpers = require('../helpers/category-helpers');
 const productHelpers = require('../helpers/product-helpers');
 const otpHelpers = require('../helpers/otp-helpers');
-const paypalHelpers = require('../helpers/paypal-helpers')
+const paypalHelpers = require('../helpers/paypal-helpers');
+const multer = require('multer');
+
+/************************multer  */
+const multerStorageCategory = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./public/user-images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname)
+  }
+})
+const uploadOne = multer({ storage: multerStorageCategory });
+const uploadSingleFile = uploadOne.fields([{ name: 'image', maxCount: 1 }])
+uploadOne
+
+/****************************** */
 
 //VerifyLogin
 const verifyLogin =(req,res,next)=>{
@@ -123,12 +139,14 @@ router.post('/enter-otp',(req,res)=>{
 
 //Home
 
-router.get('/', verifyLogin, async function(req, res, next) {
+router.get('/', async function(req, res, next) {
  let cartCount = null
+ let userName = null
    if(req.session.user){
      cartCount = await userHelpers.getCartCount(req.session.user._id)
+     userName = req.session.user.name
    }
-    let userName = req.session.user.name
+   
     console.log(userName)
     categoryHelpers.getAllCategory().then((category_data)=>{
       productHelpers.getAllProduct().then((prod_data)=>{
@@ -140,11 +158,58 @@ router.get('/', verifyLogin, async function(req, res, next) {
 
 
 //User Profile
-router.get('/user-profile',(req,res)=>{
-  res.render('user/userProfile')
+router.get('/user-profile',async(req,res)=>{
+  
+  let userDetails = await userHelpers.getUserDetails(req.session.user._id)
+
+  res.render('user/userProfile',{userDetails})
 })
 
+router.post('/user-profile',uploadSingleFile,async(req,res)=>{
+  console.log('bodyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy',req.body);
+  if (req.files.image == null) {
 
+    Imageuser = await userHelpers.fetchImage(req.session.user._id)
+    console.log(Imageuser)
+  }
+  else {
+    Imageuser = await req.files.image[0].filename
+    console.log(Imageuser)
+  }
+req.body.image = Imageuser
+  userHelpers.updateUserDetails(req.session.user._id,req.body).then(()=>{
+    res.redirect('/user-profile')
+  })
+})
+
+//User-View-Address
+router.get('/user-address',verifyLogin,async(req,res)=>{
+  let user = req.session.user._id
+  let allAddress = await userHelpers.getUserAddress(user)
+  res.render('user/viewAddress',{user, allAddress})
+})
+
+//User-Add-Address
+router.get('/add-address/',verifyLogin,(req,res)=>{
+  let userID = req.query.id
+  res.render('user/addAddress',{userID})
+})
+router.post('/add-address/',(req,res)=>{
+  let userID = req.query.id
+  let userAddress = req.body
+  console.log(userID,userAddress,'eeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+  userHelpers.addUserAddress(userID,userAddress).then((response)=>{
+    res.redirect('/user-address')
+  })
+})
+
+//Delete-user-address
+router.post('/delete-address',(req,res)=>{
+  console.log('haaiiiii')
+  userHelpers.deleteUserAddress(req.body.addressID).then((response)=>{
+    res.json(response)
+  })
+})
 
 //Dog Food
 router.get('/category/',async(req,res)=>{
@@ -169,6 +234,10 @@ router.get('/add-to-cart/:id',verifyLogin,(req,res)=>{
   userHelpers.addToCart(req.params.id,req.session.user._id).then(()=>{
     res.json({status:true})
   })                  
+})
+//guest
+router.get('/add-to-cart/:id',(req,res)=>{
+  res.json({status:false})
 })
 
 //Cart
@@ -207,13 +276,18 @@ router.post('/delete-cart-product',(req,res)=>{
 
 
 router.get('/checkout',async(req,res)=>{
+  let useR = req.session.user._id
   let total = await userHelpers.totalPrice(req.session.user._id)
-  res.render('user/checkout',{total,useR:req.session.user})
+  let allAddress = await userHelpers.getUserAddress(useR)
+  console.log(allAddress,'rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+  res.render('user/checkout',{total,useR,allAddress})
 })
+
+
 //Order Address,details everything sent and new order collection created and cart deleted
 //Theres also razorpay integration
 router.post('/checkout',async(req,res)=>{
-  console.log(req.body);
+  console.log(req.body,'hiiiiiiiiiiiiiiiiiiiiiiiii');
   let products = await userHelpers.getCartProductList(req.body.userID)
   let totalPrice = await userHelpers.totalPrice(req.body.userID)
   userHelpers.placeOrder(req.body,products,totalPrice).then((orderID)=>{
@@ -313,6 +387,7 @@ router.get('/order-placed',(req,res)=>{
 router.get('/view-orders',async(req,res)=>{
   let userID = req.session.user._id
   let orderDetail=await userHelpers.getOrderDetails(userID)
+console.log(orderDetail,'hitting');
   res.render('user/vieworders',{orderDetail})
 })
 
@@ -320,12 +395,34 @@ router.get('/view-orders',async(req,res)=>{
 router.get('/view-order-products/:id',async(req,res)=>{
   let userName = req.session.user.name
   let orderProducts = await userHelpers.getOrderProductDetails(req.params.id)
-  
+  let orderId = req.params.id
+
   let commonDetail=orderProducts[0]
   commonDetail.date=commonDetail.date.toDateString()
   console.log(commonDetail)
-  res.render('user/viewOrderProducts',{orderProducts,userName,commonDetail})
+  res.render('user/viewOrderProducts',{orderProducts,orderId,userName,commonDetail})
 })
+
+//Cancel orders
+router.post('/cancel-order',(req,res)=>{
+  console.log(req.body.orderID,req.body.cancelStatus,'hitting.............');
+  userHelpers.cancelOrder(req.body.orderID,req.body.cancelStatus).then(()=>{
+    res.json({status:true})
+  })
+})
+
+
+//Selecting Address from dropdown and returning values to the input field
+router.get('/selected-address/:id',(req,res)=>{
+  console.log(req.params.id,'jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
+  userHelpers.getSelectedAddress(req.params.id).then((response)=>{
+    console.log(response.selectedAddress,'checkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
+    res.json(response.selectedAddress)
+    
+  })
+})
+
+
 //Logout
 router.get('/logout',(req,res)=>{
   req.session.destroy()

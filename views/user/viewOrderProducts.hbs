@@ -11,6 +11,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
               <p class="lead fw-normal mb-0" style="color: #904606;">Receipt</p>
                   <p class="text-muted mb-0">Invoice Date : {{commonDetail.date}}</p>
+                  <button  class="btn btn-danger" style="border-radius: 15px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{orderId}}')">Cancel Order</button>
             </div>
             {{#each orderProducts}}
             <div class="card shadow-0 border mb-4">
@@ -87,3 +88,24 @@
   </div>
 </section>
 </div>
+
+<script>
+  function orderCancel(orderId){
+	
+	$.ajax({
+		url: '/cancel-order',
+		data: {
+			 orderID : orderId,
+			cancelStatus: 'Cancelled'
+		},
+		method: 'post',
+		 success:(response)=>{
+			console.log(response.status)
+            if(response.status){
+                alert('Order Cancelled')
+                location.reload()
+            }
+        }
+	})
+}
+</script>

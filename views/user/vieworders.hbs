@@ -282,10 +282,19 @@ $(document).ready(function(){
                         <td>{{this.date}}</td>                        
                         <td>{{this.status}}</td>
                         <td>{{this.totalAmount}}</td>
-                        <td>
-                            <a style="border-radius: 15px; background-color: green; color: white;" class="btn btn-success mb-2" href="/view-order-products/{{this._id}}">View</a>
-                            <a style="border-radius: 15px; background-color: rgb(245, 21, 21); color: white;" class="btn btn-danger" href="">Cancel</a>
+                          {{!-- {{#isEqual this.status 'Cancelled'}} 
+						<td>
+							Order is cancelled{{this.status}}
+						</td>
+						  {{/isEqual}} --}}
+					  
+						<td>
+                            <a style="border-radius: 15px; background-color: green; color: white;" class="btn btn-success mb-2" href="/view-order-products/{{this._id}}">Manage Order</a>
+                            {{!-- <a style="border-radius: 15px; background-color: rgb(245, 21, 21); color: white;" class="btn btn-danger" href="">Cancel Order</a> --}}
+							
                         </td>
+						
+						
                     </tr>
                    
                    {{/each}}
@@ -300,5 +309,9 @@ $(document).ready(function(){
 
 <script>
 var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
+
+//fn for cancelling order for the users
+
+
 </script>
 
