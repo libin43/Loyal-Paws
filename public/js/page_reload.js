@@ -1,6 +1,7 @@
 // const { response } = require("../../app");
 
 function addToCart(prodID){
+    console.log('jddddddddddddddd')
     $.ajax({
         url:'/add-to-cart/'+prodID,
         method: 'get',
@@ -65,7 +66,7 @@ function changeQuantity(cartId,prodId,userId,count){
     })
 }
 
-//Delete icon function
+//Delete icon function-cart
 function deleteProduct(cartId, prodId) {
 
     swal({
@@ -108,24 +109,58 @@ function deleteProduct(cartId, prodId) {
 
 }
 
-//function for updating order status
-function changeOrderStatus(orderId){
-    let fieldMain =document.getElementById(orderId)
-    let subSelection = fieldMain.options[fieldMain.selectedIndex].text
-    console.log(subSelection,'heeey youuuuuuuuuuu');
+function deleteWishProduct(wishId, prodId) {
+    swal({
+        title: "Are you sure?",
+        // text: "Once deleted, you will not be able to recover this imaginary file!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+        .then((willDelete) => {
+            if (willDelete) {
+                swal("Your item has been deleted!", {
+                    icon: "success",
+                });
+
+                $.ajax({
+                    url: '/delete-wish-product',
+                    data: {
+                        wishID: wishId,
+                        prodID: prodId,
+                    },
+                    method: 'post',
+                    success: (response) => {
+                        if (response.deleteWishProduct) {
+                            location.reload()
+                        }
+                    }
+                })
+            } else {
+                //   swal("Your imaginary file is safe!");
+            }
+        });
+}
+
+
+function add2Cart(prodId,wishId){
+    console.log(prodId,'its pdt')
     $.ajax({
-        url:'/admin/change-order-status',
+        url:'/add-2-cart',
         data:{
-            orderID : orderId,
-            orderStatus : subSelection
+            prodID : prodId,
+            wishID : wishId
         },
         method:'post',
         success:(response)=>{
-            if(response.status){
-                alert('Order Status Updated')
+            if(response.deleteWishProduct){
+                swal({
+                    title: "Added to Wishlist!",
+                    icon: "success",
+                    button: "OK",
+                });
                 location.reload()
             }
         }
     })
 }
-

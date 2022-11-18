@@ -14,9 +14,13 @@ module.exports ={
     },
 
     getAllCategory:()=>{
-        return new Promise(async(resolve,reject)=>{
-            let cat_data = await db.get().collection(collection.CATEGORY_COLLECTION).find().toArray()
-            resolve(cat_data) 
+        return new Promise((resolve,reject)=>{
+             db.get().collection(collection.CATEGORY_COLLECTION).find().toArray().then((cat_data)=>{
+                resolve(cat_data)
+             })
+             
+         
+             
         })
     },
 

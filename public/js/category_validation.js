@@ -1,0 +1,1 @@
+let catNameError = document.getElementById('cat-name-error')

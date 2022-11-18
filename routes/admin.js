@@ -4,6 +4,7 @@ const adminHelpers = require('../helpers/admin-helpers');
 const categoryHelpers = require('../helpers/category-helpers')
 const productHelpers = require('../helpers/product-helpers')
 const chartHelpers = require('../helpers/chart-helpers')
+const userHelpers = require('../helpers/user-helpers');
 var router = express.Router();
 
 const { addProduct } = require('../helpers/product-helpers');
@@ -53,9 +54,18 @@ router.get('/dashboard', async(req, res)=>{
 
         let sales = await chartHelpers.getTotalSales()
 
-        // let revenue = await chartHelpers.getTotalRevenue()
+        let revenue = await chartHelpers.getTotalRevenue()
 
-        res.render('admin/index',{layout:'adminlayout',admin:true, payments, sales})
+        let customers = await chartHelpers.getTotalUser()
+
+        let recentSale = await chartHelpers.getRecentSale()
+
+        let monthlygraph = await chartHelpers.getMonthlyGraph()
+        
+
+        
+
+        res.render('admin/index',{layout:'adminlayout',admin:true, payments, sales, revenue, customers, recentSale, monthlygraph})
     }
     else{
         
@@ -267,19 +277,50 @@ router.get('/delete-product/:id',(req,res)=>{
     })
 })
 
-//Order Management
-router.get('/order-management', async(req,res)=>{
-    let orderLists = await adminHelpers.getAllOrders()
-   
-    res.render('admin/ordermanagement',{layout:'adminlayout',admin:true,orderLists})
-})
+
 
 //update Order Status
 router.post('/change-order-status',(req,res)=>{
-    adminHelpers.updateOrder(req.body.orderID,req.body.orderStatus).then(()=>{
+    console.log(req.body.itemID,'dddddddddddddddddddddddddddddddddddddddddddddddddddd')
+    adminHelpers.updateOrder(req.body.orderID,req.body.itemID,req.body.orderStatus).then(()=>{
         res.json({status:true})
     })
 })
+
+//-------------------------------------------------------------------Updated Order Manage------------------------------------------//
+router.get('/order-manage',async(req,res)=>{
+    let orderLists = await adminHelpers.getAllOrders()
+    res.render('admin/ordermanage',{layout:'adminlayout',admin:true, orderLists})
+})
+
+router.get('/order-products-manage/',async(req, res) => {
+    let orderProducts = await userHelpers.getOrderProductDetails(req.query.id)
+    let userDetail =orderProducts[0]
+    userDetail.date=userDetail.date.toDateString()
+    console.log(orderProducts,'ordeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+    res.render('admin/orderproducts', { layout: 'adminlayout', admin: true ,orderProducts, userDetail})
+})
+
+/*********************************************************************************************************************************//
+
+//----------------------------------------------------------------SALES REPORT-----------------------------------------------------//
+
+router.get('/sales-report',async(req,res)=>{
+    let soldItem = await chartHelpers.getSalesReport()
+    res.render('admin/sales', { layout: 'adminlayout', admin: true ,soldItem })
+})
+
+//*********************************************************************************************************************************//
+
+//-------------------------------------------------------SALES REPORT FILTER------------------------------------------------//
+router.post('/sales-date-apply',async(req,res)=>{
+  
+
+    let filteredItem = await chartHelpers.getFilteredReport(req.body.fromDate,req.body.toDate)
+    console.log(filteredItem,'dddddddddaaaaaaaaaaaaaaaaaattttttttttttttttttttaaaaaaaaaaaaaaa');
+    res.render('admin/filtersales', { layout: 'adminlayout', admin: true ,filteredItem })
+})
+//**************************************************************************************************************************//
 
 //Logout
 router.get('/logout',function(req,res){

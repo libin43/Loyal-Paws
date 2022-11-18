@@ -387,12 +387,24 @@ module.exports ={
 
    placeOrder:(order,products,total)=>{
     return new Promise((resolve,reject)=>{
+      
         console.log(order,products,total);
+       
         let status = order['payment-method'] ==='COD'? 'Placed':'Pending'
+
+      //-----status field is pushed into products array of objects----//
+      console.log(status,'impppppppppppppppppppppp')
+        products.forEach(products=>{
+            products.status = status
+        })
+         //--------Pushing completed--------//
+
         let orderObj ={
             deliveryDetails:{
+                name:order.fname+" "+order.lname,
                 mobile:order.mobile,
                 address:order.address,
+                town:order.town,
                 pincode:order.pin,
                 
             },
@@ -401,11 +413,18 @@ module.exports ={
             products:products,
             totalAmount:total,
             date: new Date(),
-            status:status,
+          
            
         }
+        
         db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response)=>{
+            
+            if (status=='Placed'){
             db.get().collection(collection.CART_COLLECTION).deleteOne({user:objectId(order.userID)})
+
+            }
+         
+          
             console.log(response.insertedId);
             resolve(response.insertedId)// This is done to pass order id to razorpay so far 
             
@@ -414,16 +433,17 @@ module.exports ={
 
    },
 
-   cancelOrder:(orderID,cancelStat)=>{
+   cancelOrder:(orderID,itemID,cancelStat)=>{
+    console.log(orderID,'oderseeeeeeeeeeeeeeeeeeee');
+    console.log(itemID,'oderseeeeeeeeeeeeeeeeeeee');
     return new Promise((resolve,reject)=>{
         db.get().collection(collection.ORDER_COLLECTION).updateOne(
-            {_id : objectId(orderID)},
-
-            {
-                $set : {
-                    status: cancelStat
-                }
+           { $and :[ {_id : objectId(orderID)}, {'products.item': objectId(itemID)}]},
+           {
+            $set: {
+                'products.$.status' : cancelStat
             }
+           }
         ).then(()=>{
             resolve()
         })
@@ -458,8 +478,12 @@ module.exports ={
                 {$project:{
                     item:'$products.item',
                     quantity:'$products.quantity',
+                    name:'$deliveryDetails.name',
+                    mobile:'$deliveryDetails.mobile',
                     address:'$deliveryDetails.address',
-                    status:'$status',
+                    town:'$deliveryDetails.town',
+                    pincode:'$deliveryDetails.pincode',
+                    status:'$products.status',
                     date:'$date',
                     total:'$totalAmount'
                 }},
@@ -474,7 +498,11 @@ module.exports ={
                 {$project:{
                     item:1,
                     quantity:1,
+                    name:1,
+                    mobile:1,
                     address:1,
+                    town:1,
+                    pincode:1,
                     status:1,
                     date:1,
                     total:1,
@@ -522,16 +550,28 @@ module.exports ={
         })
     },
 
-    changePaymentOrderStatus:(orderID)=>{
+    changePaymentOrderStatus:(orderID,userID)=>{
         return new Promise((resolve,reject)=>{
             db.get().collection(collection.ORDER_COLLECTION).updateOne({_id: objectId( orderID )},
             {
                 $set:{
-                    status:'Placed'
+                    'products.$[].status':'Placed',
+                   
                 }
             }).then(()=>{
+                db.get().collection(collection.CART_COLLECTION).deleteOne({user:objectId(userID)})
+
                 resolve()
             })
+        })
+    },
+
+    removePendingStatus:()=>{
+        return new Promise((resolve,reject)=>{
+            db.get().collection(collection.ORDER_COLLECTION).deleteMany( { products: {$elemMatch: { status:'Pending' } } }).then(()=>{
+                resolve()
+            })
+           
         })
     }
 

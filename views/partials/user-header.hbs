@@ -13,8 +13,8 @@
 							SHOP
 						</button>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							{{#each category_data}}
-							<a class="dropdown-item" href="">{{this.category}}</a>
+							{{#each category}}
+							<a class="dropdown-item" href="/category?name={{this.category}}">{{this.category}}</a>
 							
 							{{/each}}
 						</div>
@@ -34,14 +34,14 @@
 				<form action="#">
 					<input type="search" class="search_input" required="required">
 					<button type="submit" id="search_button" class="search_button"><img
-							src="images/magnifying-glass.svg" alt=""></button>
+							src="../images/magnifying-glass.svg" alt=""></button>
 				</form>
 			</div>
 			<div class="shopping">
 				<!-- Cart -->
 				<a href="/cart">
 					<div class="cart">
-						<img src="images/shopping-bag.svg" alt="">
+						<img src="../images/shopping-bag.svg" alt="">
 						<div class="cart_num_container">
 							<div class="cart_num_inner">
 								<div class="cart_num" id="cart-count">{{cartCount}}</div>
@@ -50,9 +50,9 @@
 					</div>
 				</a>
 				<!-- Star -->
-				<a href="#">
+				<a href="/wishlist">
 					<div class="star">
-						<img src="images/star.svg" alt="">
+						<img src="../images/star.svg" alt="">
 						<div class="star_num_container">
 							<div class="star_num_inner">
 								<div class="star_num">0</div>
@@ -64,13 +64,17 @@
 				<div class="dropdown">
 					<button class="dropbtn">
 						<div class="avatar">
-							<img src="images/avatar.svg" alt="">
+							<img class="img-fluid" src="../images/avatar.svg" alt="">
 							<span style="text-decoration: none;color: black;">{{userName}}</span>
 						</div>
 					</button>
 					<div class="dropdown-content">
+						{{#if userName}}
 						<a class="dropdown-item" href="/user-profile">Profile</a>
 						<a class="dropdown-item" href="/logout">Logout</a>
+						{{else}}
+						<a class="dropdown-item" href="/signin">Login</a>
+						{{/if}}
 					</div>
 				</div>
 				

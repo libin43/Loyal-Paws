@@ -77,7 +77,7 @@
                       <i class="bi bi-currency-dollar"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>$3,264</h6>
+                      <h6>{{revenue}}</h6>
                       <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
 
                     </div>
@@ -113,7 +113,7 @@
                       <i class="bi bi-people"></i>
                     </div>
                     <div class="ps-3">
-                      <h6>1244</h6>
+                      <h6>{{customers}}</h6>
                       <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
 
                     </div>
@@ -146,13 +146,14 @@
 
                   <!-- Line Chart -->
                   <div id="reportsChart"></div>
+                  
 
                   <script>
                     document.addEventListener("DOMContentLoaded", () => {
                       new ApexCharts(document.querySelector("#reportsChart"), {
                         series: [{
                           name: 'COD',
-                          data: [100,100,100,90,90,10,10] 
+                          data: [100,20,50,90,90,10,10] 
                         }, {
                           name: 'ONLINE',
                           data: [11, 32, 45, 32, 34, 52, 41]
@@ -206,11 +207,12 @@
               </div>
             </div><!-- End Reports -->
 
-            <!-- Recent Sales -->
-            <div class="col-12">
-              <div class="card recent-sales overflow-auto">
+            
 
-                <div class="filter">
+                 <div class="col-12">
+              <div class="card">
+
+                {{!-- <div class="filter">
                   <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                   <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     <li class="dropdown-header text-start">
@@ -221,57 +223,98 @@
                     <li><a class="dropdown-item" href="#">This Month</a></li>
                     <li><a class="dropdown-item" href="#">This Year</a></li>
                   </ul>
-                </div>
+                </div> --}}
 
                 <div class="card-body">
-                  <h5 class="card-title">Recent Sales <span>| Today</span></h5>
+                  <h5 class="card-title">Reports <span>- Last 12 Months</span></h5>
 
-                  <table class="table table-borderless datatable">
+                  <!-- Line Chart -->
+                 <canvas class="mx-auto" id="myChart" style="width:100%;max-width:600px"></canvas>
+
+                <script>
+                  //Seperating datas into seperate array of months and revenue//
+                  const month = []
+                  {{#each monthlygraph}}
+                  month.unshift('{{this.month}}')
+                  {{/each}}
+                  console.log(month,'monnnnnnnnnnnnnnnnnnn')
+
+                  const monthlyRevenue = []
+                  {{#each monthlygraph}}
+                  monthlyRevenue.unshift('{{this.totalAmount}}')
+                  console.log(monthlyRevenue,'monnnnnnnnnnnnnnnnnnn')
+                  {{/each}} 
+
+                  //----------------------------------------------------------//
+
+
+                  var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+                  var yValues = [55, 49, 44, 24, 15];
+                  var barColors = [ "blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue"];
+
+                  new Chart("myChart", {
+                    type: "bar",
+                    data: {
+                      labels: month,
+                      datasets: [{
+                        backgroundColor: barColors,
+                        data: monthlyRevenue
+                      }]
+                    },
+                    options: {
+                      legend: { display: false },
+                      title: {
+                        display: true,
+                        text: "Monthly Sales Report"
+                      }
+                    }
+                  });
+                </script>
+                 
+                  
+
+                  
+                  <!-- End Line Chart -->
+
+                </div>
+
+              </div>
+            </div><!-- End Reports -->
+
+
+            <!-- Recent Sales -->
+            <div class="col-12">
+              <div class="card recent-sales overflow-auto">
+
+               
+
+                <div class="card-body">
+                  <h5 class="card-title">Recent Sales</h5>
+
+                  <table class="table ">
                     <thead>
                       <tr>
-                        <th scope="col">#</th>
+                        <th scope="col">No.</th>
                         <th scope="col">Customer</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Payment</th>
+                        <th scope="col">Total</th>
                       </tr>
                     </thead>
                     <tbody>
+                      {{#each recentSale}}
                       <tr>
-                        <th scope="row"><a href="#">#2457</a></th>
-                        <td>Brandon Jacob</td>
-                        <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                        <td>$64</td>
-                        <td><span class="badge bg-success">Approved</span></td>
+                        <th scope="row" class="create_index"></th>
+                        <td>{{this.deliveryDetails.name}}</td>
+                        <td>{{this.deliveryDetails.mobile}}</td>
+                        <td>{{this.paymentMethod}}</td>
+                        <td>{{this.totalAmount}}</td>
                       </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2147</a></th>
-                        <td>Bridie Kessler</td>
-                        <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                        <td>$47</td>
-                        <td><span class="badge bg-warning">Pending</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2049</a></th>
-                        <td>Ashleigh Langosh</td>
-                        <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                        <td>$147</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Angus Grady</td>
-                        <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                        <td>$67</td>
-                        <td><span class="badge bg-danger">Rejected</span></td>
-                      </tr>
-                      <tr>
-                        <th scope="row"><a href="#">#2644</a></th>
-                        <td>Raheem Lehner</td>
-                        <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                        <td>$165</td>
-                        <td><span class="badge bg-success">Approved</span></td>
-                      </tr>
+                      {{/each}}
+                    
+                      
+                      
+                      
                     </tbody>
                   </table>
 
@@ -573,6 +616,9 @@
                     }]
                   });
                 });
+
+                var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
+
               </script>
 
             </div>

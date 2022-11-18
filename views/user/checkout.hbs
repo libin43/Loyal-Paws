@@ -1,9 +1,11 @@
+<link rel="stylesheet" type="text/css" href="../styles/checkout.css">
+<link rel="stylesheet" type="text/css" href="../styles/checkout_responsive.css">
 <div class="super_container"
 
 
 	<!-- Home -->
 
-	<div class="home">
+	{{!-- <div class="home">
 		<div class="home_background parallax-window" data-parallax="scroll" data-image-src="" data-speed="0.8"></div>
 		<div class="container">
 			<div class="row">
@@ -23,7 +25,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> --}}
 
 	<!-- Checkout -->
 
@@ -41,7 +43,7 @@
 								<!-- options -->
 								<option selected value="{{this._id}}">Add from Existing Address</option>
 
-								{{#each allAddress}}
+								{{#each allAddress}}	
 						
 						         
 								<option value="{{this._id}}">{{this.firstName}} {{this.lastName}}, {{this.mobile}}, {{this.address}}, {{this.town}}, {{this.pin}}</option>
@@ -136,16 +138,16 @@
 		</div>
 	</div>
 
+	
+
 	<!-- Newsletter -->
 
-	<div class="newsletter">
-		<div class="newsletter_content">
-			<div class="newsletter_image parallax-window" data-parallax="scroll" data-image-src="" data-speed="0.8"></div>
-			<div class="container">
-				<div class="row options">
+	
 
 					<!-- Options Item -->
-					<div class="col-lg-3">
+					<div class="container">
+						<div class="row">
+						<div class="col-lg-3">
 						<div class="options_item d-flex flex-row align-items-center justify-content-start">
 							<div class="option_image"><img src="images/option_1.png" alt=""></div>
 							<div class="option_content">
@@ -187,30 +189,10 @@
 							</div>
 						</div>
 					</div>
+					</div>
+					</div>
 
-				</div>
-				<div class="row newsletter_row">
-					<div class="col">
-						<div class="section_title_container text-center">
-							<div class="section_subtitle">only the best</div>
-							<div class="section_title">subscribe for a 20% discount</div>
-						</div>
-					</div>
-				</div>
-				<div class="row newsletter_container">
-					<div class="col-lg-10 offset-lg-1">
-						<div class="newsletter_form_container">
-							<form action="#">
-								<input type="email" class="newsletter_input" required="required" placeholder="E-mail here">
-								<button type="submit" class="newsletter_button">subscribe</button>
-							</form>
-						</div>
-						<div class="newsletter_text">Integer ut imperdiet erat. Quisque ultricies lectus tellus, eu tristique magna pharetra nec. Fusce vel lorem libero. Integer ex mi, facilisis sed nisi ut, vestib ulum ultrices nulla. Aliquam egestas tempor leo.</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+				
 
 
 
@@ -245,6 +227,7 @@
 //Razorpay
 function razorpayPayment(order){
 	
+	
 	var options = {
     "key": "rzp_test_bZDcL6JRT4zjki", // Enter the Key ID generated from the Dashboard
     "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -259,6 +242,7 @@ function razorpayPayment(order){
         alert(response.razorpay_signature)
 
 		verifyPayment(response,order)          //aftergetting these ids and signature pass it to ajax with order 
+
     },
     "prefill": {
         "name": "Gaurav Kumar",
@@ -274,6 +258,7 @@ function razorpayPayment(order){
 };
 
 var rzp1 = new Razorpay(options);
+
 rzp1.open();
 }
 

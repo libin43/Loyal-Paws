@@ -47,8 +47,8 @@
                    
                     <td>{{this.paymentMethod}}</td>
                     <td>{{this.totalAmount}}</td>
-                    <td><select onchange="changeOrderStatus('{{this._id}}')" name="orderstatus" id="{{this._id}}" class="form-select" id="floatingSelect">
-                        <option selected value="{{this.status}}">{{this.status}}</option>
+                    {{!-- <td><select onchange="changeOrderStatus('{{this._id}}')" name="orderstatus" id="{{this._id}}" class="form-select" id="floatingSelect">
+                        <option selected value="{{this.status}}">{{this.status}}</option> --}}
 
                         {{#isEqual this.status 'Placed'}}
                         <option value="Shipped">Shipped</option>

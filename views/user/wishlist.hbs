@@ -34,13 +34,13 @@
 	</div> --}}
 
 	<!-- Cart -->
-	{{#if cartNotEmpty}}
+	{{!-- {{#if wishNotEmpty}} --}}
 
 	<div class="cart_container">
 		<div class="container">
 			<div class="row">
 				<div class="col">
-					<div class="cart_title">your shopping cart</div>
+					<div class="cart_title">your wishlist</div>
 				</div>
 			</div>
 			<div class="row">
@@ -48,9 +48,114 @@
 					<div class="cart_bar d-flex flex-row align-items-center justify-content-start">
 						<div class="cart_bar_title_name">Product</div>
 						<div class="cart_bar_title_content ml-auto">
+							<div class="cart_bar_title_content_inner d-flex flex-row align-items-center justify-content-between">
+								<div class="cart_bar_title_price">Price</div>
+								
+								
+								<div class="cart_bar_title_button"></div>
+								<div class="cart_bar_title_content_inner d-flex flex-row align-items-center justify-content-end">
+									<div class="cart_bar_title_price">Action</div>
+									
+								</div>
+							</div>
+								
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="cart_products">
+						{{#each wishProducts}}
+                        <ul>
+							
+							<li class=" cart_product d-flex flex-md-row flex-column align-items-md-center align-items-start justify-content-start">
+								<!-- Product Image -->
+								<div class="cart_product_image"><img style="width:100px ;height:100px ;" src="../product-images/{{this.wishItems.imageMany.[0]}}" alt=""></div>
+								<!-- Product Name -->
+								<div class="cart_product_name"><a href="product.html">{{this.wishItems.product}}</a></div>
+								<div class="cart_product_info ml-auto">
+									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
+								    
+									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
+
+										<!-- Product Price -->
+										
+
+										<div class="cart_product_price">Rs. {{this.wishItems.price}}</div>
+										
+										
+									
+							
+
+										<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-between">
+											{{!-- <div class="cart_product_price">Rs. {{this.wishItems.price}}</div> --}}
+										</div>
+									
+											<div class="mx-auto my-auto pr-2"><button onclick="add2Cart('{{this.wishItems._id}}','{{this._id}}')"
+													style="background-color: #937c6f; color: white; height: 3em;" class="btn cart_button">
+													ADD TO CART</button>
+											</div>
+										
+										<!-- Product Cart Trash Button -->
+										
+										<div class="cart_product_button">
+											<button class="cart_product_remove" onclick="deleteWishProduct('{{this._id}}','{{this.wishItems._id}}')" ><img src="images/trash.png" alt=""></button>
+										</div>
+										
+                                      </div>
+									 
+									
+									  
+									</div>
+									
+									
+								</div>
+								
+							</li>
+							
+						</ul>
+                        {{/each}}
+					</div>
+				</div>
+			</div>
+			{{!-- <div class="row">
+				<div class="col">
+					<div class="cart_control_bar d-flex flex-md-row flex-column align-items-start justify-content-start">
+						<button class="button_clear cart_button">clear cart</button>
+						<button class="button_update cart_button">update cart</button>
+						<button class="button_update cart_button_2 ml-md-auto">continue shopping</button>
+					</div>
+				</div>
+			</div> --}}
+			<div class="row cart_extra">
+				
+				
+				
+			</div>
+		</div>
+	</div>
+
+	{{!-- {{/if}} --}}
+
+	{{#unless wishNotEmpty}}
+
+	{{!-- <div class="cart_container ">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="cart_title">your wishlist</div>
+					
+				</div>
+			</div>
+			<div class="row p-5">
+				<div class="col">
+					<div class="cart_bar d-flex flex-row align-items-center justify-content-start">
+						<div class="cart_bar_title_name">Product</div>
+						<div class="cart_bar_title_content ml-auto">
 							<div class="cart_bar_title_content_inner d-flex flex-row align-items-center justify-content-end">
 								<div class="cart_bar_title_price">Price</div>
-								<div class="cart_bar_title_quantity">Quantity</div>
+								
 								
 								<div class="cart_bar_title_button"></div>
 							</div>
@@ -58,7 +163,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row p-5">
 				<div class="col">
 					<div class="cart_products">
 						{{#each products}}
@@ -75,32 +180,24 @@
 									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
 
 										<!-- Product Price -->
+									
 										<div class="cart_product_price">Rs. {{this.cartItems.price}}</div>
 									
-										<!-- Product Quantity -->
-										<div class="product_quantity_container">
-											<div class="product_quantity clearfix">
-										<button style="width: 25px;" onclick="changeQuantity('{{this._id}}','{{this.cartItems._id}}','{{../userID}}',-1)" class="cart-item-count  rounded ">-</button>
+							
 
-
-										<span class="p-2" id="{{this.cartItems._id}}">{{this.quantity}}</span>
-
-
-										<button style="width: 25px;" onclick="changeQuantity('{{this._id}}','{{this.cartItems._id}}','{{../userID}}',1)"class="cart-item-count  rounded">+</button>
-                                         </div>
-                                      </div>
-
-										<!-- Products Total Price -->
+										
 										
 										<!-- Product Cart Trash Button -->
 										<div class="cart_product_button">
-											<button class="cart_product_remove" onclick="deleteProduct('{{this._id}}','{{this.cartItems._id}}')" ><img src="images/trash.png" alt=""></button>
+											<button class="cart_product_remove" onclick="deleteWishProduct('{{this._id}}','{{this.wishItems._id}}')" ><img src="images/trash.png" alt=""></button>
 										</div>
+										
                                       </div>
 									</div>
 								</div>
 							</li>
 						</ul>
+						
                         {{/each}}
 					</div>
 				</div>
@@ -115,122 +212,12 @@
 				</div>
 			</div> --}}
 			<div class="row cart_extra">
-				<!-- Cart Coupon -->
-				<div class="col-lg-6">
-					<div class="cart_coupon">
-						<div class="cart_title">coupon code</div>
-						<form action="#" class="cart_coupon_form d-flex flex-row align-items-start justify-content-start" id="cart_coupon_form">
-							<input type="text" class="cart_coupon_input" placeholder="Coupon code" required="required">
-							<button class="button_clear cart_button_2">apply coupon</button>
-						</form>
-					</div>
-				</div>
-				<!-- Cart Total -->
-				<div class="col-lg-5 offset-lg-1">
-					<div class="cart_total">
-						<div class="cart_title">cart total</div>
-						<ul>
-							<li class="d-flex flex-row align-items-center justify-content-start">
-								<div class="cart_total_title">Subtotal</div>
-								<div class="cart_total_price ml-auto">$35.00</div>
-							</li>
-							<li class="d-flex flex-row align-items-center justify-content-start">
-								<div class="cart_total_title">Shipping</div>
-								<div class="cart_total_price ml-auto">$5.00</div>
-							</li>
-							<li class="d-flex flex-row align-items-center justify-content-start">
-								<div class="cart_total_title">Total</div>
-								<div class="cart_total_price ml-auto"><span id="total">{{total}}</span></div>
-							</li>
-						</ul>
-						<a href="/checkout"><button class="cart_total_button">proceed to checkout</button></a>
-						
-						
-					</div>
-				</div>
+				
+				
+				
 			</div>
 		</div>
-	</div>
-
-	{{/if}}
-
-	{{#unless cartNotEmpty}}
-
-	<div class="cart_container">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<div class="cart_title">your shopping cart</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<div class="cart_bar d-flex flex-row align-items-center justify-content-start">
-						<div class="cart_bar_title_name">Product</div>
-						<div class="cart_bar_title_content ml-auto">
-							<div class="cart_bar_title_content_inner d-flex flex-row align-items-center justify-content-end">
-								<div class="cart_bar_title_price">Price</div>
-								<div class="cart_bar_title_quantity">Quantity</div>
-								
-								<div class="cart_bar_title_button"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<div class="cart_products">
-						<h2 class="p-2">Your Cart Is Empty</h2>
-					</div>
-				</div>
-			</div>
-			{{!-- <div class="row">
-				<div class="col">
-					<div class="cart_control_bar d-flex flex-md-row flex-column align-items-start justify-content-start">
-						<button class="button_clear cart_button">clear cart</button>
-						<button class="button_update cart_button">update cart</button>
-						<button class="button_update cart_button_2 ml-md-auto">continue shopping</button>
-					</div>
-				</div>
-			</div> --}}
-			<div class="row cart_extra">
-				<!-- Cart Coupon -->
-				<div class="col-lg-6">
-					<div class="cart_coupon">
-						<div class="cart_title">coupon code</div>
-						<form action="#" class="cart_coupon_form d-flex flex-row align-items-start justify-content-start" id="cart_coupon_form">
-							<input type="text" class="cart_coupon_input" placeholder="Coupon code" required="required">
-							<button class="button_clear cart_button_2">apply coupon</button>
-						</form>
-					</div>
-				</div>
-				<!-- Cart Total -->
-				<div class="col-lg-5 offset-lg-1">
-					<div class="cart_total">
-						<div class="cart_title">cart total</div>
-						<ul>
-							<li class="d-flex flex-row align-items-center justify-content-start">
-								<div class="cart_total_title">Subtotal</div>
-								<div class="cart_total_price ml-auto">$35.00</div>
-							</li>
-							<li class="d-flex flex-row align-items-center justify-content-start">
-								<div class="cart_total_title">Shipping</div>
-								<div class="cart_total_price ml-auto">$5.00</div>
-							</li>
-							<li class="d-flex flex-row align-items-center justify-content-start">
-								<div class="cart_total_title">Total</div>
-								<div class="cart_total_price ml-auto"><span id="total"></span></div>
-							</li>
-						</ul>
-						<button class="cart_total_button" onclick="cartEmpty()">proceed to checkout</button>
-						
-						
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+	</div> --}}
 
 	{{/unless}}
 
@@ -318,14 +305,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	</footer>
 </div>
 
-<script>
-	function cartEmpty(){
-		swal({
-  title: "Oops!",
-  text: "Your Cart is Empty!",
-  icon: "warning",
-  button: "OK",
-});
 
-	}
-</script>
+
+

@@ -39,13 +39,14 @@ module.exports={
     })
 },
 
-updateOrder:(orderID,orderStats)=>{
+updateOrder:(orderID,itemID,orderStats)=>{
     return new Promise((resolve,reject)=>{
         db.get().collection(collection.ORDER_COLLECTION).updateOne(
-            {_id:objectId(orderID)},
+            { $and:[{_id:objectId(orderID)}, {'products.item':objectId(itemID) }]},
             {
                 $set:{
-                    status:orderStats
+                 'products.$.status':orderStats,
+                  
                 }
             }
             ).then((response)=>{
