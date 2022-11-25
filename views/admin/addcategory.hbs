@@ -16,6 +16,21 @@
                   
                   </div>
                 </div>
+
+                <div class="row mb-3">
+                  <label for="inputEmail3" class="col-sm-2 col-form-label">Category Offer</label>
+                  <div class="col-sm-10 w-25">
+                
+                    <div class="form-floating">
+                      <input name="categoryOffer" type="text" class="form-control" id="offer" placeholder="City">
+                      <label for="floatingCity">Category Offer %</label>
+                    </div>
+                  </div>
+                </div>
+
+                  <div class="col-md-3">
+                                
+                            </div>
                
               
                 
@@ -28,9 +43,11 @@
                 </div>
                
                 <div class="row mb-3">
+                  
                     <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
                     <div class="col-sm-10 w-75">
-                        <input type="file" class="form-control" name="image" required>
+                      <img id="imgView" src="/category-images/{{catID.image}}" alt="" style="width: 50px;height: 50px; margin-bottom: 1em;">
+                        <input type="file" class="form-control" name="image" required onchange="viewImage(event)">
                     </div>
                 </div>
 
@@ -44,3 +61,10 @@
 
             </div>
           </div>
+
+          <script>
+            function viewImage(event){
+                document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+            }
+            
+          </script>

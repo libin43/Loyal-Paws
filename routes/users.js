@@ -8,6 +8,7 @@ const otpHelpers = require('../helpers/otp-helpers');
 const paypalHelpers = require('../helpers/paypal-helpers');
 const multer = require('multer');
 const wishlistHelpers = require('../helpers/wishlist-helpers');
+const couponHelpers = require('../helpers/coupon-helpers');
 
 /************************multer  */
 const multerStorageCategory = multer.diskStorage({
@@ -148,12 +149,14 @@ router.get('/', async function(req, res, next) {
 
  let userName = req.session.user?.name
  let cartCount = await userHelpers.getCartCount(req.session.user?._id)
+ let wishListCount = await wishlistHelpers.getWishCount(req.session.user?._id)
  let category = await categoryHelpers.getAllCategory()
+ console.log(category,'checkinggggggggggcat');
     console.log(userName)
 
 
     productHelpers.getAllProduct().then((prod_data) => {
-      res.render('user/index', { category, prod_data, userName, cartCount })
+      res.render('user/index', { category, prod_data, userName, cartCount ,wishListCount})
     })
 
  
@@ -279,6 +282,7 @@ router.get('/add-to-wishlist:id',(req,res)=>{
   console.log('adding started')
   wishlistHelpers.addToWishList(req.params.id,req.session.user._id).then((response)=>{
     console.log(response,'Wishlist added to db')
+    res.json({status:true})
   })
 })
 
@@ -292,9 +296,9 @@ router.get('/wishlist',verifyLogin,async(req,res)=>{
   
   let category = await categoryHelpers.getAllCategory()
   
-  // let wishNotEmpty = false
 
-  res.render('user/wishlist',{ userName, category, wishProducts, cartCount})
+
+  res.render('user/wishlist',{ userName, category, wishProducts, cartCount, noWishProducts:true})
 })
 
 router.post('/add-2-cart',(req,res)=>{
@@ -314,6 +318,47 @@ router.post('/delete-wish-product',(req,res)=>{
   }) 
 })
 
+//*************************************************************************************************//
+
+
+
+//--------------------------------------------SEARCH-----------------------------------------------//
+// router.get('/search-products',(req,res)=>{
+//   res.render('user/search')
+// })
+
+router.post('/search-input-products',(req,res)=>{
+  console.log(req.body,'search field post data')
+  userHelpers.searchProduct(req.body.search).then((products)=>{
+
+    
+    console.log(products,'fianan ress')
+    res.render('user/search',{products})
+    
+  })
+  .catch((err)=>{
+    console.log(err.productNotFound,'its an error')
+    if(err.productNotFound){
+      console.log('rendring yo not found')
+      res.render('user/search',{err})
+    }
+  })
+})
+
+
+//*************************************************************************************************//
+
+
+//-----------------------------------------------FILTER PRICE--------------------------------------//
+
+
+router.post('/price-category',(req,res)=>{
+  console.log(req.body,'coming')
+  userHelpers.filterPrice(req.body.minimum,req.body.maximum).then((products)=>{
+    console.log(products,'final theeeeee')
+    res.render('user/pricefilter',{products,noProduct:true})
+  })
+})
 //*************************************************************************************************//
 
 //Cart ,passing user and product id so that these ids are inserted or updated inside cart collection
@@ -387,9 +432,13 @@ router.post('/checkout',async(req,res)=>{
  
   let products = await userHelpers.getCartProductList(req.body.userID)
   
-  let totalPrice = await userHelpers.totalPrice(req.body.userID)
+  // let totalPrice = await userHelpers.totalPrice(req.body.userID)
+  console.log(req.body.orderTotal,'coooooooooo')
+  let totalPrice = parseInt(req.body.orderTotal)
+  let noCouponTotal = parseInt(req.body.subTotal)
+  let discount = parseInt(req.body.discount)
 
-  userHelpers.placeOrder(req.body,products,totalPrice).then((orderID)=>{
+  userHelpers.placeOrder(req.body,products,totalPrice,noCouponTotal,discount).then((orderID)=>{
 
 
     if(req.body['payment-method']== 'COD'){
@@ -406,7 +455,7 @@ router.post('/checkout',async(req,res)=>{
           "payment_method": "paypal"
         },
         "redirect_urls": {
-          "return_url": "http://localhost:7000/orderpaypal-placed",
+          "return_url": "http://localhost:7000/orderpaypal-placed/"+orderID,
           "cancel_url": "http://localhost:7000/payment-failed"
         },
         "transactions": [{
@@ -482,15 +531,18 @@ router.get('/order-placed',(req,res)=>{
 })
 
 //Paypal Order Placed
-router.get('/orderpaypal-placed',(req,res)=>{
-  userHelpers.changePaymentOrderStatus(orderID,req.session.user._id).then(()=>{ 
+router.get('/orderpaypal-placed/:id',(req,res)=>{
+  userHelpers.changePaymentOrderStatus(req.params.id,req.session.user._id).then(()=>{ 
     res.render('user/orderplaced')                         
   })
 })
 
 //Order failure
 router.get('/payment-failed',(req,res)=>{
-  res.render('user/orderfailed')
+  userHelpers.removePendingStatus().then(()=>{
+    res.render('user/orderfailed')
+  })
+
 })
  
 
@@ -502,7 +554,7 @@ router.get('/view-orders',verifyLogin,async(req,res)=>{
   let orderDetail=await userHelpers.getOrderDetails(userID)
   let category = await categoryHelpers.getAllCategory()
 
-  userHelpers.removePendingStatus().then(async()=>{ 
+  userHelpers.removePendingStatus().then(()=>{ 
    console.log(orderDetail,'hitting');
   res.render('user/vieworders',{orderDetail, userName, cartCount, category})
   })
@@ -537,6 +589,23 @@ router.get('/selected-address/:id',(req,res)=>{
     console.log(response.selectedAddress,'checkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
     res.json(response.selectedAddress)
     
+  })
+})
+
+//Passing coupon data entered in coupon field to check whether there exist a database and calculate
+router.post('/coupon-apply',(req,res)=>{
+  console.log(req.body.couponField,'coupon from field')
+  couponHelpers.existCoupon(req.body.couponField).then((response)=>{
+    console.log(response)
+    console.log('got it')
+    res.json(response)
+    
+  
+    
+  }).catch((response)=>{
+    console.log('Invalid coupon')
+    res.json(response)
+    console.log(response,'lool')
   })
 })
 

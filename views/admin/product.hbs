@@ -53,8 +53,8 @@
                      <td>{{this.category}}</td>
                     <td>
                         <a href="/admin/edit-product?id={{this._id}}" class="btn btn-primary">Edit</a>
-                        <a href="/admin/delete-product/{{this._id}}" class="btn btn-danger"
-                            onclick="return confirm ('Are you sure to delete {{this.product}}?')">Delete</a>
+                        <button class="btn btn-danger" onclick="prodDelete('{{this._id}}','{{this.product}}')" >Delete</button>
+
                     </td>
                   </tr>
          
@@ -75,6 +75,38 @@
   </main><!-- End #main -->
   <script>
 var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
+
+function prodDelete(prodId,prodName){
+
+  swal({
+  title: "Delete " +prodName+ "  ?",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    swal("Deleted!", {
+      icon: "success",
+    });
+
+      $.ajax({
+    url:'/admin/delete-product/'+prodId,
+    method:'get',
+    success:(response)=>{
+      if(response.prodDeleted){
+        setTimeout(function(){
+               location.reload()
+              }, 1000);
+      }
+    }
+  })
+  } else {
+    
+  }
+});
+
+}
 </script>
 
 

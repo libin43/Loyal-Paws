@@ -87,6 +87,28 @@
 					<div class="cart_details">
 						<div class="checkout_title">cart total</div>
 						<div class="cart_total">
+		
+								<div class="cart_coupon">
+								<div class="cart_title">coupon code</div>
+								<input type="text"   id="coupon-field" class="cart_coupon_input" placeholder="Coupon code">
+								<button type="button" onclick="applyCoupon()" id="apply-btn" class="btn button_clear cart_button_2 " style="margin-top: 1em;">apply coupon</button>
+								<button type="button" onclick="removeCoupon()" id="remove-btn" class="btn button_clear cart_button_2 " style="margin-top: 1em; display: none;">remove coupon</button>
+
+								<div id="coupon-error" style="color: red;"></div>
+				
+							
+							</div>
+					
+							{{#if couponApplied}}
+							<div class="cart_coupon">
+								<div class="cart_title">coupon code</div>
+							
+								<input type="text" class="cart_coupon_input" placeholder="Coupon code" readonly>
+								<button onclick="" class="button_clear cart_button_2" style="margin-top: 1em;">remove coupon</button>
+								<div id="coupon-info">coupon of 15%</div>
+							
+							</div>
+							{{/if}}
 							<ul>
 								<li class="d-flex flex-row align-items-center justify-content-start">
 									<div class="cart_total_title">Product</div>
@@ -95,7 +117,8 @@
 								
 								<li class="d-flex flex-row align-items-center justify-content-start">
 									<div class="cart_total_title">Subtotal</div>
-									<div class="cart_total_price ml-auto">$35.00</div>
+									<div id="sub-total" class="cart_total_price ml-auto">{{total}}</div>
+									<input type="text" name="subTotal" id="sub-total" value="{{total}}" hidden>
 								</li>
 								<li class="d-flex flex-row align-items-center justify-content-start">
 									<div class="cart_total_title">Shipping</div>
@@ -103,10 +126,13 @@
 								</li>
 								<li class="d-flex flex-row align-items-start justify-content-start total_row">
 									<div class="cart_total_title">Total</div>
-									<div class="cart_total_price ml-auto">{{total}}</div>
+									<div id="display-total" class="cart_total_price ml-auto">{{total}}</div>
+									<input type="text" name="orderTotal" id="order-total" value="{{total}}" hidden>
 								</li>
 							</ul>
 						</div>
+
+						<input type="text" name="discount" id="discount" value="0" hidden>
 
 						<div class="payment">
 							<p>Payment Method</p>
@@ -127,7 +153,7 @@
 							</div>
 							<div class="visa payment_option"><a href=""><img src="images/visa.jpg" alt=""></a></div>
 							<div class="master payment_option"><a href=""><img src="images/master.jpg" alt=""></a></div>
-							<button class="cart_total_button">place order</button>
+							<button type="submit" class="cart_total_button">place order</button>
 						</div>
 
 
@@ -244,6 +270,11 @@ function razorpayPayment(order){
 		verifyPayment(response,order)          //aftergetting these ids and signature pass it to ajax with order 
 
     },
+	"modal": {
+    "ondismiss": function(){
+         window.location.replace("http://localhost:7000/payment-failed");
+     }
+    },
     "prefill": {
         "name": "Gaurav Kumar",
         "email": "gaurav.kumar@example.com",
@@ -300,6 +331,88 @@ function selectedAddress(){
 	})
 
 }
+
+function applyCoupon(){
+	
+	let couponField = document.getElementById('coupon-field').value
+	
+	let oldTotal = document.getElementById('sub-total').innerHTML
+	if(couponField!=''){
+		console.log(couponField,'value')
+		console.log(oldTotal,'ajaxtotal')
+
+		$.ajax({
+		url:'/coupon-apply',
+		data:{
+			couponField : couponField,
+	
+		},
+		method:'post',
+		success:(response)=>{
+			if(response.Invalid){
+				console.log('invuuu')
+				document.getElementById('coupon-error').innerHTML = 'Invalid Coupon'
+			}
+			else if(response.couponExpired){
+				document.getElementById('coupon-error').innerHTML = 'Coupon Expired'
+			}
+			else{
+				console.log(response,'hi its final')
+				console.log(oldTotal,response.couponOffer,'caluclate')
+				let discount = oldTotal * response.couponOffer/100
+				let finalTotal = 0
+
+				console.log(discount,'discount')
+
+				if(response.minSpend>oldTotal){
+					let moreAmount = response.minSpend-oldTotal
+				document.getElementById('coupon-error').innerHTML = 'You need to purchase for RS.'+moreAmount+' more to redeem this coupon'
+				}
+				else if(discount>response.maxSpend){
+
+					discount = response.maxSpend
+					finalTotal = oldTotal - discount
+					finalTotal = Math.round(finalTotal)
+					console.log(finalTotal)
+					document.getElementById('coupon-error').innerHTML = 'Coupon of '+response.couponOffer+' applied upto Rs.'+response.maxSpend+' Total Amount to be paid Rs.'+finalTotal
+					document.getElementById('display-total').innerHTML = finalTotal
+					document.getElementById('order-total').value = finalTotal
+					document.getElementById('discount').value = discount
+					document.getElementById('apply-btn').style.display = 'none'
+					document.getElementById('remove-btn').style.display = 'block'
+
+				}
+				else if(discount<response.maxSpend){
+
+					finalTotal = oldTotal - discount
+					finalTotal = Math.round(finalTotal)
+					discount = Math.round(discount)
+					document.getElementById('coupon-error').innerHTML = 'Coupon of '+response.couponOffer+' applied upto Rs.'+response.maxSpend+' Total Amount to be paid Rs.'+finalTotal
+					document.getElementById('display-total').innerHTML = finalTotal
+					document.getElementById('order-total').value = finalTotal
+					document.getElementById('discount').value = discount
+					document.getElementById('apply-btn').style.display = 'none'
+					document.getElementById('remove-btn').style.display = 'block'
+
+				}
+			}
+			
+		}
+	   })
+	}
+
+}
+
+
+function removeCoupon(){
+	let oldTotal = document.getElementById('sub-total').innerHTML
+	document.getElementById('display-total').innerHTML = oldTotal
+	document.getElementById('order-total').value = oldTotal
+	
+	document.getElementById('remove-btn').style.display = 'none'
+	document.getElementById('apply-btn').style.display = 'block'
+}
+
 
 
 </script>

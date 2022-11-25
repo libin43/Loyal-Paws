@@ -67,4 +67,16 @@ module.exports ={
         })
     
        },
+
+       getWishCount:(userID)=>{
+        return new Promise(async(resolve,reject)=>{
+            let count =0
+           let wishList= await db.get().collection(collection.WISHLIST_COLLECTION).findOne({user:objectId(userID)})
+           if(wishList){
+            console.log(wishList)
+            count = wishList.productWish.length
+           }
+           resolve(count)
+        })
+       },
 }

@@ -1,0 +1,121 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+
+
+
+<main id="main" class="main">
+<div class="pagetitle">
+      <h1>PRODUCT MANAGEMENT</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">General</li>
+        </ol>
+      </nav>
+    </div>
+
+    <section class="section">
+      <div class="row">
+        <div class="col-12">
+
+          <div class="card ">
+            <div class="card-body">
+              <h5 class="card-title">Table</h5>
+
+            <div class="row pb-3 ">
+                <a class="w-25" href="/admin/add-coupon"> {{!-- user adding option --}}
+                    <button type="button" class="btn btn-success">Add Coupon +</button>
+                </a>
+            </div>
+
+              <!-- PRODUCT Table -->
+              <table class="table">
+                <thead>
+				<tr>
+					<th scope="col">NO</th>
+					<th>CODE</th>
+					<th>EXPIRY DATE</th>
+					<th>MINIMUM </th>
+					<th>MAXIMUM </th>
+					<th>OFFER</th>
+					<th>DESCRIPTION</th>
+					<th>ACTIONS</th>
+				</tr>
+                </thead>
+                <tbody>
+							{{#each coupons}}
+							<tr>
+								<th scope="row" class="create_index"></th>
+								<td>{{this.code}}</td>
+								<td>{{this.expiry}}</td>
+								<td>RS.{{this.minSpend}}</td>
+								<td>RS.{{this.maxSpend}}</td>
+								<td>{{this.couponOffer}}%</td>
+								<td>{{this.description}}</td>
+								<td>
+									<div>
+										<button
+											style="background-color:rgb(224, 35, 35); color:white; border-radius: 5px; border: none; height: 2.5em; width: 6em;"
+											onclick="couponDelete('{{this._id}}','{{this.code}}')">Delete</button>
+									</div>
+								</td>
+							</tr>
+							{{/each}}
+
+						</tbody>
+              </table>
+              <!-- End PRODUCT Table Example -->
+            </div>
+          </div>
+
+        
+
+
+        </div>
+      </div>
+    </section>
+</main>
+	
+
+	<script>
+
+		var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
+
+		function couponDelete(couponId, code) {
+			console.log(couponId,code,'hiii')
+
+			swal({
+              title: "Are you sure?",
+              text: "Once deleted, you will not be able to recover this imaginary file!",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+             })
+			 .then((willDelete) => {
+                  if (willDelete) {
+                       swal("Poof! Your imaginary file has been deleted!", {
+                       icon: "success",
+                     });
+
+					 $.ajax({
+				url: '/admin/delete-coupon',
+				data: {
+					couponID: couponId
+				},
+				method: 'post',
+				success: (response) => {
+					if (response.couponDeleted) {
+						location.reload()
+					}
+				}
+			   })	
+                  } else {
+                          swal("Your imaginary file is safe!");
+                         }
+               });
+			
+		}
+
+		
+	</script>
+	

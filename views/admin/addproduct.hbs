@@ -1,4 +1,4 @@
-<main id="main" class="main" style="background-color: rgb(229, 213, 152);">
+<main id="main" class="main">
 
     <div class="pagetitle">
         <h1>Add product</h1>
@@ -16,7 +16,7 @@
 
             <div class="col-lg-10">
 
-                <div class="card" style="background-color: rgb(250, 245, 211);">
+                <div class="card" >
                     <div class="card-body">
                         <h5 class="card-title">Floating labels Form</h5>
 
@@ -26,7 +26,7 @@
                                 <div class="form-floating">
                                     <input name="product" type="text" class="form-control" id="floatingName"
                                         placeholder="State" required>
-                                    <label for="floatingName">Title</label>
+                                    <label for="floatingName">Name</label>
                                 </div>
                             </div>
                             
@@ -45,8 +45,8 @@
 
                              <div class="col-md-3">
                                 <div class="form-floating mb-3">
-                                    <select name="category" class="form-select" id="floatingSelect" aria-label="State">
-                                          <option selected></option>
+                                    <select name="category" class="form-select" id="selectedCat" onchange="selected()" aria-label="State">
+                                          <option selected value="{{this.category}}">{{this.category}}</option>
                                         {{#each category_data}}
                                       
                                         <option value="{{this.category}}">{{this.category}}</option>
@@ -56,12 +56,22 @@
                                     <label for="floatingSelect">Category</label>
                                 </div>
                             </div>
-                           
+
+                             <div class="col-md-4 mb-4">
+                                <div class="form-floating">
+                                    <input name="categoryOffer" type="number" class="form-control" id="catOffer" value=""
+                                        placeholder="City">
+                                    <label for="floatingCity">Category Offer</label>
+                                </div>
+                            </div>
+
+                           <div class="row"></div>
+
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <input name="price" type="number" class="form-control" id="originalPrice" 
+                                    <input name="mrp" type="number" class="form-control" id="originalPrice" onkeyup="calculate()"
                                         placeholder="City" required>
-                                    <label for="floatingCity">Price</label>
+                                    <label for="floatingCity">MRP</label>
                                 </div>
                             </div>
                             
@@ -75,8 +85,8 @@
 
                             <div class="col-md-4 mb-4">
                                 <div class="form-floating">
-                                    <input name="productOffer" type="number" class="form-control" id="offerPrice"
-                                        placeholder="City">
+                                    <input name="price" type="number" class="form-control" id="offerPrice"
+                                        placeholder="City" readonly>
                                     <label for="floatingCity">Offer Price</label>
                                 </div>
                             </div>
@@ -88,7 +98,8 @@
                             <div class="row mb-3">
                                 <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
                                 <div class="col-sm-10 w-75">
-                                    <input type="file" class="form-control" required multiple name="imageMany">
+                                      <img id="imgView" src="/product-images/{{prodID.imageMany.[0]}}" alt="" style="width: 50px;height: 50px; margin-bottom: 1em;">
+                                      <input type="file" class="form-control" name="imageMany"  required multiple onchange="viewImage(event)">
                                 </div>
 
                                 
@@ -113,16 +124,16 @@
 
 </main><!-- End #main -->
 
-
 <script>
-    function calculate() {
-        var originalPrice = document.getElementById('originalPrice').value
-        console.log(originalPrice, 'orggggggggggg')
-        var offer = document.getElementById('offer').value
-        console.log(offer, 'offfffffffffffff')
-        var firstStep = (originalPrice / 100) * offer
-        var offerPrice = originalPrice - firstStep
-        console.log(offerPrice, 'resssssssssssss')
-        document.getElementById('offerPrice').value = offerPrice
+    
+
+
+    function viewImage(event) {
+        document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
     }
+
+
+
 </script>
+
+

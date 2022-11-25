@@ -199,5 +199,53 @@ module.exports={
             resolve(filteredSalesReport)
         })
     },
+
+    getWeeklyRevenueGraph:()=>{
+        return new Promise(async(resolve,reject)=>{
+            let revenueWeekly = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                
+                {$group:{_id:{'year':{$year:'$date'},'month':{$month:'$date'},'day':{$dayOfMonth:'$date'}},revenue:{$sum:'$totalAmount'}}},
+                
+                {$project:{_id:0,date:'$_id.day',month:'$_id.month',year:'$_id.year',revenue:1}},
+                
+                {$sort:{year:-1,month:-1,date:-1}},
+
+                {$limit:7}
+            
+            ]).toArray()
+                
+            console.log(revenueWeekly,'rev weekly')
+            revenueWeekly.forEach(revenueWeekly=>{
+                revenueWeekly.ddmmyy = revenueWeekly.date+'/'+revenueWeekly.month+'/'+revenueWeekly.year
+            })
+            
+
+            console.log(revenueWeekly,'final')
+
+            resolve(revenueWeekly)
+        })
+    },
+
+    getWeeklyQuantity:()=>{
+        return new Promise(async(resolve,reject)=>{
+            let quantityweekly = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                
+                {$unwind:'$products'},{$group:{_id:{'year':{$year:'$date'},'month':{$month:'$date'},'day':{$dayOfMonth:'$date'}},quantity:{$sum:'$products.quantity'}}},
+                
+                {$project:{_id:0,date:'$_id.day',month:'$_id.month',year:'$_id.year',quantity:1}},
+                
+                {$sort:{year:-1,month:-1,date:-1}},
+                
+                {$limit:7}
+            
+            ]).toArray()
+
+            console.log(quantityweekly,'quantityy')
+
+            resolve(quantityweekly)
+        })
+    }
+
+   
    
 }

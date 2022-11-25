@@ -18,12 +18,23 @@
                
               
                 
-                <div class="row mb-3">
+                {{!-- <div class="row mb-3">
                     <label for="inputEmail3" class="col-sm-2 col-form-label">Description</label>
                     <div class="col-sm-10">
                 
                         <input name="description" value="{{catID.description}}"  class="form-control" id="inputText" type="text"> </input>
                     </div>
+                </div> --}}
+
+                <div class="row mb-3">
+                  <label for="inputEmail3" class="col-sm-2 col-form-label">Category Offer</label>
+                  <div class="col-sm-10 w-25">
+                
+                    <div class="form-floating">
+                      <input name="categoryOffer" value="{{catID.categoryOffer}}" type="text" class="form-control" id="offer" placeholder="City">
+                      <label for="floatingCity">Category Offer %</label>
+                    </div>
+                  </div>
                 </div>
                
                 <div class="row mb-3">
@@ -31,6 +42,14 @@
                     <div class="col-sm-10 w-75">
                         <img id="imgView" src="/category-images/{{catID.image}}" alt="" style="width: 50px;height: 50px;">
                         <input type="file" class="form-control" name="image" onchange="viewImage(event)">
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-10">
+                
+                        <textarea name="description" rows="5" class="form-control" id="inputText" required>{{catID.description}}</textarea>
                     </div>
                 </div>
 

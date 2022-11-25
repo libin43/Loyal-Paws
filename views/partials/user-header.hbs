@@ -31,8 +31,8 @@
 		</nav>
 		<div class="header_content ml-auto">
 			<div class="search header_search">
-				<form action="#">
-					<input type="search" class="search_input" required="required">
+				<form action="/search-input-products" method="post">
+					<input type="text" name = 'search' class="search_input"  >
 					<button type="submit" id="search_button" class="search_button"><img
 							src="../images/magnifying-glass.svg" alt=""></button>
 				</form>
@@ -55,7 +55,7 @@
 						<img src="../images/star.svg" alt="">
 						<div class="star_num_container">
 							<div class="star_num_inner">
-								<div class="star_num">0</div>
+								<div class="star_num" id="wish-count">{{wishListCount}}</div>
 							</div>
 						</div>
 					</div>
@@ -108,3 +108,21 @@
 			</ul>
 		</nav>
 	</div>
+
+
+	{{!-- <script>
+		function onSearch(){
+			console.log('onsearch called')
+			let searchField = document.getElementById('search').value
+			$.ajax({
+				url:'/search-input-products',
+				data:{
+					searchField,
+				},
+				method:'post',
+				success:(response)=>{
+					location.href = '/search-products'
+				}
+			})
+		}
+	</script> --}}

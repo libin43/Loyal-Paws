@@ -243,6 +243,10 @@ $(document).ready(function(){
                 <div class="row">
                     <div style="color:black ;" class="col-sm-8">
                         <h2>Sales <b>Report</b></h2>
+						<div class="row">
+							<a href="#" class="btn btn-primary w-25" onclick="generatePDF()"><i class="material-icons">&#xE863;</i> <span>Export To Pdf</span></a>
+							<a href="#" class="btn btn-primary w-25" onclick="export2excel()"><i class="material-icons">&#xE24D;</i> <span>Export to Excel</span></a>
+						</div>
                     </div>
 					<div class="col-sm-4 pt-2">
 						
@@ -310,7 +314,31 @@ $(document).ready(function(){
 	  console.log(startDate,'kkkkkkkkkkkkkkkkkkkkkkk')
 	  console.log(endDate,'lllllllllllllllllllllllllllll')
 	 }
+
+	  function export2excel(){
+		let table2excel = new Table2Excel();
+        table2excel.export(document.querySelectorAll("table.table"));
+	   }
+
+	     function generatePDF() {
+        const element = document.getElementById('invoice');
+		element.style.width = '700px';
+		element.style.height = '900px';
+		let opt = {
+			margin: 10,
+			filename: 'loyalpaws.pdf',
+			image:{type:'jpeg',quality:0.98},
+			html2canvas :{scale:1},
+			jsPDF:{unit:'mm',orientation:'landscape'}
+
+		}
+        html2pdf().set(opt)
+            .from(element)
+            .save();
+
+           }
 	  
 </script>   
+<script src="../js/export2excel.js"></script>
 </body>
 </html>

@@ -1,0 +1,181 @@
+<link rel="stylesheet" type="text/css" href="../styles/categories.css">
+<link rel="stylesheet" type="text/css" href="../styles/categories_responsive.css">
+<link rel="stylesheet" href="../styles/pricefilter.css">
+
+
+
+
+
+<div class="super_container">
+	
+
+<!-- Banner-->
+	<div class="row">
+		<div class="container">
+			<img src="images/Dog Banner.webp" alt="" class="w-100 h-100" style="margin-top: 2em;">
+		</div>
+	</div>
+
+	<!-- Products -->
+
+	<div class="products">
+		<div class="container">
+			
+
+			<div class="row products_container">
+				
+				<div class="col-md-3">
+				
+				
+					<form action="/price-category" method="post">
+				
+						<div class="range_container">
+							<div class="sliders_control">
+								<input id="fromSlider" type="range" value="" min="0" max="1000" />
+								<input id="toSlider" type="range" value="" min="0" max="1000" />
+							</div>
+							<div class="form_control">
+								<div class="form_control_container w-50">
+									<div class="form_control_container__time">Min</div>
+									<input class="form_control_container__time__input" type="number" name="minimum" style="width: 75%;"
+										id="fromInput" value="" min="0" max="1000" />
+								</div>
+								<div class="form_control_container w-50">
+									<div class="form_control_container__time">Max</div>
+									<input class="form_control_container__time__input" type="number" name="maximum" style="width: 75%;"
+										id="toInput" value="" min="0" max="1000" />
+								</div>
+							</div>
+							<button type="submit" style="background-color: #937c6f;" class="btn">Filter</button>
+						</div>
+				
+				
+					</form>
+				</div>
+
+				<div class="col">
+					
+					<!-- Products -->
+
+					<div class="row">
+
+						<!-- Product -->
+						{{#each products}}
+						<div class="product">
+							<div class="product_image"><img src="../product-images/{{this.imageMany.[0]}}" alt=""></div>
+							<div class="rating rating_4" data-rating="4">
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+								<i class="fa fa-star"></i>
+							</div>
+							<div class="product_content clearfix">
+								<div class="product_info">
+									<div class="product_name"><a href="product.html">{{this.product}}</a></div>
+									<div class="product_price">{{this.price}}</div>
+								</div>
+								<div class="product_options">
+									<div class="product_buy product_option"><img src="images/shopping-bag-white.svg" alt=""></div>
+									<div class="product_fav product_option">+</div>
+								</div>
+							</div>
+						</div>
+						{{/each}}
+
+						{{#if noProduct}}
+							<h2 class="p-2">Oops! No products to show in this range</h2>
+						{{/if}}
+
+	
+						<!-- Product -->
+				
+
+					</div>
+				</div>
+					
+			</div>
+
+			<div class="row page_num_container">
+				<div class="col text-right">
+					<ul class="page_nums">
+						<li><a href="#">01</a></li>
+						<li class="active"><a href="#">02</a></li>
+						<li><a href="#">03</a></li>
+						<li><a href="#">04</a></li>
+						<li><a href="#">05</a></li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+		
+		<!-- Sidebar Right -->
+
+		<div class="sidebar_right clearfix">
+
+			<!-- Promo 1 -->
+			<div class="sidebar_promo_1 sidebar_promo d-flex flex-column align-items-center justify-content-center">
+				<div class="sidebar_promo_image" style="background-image: url(images/sidebar_promo_1.jpg)"></div>
+				<div class="sidebar_promo_content text-center">
+					<div class="sidebar_promo_title">30%<span>off</span></div>
+					<div class="sidebar_promo_subtitle">On all shoes</div>
+					<div class="sidebar_promo_button"><a href="checkout.html">check out</a></div>
+				</div>
+			</div>
+
+			<!-- Promo 2 -->
+			<div class="sidebar_promo_2 sidebar_promo">
+				<div class="sidebar_promo_image" style="background-image: url(images/sidebar_promo_2.jpg)"></div>
+				<div class="sidebar_promo_content text-center">
+					<div class="sidebar_promo_title">30%<span>off</span></div>
+					<div class="sidebar_promo_subtitle">On all shoes</div>
+					<div class="sidebar_promo_button"><a href="checkout.html">check out</a></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Extra -->
+
+	
+
+	
+
+	
+
+	<!-- Footer -->
+
+	<footer class="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col text-center">
+					<div class="footer_logo"><a href="#">Loyal Paws</a></div>
+					<nav class="footer_nav">
+						<ul>
+							<li><a href="index.html">home</a></li>
+							<li><a href="categories.html">food</a></li>
+							<li><a href="categories.html">accessories</a></li>
+							<li><a href="categories.html">collars</a></li>
+							<li><a href="contact.html">contact</a></li>
+						</ul>
+					</nav>
+					<div class="footer_social">
+						<ul>
+							<li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
+							<li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+							<li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+							<li><a href="#"><i class="fa fa-reddit-alien" aria-hidden="true"></i></a></li>
+							<li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+						</ul>
+					</div>
+					<div class="copyright"><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Loyal Paws 
+				</div>
+			</div>
+		</div>
+	</footer>
+</div>
+ <script src="../js/pricefilter.js"></script>
+

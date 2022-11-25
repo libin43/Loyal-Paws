@@ -4,6 +4,8 @@
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col-lg-10 col-xl-8">
+        <button class="btn btn-success text-white" onclick="generatePDF()">Download Invoice</button>
+    <div class="mt-5" id="invoice">
         <div class="card" style="border-radius: 10px;">
           <div class="card-header px-4 py-5">
             <h5 class="text-muted mb-0">Thanks for your Order, <span style="color: #904606;">{{userName}}</span> !</h5>
@@ -81,23 +83,20 @@
            
             <div class="d-flex justify-content-between pt-2">
               <p class="fw-bold mb-0">Order Details</p>
-              <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> &#8377; {{commonDetail.total}}</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Sub Total</span> &#8377; {{commonDetail.noCouponTotal}}</p>
             </div>
 
             <div class="d-flex justify-content-between pt-2">
               <p class="text-muted mb-0">Invoice Number : 788152</p>
-              <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
+              <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span>&#8377; {{commonDetail.discount}}</p>
             </div>
 
             <div class="d-flex justify-content-between">
-              <p class="text-muted mb-0">Invoice Date : 22 Dec,2019</p>
-              <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p>
+              <p class="text-muted mb-0">Invoice Date : {{commonDetail.date}}</p>
+              
             </div>
 
-            <div class="d-flex justify-content-between mb-5">
-              <p class="text-muted mb-0">Recepits Voucher : 18KU-62IIK</p>
-              <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
-            </div>
+            
           </div>
           <div class="card-footer border-0 px-4 py-5"
             style="background-color:  #904606; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
@@ -106,12 +105,14 @@
           </div>
         
         </div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 </div>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>  
+<script src="../js/export2pdf.js"></script>
 <script>
   function orderCancel(orderId,itemId){
     console.log(orderId)
@@ -132,4 +133,24 @@
         }
 	})
 }
+
+   
+     function generatePDF() {
+        const element = document.getElementById('invoice');
+		element.style.width = '700px';
+		element.style.height = '900px';
+		let opt = {
+			margin: 10,
+			filename: 'loyalpaws.pdf',
+			image:{type:'jpeg',quality:0.98},
+			html2canvas :{scale:1},
+			jsPDF:{unit:'mm',orientation:'portrait'}
+
+		}
+        html2pdf().set(opt)
+            .from(element)
+            .save();
+
+           }
+
 </script>

@@ -1,6 +1,7 @@
 var db = require('../config/connection')
 var collection = require('../config/collections')
 const { response } = require('../app')
+const productHelpers = require('./product-helpers')
 var objectId = require('mongodb').ObjectId
 
 module.exports ={
@@ -28,7 +29,7 @@ module.exports ={
         return new Promise((resolve,reject)=>{
             console.log(catID)
             db.get().collection(collection.CATEGORY_COLLECTION).deleteOne({_id:objectId(catID)}).then((response)=>{
-                resolve(response)
+                resolve({catDeleted:true})
             })
         })
     },
@@ -48,10 +49,11 @@ module.exports ={
                 $set:{
                     category: categoryDetails.category,
                     description: categoryDetails.description,
+                    categoryOffer: categoryDetails.categoryOffer,
                     image:categoryDetails.image
                     
                 }
-            }).then((response)=>{
+            }).then(()=>{
                 resolve()
             })
 
@@ -64,6 +66,13 @@ module.exports ={
             let data = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:objectId(catID)})
             console.log(data)
             resolve(data.image)
+        })
+     },
+     
+     getCategoryOffer:(categoryName)=>{
+        return new Promise(async(resolve,response)=>{
+            let offerData = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({category:categoryName})
+            resolve(offerData)
         })
      }
 }

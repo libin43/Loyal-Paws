@@ -385,7 +385,7 @@ module.exports ={
     })
    },
 
-   placeOrder:(order,products,total)=>{
+   placeOrder:(order,products,total,noCouponTotal,discount)=>{
     return new Promise((resolve,reject)=>{
       
         console.log(order,products,total);
@@ -409,6 +409,8 @@ module.exports ={
                 
             },
             userId: objectId(order.userID),
+            noCouponTotal:noCouponTotal,
+            discount:discount,
             paymentMethod:order['payment-method'],
             products:products,
             totalAmount:total,
@@ -485,6 +487,8 @@ module.exports ={
                     pincode:'$deliveryDetails.pincode',
                     status:'$products.status',
                     date:'$date',
+                    noCouponTotal:'$noCouponTotal',
+                    discount:'$discount',
                     total:'$totalAmount'
                 }},
 
@@ -505,6 +509,8 @@ module.exports ={
                     pincode:1,
                     status:1,
                     date:1,
+                    noCouponTotal:1,
+                    discount:1,
                     total:1,
                     orderProduct:{$arrayElemAt:['$orderProducts',0]}
                 }}
@@ -572,6 +578,37 @@ module.exports ={
                 resolve()
             })
            
+        })
+    },
+
+    searchProduct:(searchData)=>{
+        console.log(searchData,"LLLLLLLLLLLLLLLLLLLLLL");
+        return new Promise(async(resolve,reject)=>{
+            var re = new RegExp(searchData, "i");
+            console.log(re,"reeeeeeeeee");
+           let products= await db.get().collection(collection.PRODUCT_COLLECTION).find({product:re}).toArray()
+           console.log(products)
+           if(products.length==0){
+            console.log('hiting')
+            reject({productNotFound:true})
+
+           }
+           else{
+            console.log(products,'haaaaaaaayeeeeeeeeeee')
+            resolve(products)
+           
+           }
+           
+        })
+    },
+
+    filterPrice:(min,max)=>{
+        console.log(min,max)
+        min = parseInt(min)
+        max = parseInt(max)
+        return new Promise(async(resolve,reject)=>{
+         let products = await db.get().collection(collection.PRODUCT_COLLECTION).find({price:{$gte:min,$lte:max}}).toArray()
+         resolve(products)
         })
     }
 

@@ -1,11 +1,13 @@
 var express = require('express');
 const { response } = require('../app');
 const adminHelpers = require('../helpers/admin-helpers');
-const categoryHelpers = require('../helpers/category-helpers')
-const productHelpers = require('../helpers/product-helpers')
-const chartHelpers = require('../helpers/chart-helpers')
+const categoryHelpers = require('../helpers/category-helpers');
+const productHelpers = require('../helpers/product-helpers');
+const chartHelpers = require('../helpers/chart-helpers');
 const userHelpers = require('../helpers/user-helpers');
+const couponHelpers = require('../helpers/coupon-helpers');
 var router = express.Router();
+
 
 const { addProduct } = require('../helpers/product-helpers');
 const { Router } = require('express');
@@ -61,11 +63,15 @@ router.get('/dashboard', async(req, res)=>{
         let recentSale = await chartHelpers.getRecentSale()
 
         let monthlygraph = await chartHelpers.getMonthlyGraph()
+
+        let weeklyrevenue = await chartHelpers.getWeeklyRevenueGraph()
+
+        let weeklyquantity = await chartHelpers.getWeeklyQuantity()
         
 
         
 
-        res.render('admin/index',{layout:'adminlayout',admin:true, payments, sales, revenue, customers, recentSale, monthlygraph})
+        res.render('admin/index',{layout:'adminlayout',admin:true, payments, sales, revenue, customers, recentSale, monthlygraph, weeklyrevenue, weeklyquantity})
     }
     else{
         
@@ -121,6 +127,7 @@ router.get('/usermanagement/unblock/:id',(req,res)=>{
 //Category
 router.get('/category',(req,res)=>{
     categoryHelpers.getAllCategory().then((category_data)=>{
+        console.log(category_data,'hhhhhhhhhhhhhhhhhhhhhhh');
         res.render('admin/category',{layout:'adminlayout',admin:true,category_data})
 })
 })
@@ -131,7 +138,7 @@ router.get('/add-category',(req,res)=>{
 })
 router.post('/add-category',uploadSingleFile,(req,res)=>{
     console.log('kllllllllllllllllllllllllllllllllllllll')
-  
+    req.body.categoryOffer = parseInt(req.body.categoryOffer)
     req.body.image = req.files.image[0].filename
     categoryHelpers.addCategory(req.body)
       
@@ -154,21 +161,32 @@ router.get('/edit-category/',async(req,res)=>{
 
   // click update
   router.post('/update-category/:id',uploadSingleFile,async(req,res)=>{
+    console.log('dataexp',req.body);
     if(req.files.image==null){
         
         Image1 = await categoryHelpers.fetchImage(req.params.id)
-        console.log(Image1)
+        console.log(Image1,'hi')
     }
     else{
         Image1 = await req.files.image[0].filename
-        console.log(Image1)
+        console.log(Image1,'hi2')
     }
+    
     req.body.image = Image1
+    req.body.categoryOffer = parseInt(req.body.categoryOffer)
+
     categoryHelpers.updateCategory(req.params.id,req.body).then(()=>{
-        res.redirect('/admin/category')
+        console.log(req.body.categoryOffer,'thsiusssssssssssssssssssssssssssssssssssssssssssssssssss')
+
+        productHelpers.updateCategoryModedProduct(req.body.categoryOffer,req.body.category).then(()=>{
+            console.log('res in pdt helper')
+            console.log('res in admin')
+           
+            res.redirect('/admin/category')
+        })
+       
+        
      
-  
-         
         
   })
 
@@ -178,7 +196,7 @@ router.get('/edit-category/',async(req,res)=>{
 router.get('/delete-category/:id',(req,res)=>{
     let catID = req.params.id
     categoryHelpers.deleteCategory(catID).then((response)=>{
-        res.redirect('/admin/category')
+        res.json(response)
     })
 })
 
@@ -195,6 +213,27 @@ router.get('/product',(req,res)=>{
         res.render('admin/product',{layout:'adminlayout',admin:true,product_data})
     })
 })
+
+
+
+//get category offer in product
+router.post('/category-offer',async(req,res)=>{
+    console.log(req.body,'coming to offer root');
+    categoryHelpers.getCategoryOffer(req.body.category).then((response)=>{
+        console.log(response,'offferssss')
+        res.json(response)
+    })
+   
+})
+
+
+
+
+
+
+
+
+
 
 //add product
 router.get('/add-product',(req,res)=>{
@@ -216,8 +255,12 @@ router.post('/add-product',uploadMany.array('imageMany'),(req,res)=>{
     // req.body.imageMany = imageMany
     req.body.imageMany = imageMany
     console.log(req.body.imageMany,'imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
-     req.body.price = parseInt(req.body.price)
-     console.log(req.body)
+    req.body.categoryOffer = parseInt(req.body.categoryOffer)
+    req.body.mrp = parseInt(req.body.mrp)
+    req.body.productOffer = parseInt(req.body.productOffer)
+    req.body.price = parseInt(req.body.price)
+    req.body.totalOffer =  req.body.categoryOffer + req.body.productOffer
+    console.log(req.body,'adding prduct to db')
     productHelpers.addProduct(req.body).then((ID)=>{
         console.log(ID,'hai likku')
        
@@ -233,6 +276,8 @@ router.get('/edit-product/',async(req,res)=>{
     let prodID = await productHelpers.getProductDetails(req.query.id)
     console.log(prodID)
     categoryHelpers.getAllCategory().then((category_data)=>{
+        console.log(category_data,'reqqqqqqqqqqqqqqqqqqq');
+        console.log(prodID,'prodjdsfjajdfjajeo');
         res.render('admin/editproduct',{layout:'adminlayout',admin:true,prodID,category_data})
 })
    
@@ -259,6 +304,10 @@ router.get('/edit-product/',async(req,res)=>{
     }
     
     req.body.imageMany =  imageMany
+    req.body.categoryOffer = parseInt(req.body.categoryOffer)
+    req.body.mrp = parseInt(req.body.mrp)
+    req.body.productOffer = parseInt(req.body.productOffer)
+    req.body.totalOffer =  req.body.categoryOffer + req.body.productOffer           
     console.log(req.body,'haaai broooooooo');
     productHelpers.updateProduct(req.params.id,req.body).then(()=>{
         res.redirect('/admin/product')
@@ -273,7 +322,7 @@ router.get('/edit-product/',async(req,res)=>{
 router.get('/delete-product/:id',(req,res)=>{
     let prodID = req.params.id
     productHelpers.deleteProduct(prodID).then((response)=>{
-        res.redirect('/admin/product')
+        res.json(response)
     })
 })
 
@@ -318,9 +367,45 @@ router.post('/sales-date-apply',async(req,res)=>{
 
     let filteredItem = await chartHelpers.getFilteredReport(req.body.fromDate,req.body.toDate)
     console.log(filteredItem,'dddddddddaaaaaaaaaaaaaaaaaattttttttttttttttttttaaaaaaaaaaaaaaa');
-    res.render('admin/filtersales', { layout: 'adminlayout', admin: true ,filteredItem })
+    res.render('admin/filtersales',{ layout: 'adminlayout', admin: true ,filteredItem })
 })
 //**************************************************************************************************************************//
+
+
+
+//--------------------------------------------------------COUPON MANAGEMENT----------------------------------------------------//
+router.get('/coupon',async(req,res)=>{
+    let coupons = await couponHelpers.getAllCoupon()
+  
+    res.render('admin/couponmanagement',{ layout: 'adminlayout', admin: true , coupons})
+  })
+
+router.get('/add-coupon',(req,res)=>{
+    res.render('admin/addcoupon',{ layout: 'adminlayout', admin: true})
+})
+
+router.post('/add-coupon',(req,res)=>{
+    req.body.expiry = new Date(req.body.expiry)
+    req.body.minSpend = parseInt(req.body.minSpend)
+    req.body.maxSpend = parseInt(req.body.maxSpend)
+    req.body.couponOffer = parseInt(req.body.couponOffer)
+
+    console.log(req.body,'k=====')
+    couponHelpers.addCoupon(req.body).then((response)=>{
+        console.log(response,'to check')
+        res.redirect('/admin/coupon')
+    })
+})
+
+router.post('/delete-coupon',(req,res)=>{
+    console.log(req.body,'bum,mmmmmmmmmmm')
+    couponHelpers.deleteCoupon(req.body.couponID).then((response)=>{
+        res.json(response)
+    })
+})
+//*****************************************************************************************************************************//
+  
+
 
 //Logout
 router.get('/logout',function(req,res){

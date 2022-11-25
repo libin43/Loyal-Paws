@@ -724,6 +724,107 @@ section
 6.1 Billing
 *********************************/
 
+.cart_button
+{
+	height: 47px;
+	border: solid 1px #b5b5b5;
+	outline: none;
+	background: #FFFFFF;
+	padding-left: 34px;
+	padding-right: 34px;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	font-size: 12px;
+	color: #232323;
+	cursor: pointer;
+	-webkit-transition: all 200ms ease;
+	-moz-transition: all 200ms ease;
+	-ms-transition: all 200ms ease;
+	-o-transition: all 200ms ease;
+	transition: all 200ms ease;
+}
+.cart_button_2
+{
+	height: 47px;
+	border: solid 1px #b5b5b5;
+	outline: none;
+	background: #937c6f;
+	padding-left: 34px;
+	padding-right: 34px;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	font-size: 12px;
+	color: #FFFFFF;
+	cursor: pointer;
+	-webkit-transition: all 200ms ease;
+	-moz-transition: all 200ms ease;
+	-ms-transition: all 200ms ease;
+	-o-transition: all 200ms ease;
+	transition: all 200ms ease;
+}
+.cart_button_2:hover
+{
+	background: #FFFFFF;
+	color: #232323;
+}
+.cart_button:hover
+{
+	background: #937c6f;
+	color: #FFFFFF;
+	border: solid 1px #937c6f;
+}
+.button_clear
+{
+	margin-right: 8px;
+}
+.cart_extra
+{
+	padding-top: 54px;
+}
+.cart_coupon_form
+{
+	margin-top: 43px;
+}
+.cart_coupon_input
+{
+	width: 297px;
+	height: 47px;
+	border: solid 1px #b5b5b5;
+	outline: none;
+	padding-left: 23px;
+	margin-right: 11px;
+}
+.cart_coupon_input::-webkit-input-placeholder
+{
+	font-size: 14px !important;
+	font-weight: 400 !important;
+	color: #232323 !important;
+}
+.cart_coupon_input:-moz-placeholder
+{
+	font-size: 14px !important;
+	font-weight: 400 !important;
+	color: #232323 !important;
+}
+.cart_coupon_input::-moz-placeholder
+{
+	font-size: 14px !important;
+	font-weight: 400 !important;
+	color: #232323 !important;
+} 
+.cart_coupon_input:-ms-input-placeholder
+{ 
+	font-size: 14px !important;
+	font-weight: 400 !important;
+	color: #232323 !important;
+}
+.cart_coupon_input::input-placeholder
+{
+	font-size: 14px !important;
+	font-weight: 400 !important;
+	color: #232323 !important;
+}
+
 .billing
 {
 	padding-top: 93px;

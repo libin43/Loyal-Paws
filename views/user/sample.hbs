@@ -1,40 +1,21 @@
-<section class="slider">
-						<ul id="autoWidth" class="cs-hidden">
-					
-							<li class="item-a">
-								{{#each prod_data}}
-					
-								<div class="box">
-					
-									<div class="slide-img">
-										<img alt="1" src="../product-images/{{this._id}}.jpg">
-					
-										<div class="overlay">
-					
-											<a href="#" class="buy-btn">Buy Now</a>
-										</div>
-									</div>
-					
-									<div class="detail-box">
-					
-										<div class="type">
-											<a href="#">{{this.product}}</a>
-											<span>Noe Arrival</span>
-										</div>
-					
-										<a href="#" class="price">{{this.price}}</a>
-					
-									</div>
-					
-								</div>
-								{{/each}}
-							</li>
-						</ul>
-					</section>
+else if(response.notInLimit){
+				console.log(response.couponNotExpired.minSpend+ 'hekki' +response.couponNotExpired.maxSpend + 'hekki' +response.total)
+				let moreAmount = response.couponNotExpired.minSpend-response.total
+				document.getElementById('coupon-error').innerHTML = 'You need to purchase for RS.'+moreAmount+' more to redeem this coupon'
+			}
 
+			else if(response.inLimit){
+				console.log(response.limitIn.couponOffer,'bucky',response.limitIn.maxSpend,'bucky',response.total)
+				let discount = response.total * response.limitIn.couponOffer/100
+				let finalTotal = 0
+				if(discount>response.limitIn.maxSpend){
+					discount = response.limitIn.maxSpend
+					 finalTotal = response.total - discount
+					 document.getElementById('coupon-error').innerHTML = 'Coupon of '+response.limitIn.couponOffer+' applied upto Rs.'+response.limitIn.maxSpend+' Total Amount to be paid Rs.'+finalTotal
 
+				}else{
+					finalTotal = response.total - discount
+					document.getElementById('coupon-error').innerHTML = 'Coupon of '+response.limitIn.couponOffer+' applied upto Rs.'+response.limitIn.maxSpend+' Total Amount to be paid Rs.'+finalTotal
 
-
-
-
-                    
+				}
+			}

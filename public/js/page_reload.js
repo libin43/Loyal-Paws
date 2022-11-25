@@ -1,6 +1,24 @@
 // const { response } = require("../../app");
 
+function calculate() {
+    var mrp = document.getElementById('originalPrice').value
+    var categoryOffer = document.getElementById('catOffer').value
+    // console.log(mrp, 'orggggggggggg')
+    var productOffer = document.getElementById('offer').value
+    var totalOffer = parseInt(categoryOffer) + parseInt(productOffer)
+    // console.log(totalOffer, 'offfffffffffffff')
+    var firstStep = (mrp / 100) * totalOffer
+    var offerPrice = mrp - firstStep
+    var newOfferPrice = Math.round(offerPrice)
+    // console.log(newOfferPrice, 'resssssssssssss')
+    document.getElementById('offerPrice').value = newOfferPrice
+}
+
+
+
+
 function addToCart(prodID){
+    
     console.log('jddddddddddddddd')
     $.ajax({
         url:'/add-to-cart/'+prodID,
@@ -109,6 +127,8 @@ function deleteProduct(cartId, prodId) {
 
 }
 
+
+
 function deleteWishProduct(wishId, prodId) {
     swal({
         title: "Are you sure?",
@@ -164,3 +184,29 @@ function add2Cart(prodId,wishId){
         }
     })
 }
+
+
+
+function selected(){
+   
+    console.log('calcujr');
+    let selectCat = document.getElementById('selectedCat').value
+   console.log(selectCat,'dhaskdfyhjasdfb')
+   $.ajax({
+    url:'/admin/category-offer',
+    data:{
+        category:selectCat
+    },
+    method:'post',
+    success:(response)=>{
+        if(response){
+            console.log(response,'hitiing');
+            let offer = response.categoryOffer
+            console.log(offer,'fina;;;;;')
+            document.getElementById('catOffer').value = offer
+            calculate()
+        }
+        
+    }
+   })
+  }

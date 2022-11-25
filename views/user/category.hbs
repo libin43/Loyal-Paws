@@ -1,5 +1,6 @@
 <link rel="stylesheet" type="text/css" href="../styles/categories.css">
 <link rel="stylesheet" type="text/css" href="../styles/categories_responsive.css">
+<link rel="stylesheet" href="../styles/pricefilter.css">
 
 
 
@@ -23,6 +24,36 @@
 			
 
 			<div class="row products_container">
+				
+				<div class="col-md-3">
+				
+				
+					<form action="/price-category" method="post">
+				
+						<div class="range_container">
+							<div class="sliders_control">
+								<input id="fromSlider" type="range" value="" min="0" max="5000" />
+								<input id="toSlider" type="range" value="" min="0" max="5000" />
+							</div>
+							<div class="form_control">
+								<div class="form_control_container w-50">
+									<div class="form_control_container__time">Min</div>
+									<input class="form_control_container__time__input" type="number" name="minimum" style="width: 75%;"
+										id="fromInput" value="" min="0" max="5000" />
+								</div>
+								<div class="form_control_container w-50">
+									<div class="form_control_container__time">Max</div>
+									<input class="form_control_container__time__input" type="number" name="maximum" style="width: 75%;"
+										id="toInput" value="" min="0" max="5000" />
+								</div>
+							</div>
+							<button type="submit" style="background-color: #937c6f;" class="btn ">Price Filter</button>
+						</div>
+				
+				
+					</form>
+				</div>
+
 				<div class="col">
 					
 					<!-- Products -->
@@ -32,7 +63,9 @@
 						<!-- Product -->
 						{{#each prod_cat}}
 						<div class="product">
-							<div class="product_image"><img src="../product-images/{{this.imageMany.[0]}}" alt=""></div>
+							<div class="product_image"><img src="../product-images/{{this.imageMany.[0]}}" alt="">
+							<span class="badge badge-danger align-top" style="width: 4.5em; height: 4em; border-radius: 100%;padding-top: 1.5em;">{{this.productOffer}}% Off</span>
+							</div>
 							<div class="rating rating_4" data-rating="4">
 								<i class="fa fa-star"></i>
 								<i class="fa fa-star"></i>
@@ -144,4 +177,4 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	</footer>
 </div>
 
-
+ <script src="../js/pricefilter.js"></script>

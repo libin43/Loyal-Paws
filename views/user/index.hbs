@@ -66,14 +66,14 @@
 			</section>
 			 --}}
 
-				{{#each category_data}}
+				{{#each category}}
 				<div class="col-lg-4 promo_col p-2">
 					<div class="promo_item">
 						<div class="promo_image">
 							<img style="height:300px ;" src="../category-images/{{this.image}}" alt="">
 							<div class="promo_content promo_content_1 ">
 								<div class="promo_title">{{this.category}}</div>
-								<div class="promo_subtitle">on all items</div>
+								<div class="promo_subtitle">{{this.categoryOffer}}%</div>
 							</div>
 						</div>
 						<div class="promo_link"><a href="/category?name={{this.category}}">Shop Now</a></div>
@@ -104,10 +104,11 @@
 				<!-- Product -->
 				
 				{{#each prod_data}}
-				<div class="col-lg-4 product_col">
+				<div class="col-lg-4 product_col mb-5">
 					<a href="/viewproduct?id={{this._id}}">
 						<div class="product w-100 ">
 						<div class="product_image">
+						<span class="badge badge-danger align-top" style="width: 4.5em; height: 4em; border-radius: 100%;padding-top: 1.5em;">{{this.productOffer}}% Off</span>
 							<img style="height: 250px;" src="../product-images/{{this.imageMany.[0]}}" alt="">
 						</div>
 						<div class="rating rating_4">
@@ -328,7 +329,12 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			url: '/add-to-wishlist' + prodID,
 			method: 'get',
 			success: (response) => {
-
+				if(response.status){
+				swal("Item Added To Wishlist!", "Your Item has been added!", "success");
+               let count = $('#wish-count').html()
+               count = parseInt(count)+1
+               $('#wish-count').html(count)
+				}
 			}
 		})
 	}

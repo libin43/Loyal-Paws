@@ -37,10 +37,12 @@
                     <th scope="col">IMAGE</th>
                     <th scope="col">NAME</th>
                     <th scope="col">DESCRIPTION</th>
+                    <th scope="col">OFFERS</th>
                     <th scope="col">ACTION</th>
                   </tr>
                 </thead>
                 <tbody>
+                  
 
                  {{#each category_data}}
                   <tr>
@@ -48,10 +50,11 @@
                     <td><img style="width: 50px;height: 50px;" src="../category-images/{{this.image}}" alt=""></td>
                     <td>{{this.category}}</td>
                     <td>{{this.description}}</td>
+                    <td>{{this.categoryOffer}}%</td>
                     <td>
                         <a href="/admin/edit-category?id={{this._id}}" class="btn btn-primary">Edit</a>
-                        <a href="/admin/delete-category/{{this._id}}" class="btn btn-danger"
-                            onclick="return confirm ('Are you sure to delete {{this.category}}?')">Delete</a>
+                     
+                            <button class="btn btn-danger" onclick="catDelete('{{this._id}}','{{this.category}}')" >Delete</button>
                     </td>
                   </tr>
                   {{/each}}
@@ -73,6 +76,38 @@
 
   <script>
 var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
+
+function catDelete(catId,catName){
+
+  swal({
+  title: "Delete " +catName+ " category ?",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    swal("Deleted!", {
+      icon: "success",
+    });
+
+      $.ajax({
+    url:'/admin/delete-category/'+catId,
+    method:'get',
+    success:(response)=>{
+      if(response.catDeleted){
+        setTimeout(function(){
+               location.reload()
+              }, 1000);
+      }
+    }
+  })
+  } else {
+    
+  }
+});
+
+}
 </script>
 
 
