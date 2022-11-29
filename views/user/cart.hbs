@@ -50,6 +50,7 @@
 						<div class="cart_bar_title_content ml-auto">
 							<div class="cart_bar_title_content_inner d-flex flex-row align-items-center justify-content-end">
 								<div class="cart_bar_title_price">Price</div>
+								<div class="cart_bar_title_price">Total Price</div>
 								<div class="cart_bar_title_quantity">Quantity</div>
 								
 								<div class="cart_bar_title_button"></div>
@@ -75,8 +76,8 @@
 									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
 
 										<!-- Product Price -->
-										<div class="cart_product_price">Rs. {{this.cartItems.price}}</div>
-									
+										<div class="cart_product_price" id="productSingle{{this.cartItems._id}}">{{this.cartItems.price}}</div>
+									   <div class="cart_product_price total" id="productTotal{{this.cartItems._id}}">{{this.productPriceTotal}}</div>
 										<!-- Product Quantity -->
 										<div class="product_quantity_container">
 											<div class="product_quantity clearfix">
@@ -328,4 +329,5 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 });
 
 	}
+	
 </script>

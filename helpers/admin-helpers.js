@@ -50,7 +50,7 @@ updateOrder:(orderID,itemID,orderStats)=>{
                 }
             }
             ).then((response)=>{
-                resolve('success')
+                resolve({status:true,orderID,itemID})
             })
     })
 }

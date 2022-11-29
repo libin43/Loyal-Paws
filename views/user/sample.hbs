@@ -1,21 +1,81 @@
-else if(response.notInLimit){
-				console.log(response.couponNotExpired.minSpend+ 'hekki' +response.couponNotExpired.maxSpend + 'hekki' +response.total)
-				let moreAmount = response.couponNotExpired.minSpend-response.total
-				document.getElementById('coupon-error').innerHTML = 'You need to purchase for RS.'+moreAmount+' more to redeem this coupon'
-			}
+//function for refunding to user
+function getAdminCancelOrderDetail(OrderId,ItemId){
+console.log(OrderId,ItemId,'function called in Get cancel order detail')
+ $.ajax({
+  url:'/admin/get-admin-cancel-order-detail',
+  data:{
+    OrderID: OrderId,
+    ItemID: ItemId,
+  },
+  method:'post',
+  success:(response)=>{
+    if(response.cancelledOrderDetail){
+      let orderDetailCancelled = response.cancelOrderDetail[0]
+      let productName = orderDetailCancelled.product
+      let userId = orderDetailCancelled.userId
+      let orderId = orderDetailCancelled._id
+      let totalOrderQuantity = response.totalQuantity
+      console.log(totalOrderQuantity,'totalqyantity order')
+      let priceDeductSingle = orderDetailCancelled.discount/totalOrderQuantity
+      let totalPriceDeduct = orderDetailCancelled.quantityCancelled*priceDeductSingle
+      let refundAmt = orderDetailCancelled.quantityCancelled * orderDetailCancelled.price - totalPriceDeduct
+      let refundAmount = Math.floor(refundAmt)
 
-			else if(response.inLimit){
-				console.log(response.limitIn.couponOffer,'bucky',response.limitIn.maxSpend,'bucky',response.total)
-				let discount = response.total * response.limitIn.couponOffer/100
-				let finalTotal = 0
-				if(discount>response.limitIn.maxSpend){
-					discount = response.limitIn.maxSpend
-					 finalTotal = response.total - discount
-					 document.getElementById('coupon-error').innerHTML = 'Coupon of '+response.limitIn.couponOffer+' applied upto Rs.'+response.limitIn.maxSpend+' Total Amount to be paid Rs.'+finalTotal
+      console.log(refundAmount,'refundamount')
 
-				}else{
-					finalTotal = response.total - discount
-					document.getElementById('coupon-error').innerHTML = 'Coupon of '+response.limitIn.couponOffer+' applied upto Rs.'+response.limitIn.maxSpend+' Total Amount to be paid Rs.'+finalTotal
+      console.log(orderDetailCancelled,'received in ajax')
+      if(orderDetailCancelled.paymentMethod =='ONLINE'){
+        console.log('razorpay hitting')
+        $.ajax({
+          url:'/admin/payment-cancelled-wallet',
+          data:{
+            userID : userId,
+            product : productName,
+            orderID : orderId,
+            refund : refundAmount,
+            paymentMethod : orderDetailCancelled.paymentMethod,
+          },
+          method:'post',
+          success:(response)=>{
+            if(response.updatedWallet){
+              alert('refund success of razorpay')
+              location.reload()
+            }
+          }
+        })
+        
 
-				}
-			}
+
+      }
+      else if(orderDetailCancelled.paymentMethod =='PAYPAL'){
+         console.log('paypal hitting')
+            $.ajax({
+          url:'/admin/payment-cancelled-wallet',
+          data:{
+            userID : userId,
+            product : productName,
+            orderID : orderId,
+            refund : refundAmount,
+            paymentMethod : orderDetailCancelled.paymentMethod,
+          },
+          method:'post',
+          success:(response)=>{
+            if(response.updatedWallet){
+              alert('refund success of paypal')
+              location.reload()
+            }
+          }
+        })
+      }
+      else if(orderDetailCancelled.paymentMethod =='COD'){
+         console.log('cod hitting')
+         alert('status cancelled')
+         location.reload()
+      }
+      else{
+        console.log('payment method not found')
+      }
+    }
+  }
+ })
+}

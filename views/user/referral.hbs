@@ -1,0 +1,68 @@
+
+<div class="super_container">
+  <section class="vh-100" style="background-color: #937c6f;">
+  <div class="container py-4 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card" style="border-radius: 1rem;">
+          <div class="row g-0">
+            <div class="col-md-6 col-lg-5 d-none d-md-block">
+              <img style="margin-top: 6em ; margin-left: 3em; width:50em ;height:25em ;" src="images/signuppic.jpg"
+                alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+            </div>
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              <div class="card-body p-4 p-lg-5 text-black">
+
+                <form action="/signin" method="post">
+
+                  <div class="d-flex align-items-center mb-3 pb-1">
+                    
+                    <span class="h1 fw-bold mb-0">REFERAL</span>
+                  </div>
+
+                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Enter Referal Code</h5>
+
+                  <div class="form-outline mb-4">
+                    <input type="text" name="referral" id="refer" class="form-control form-control-lg" />
+                    <label class="form-label" for="form2Example17">Referral Code</label>
+                  </div>
+
+                
+
+                  <div class="pt-1 mb-4">
+                    <button style="background-color:#937c6f;" class="btn btn-dark btn-lg btn-block" id="apply" type="button" onclick="validateReferral()">Apply</button>
+                  </div>
+
+                  <div class="pt-1 mb-4">
+                    <button style="background-color:#937c6f;" class="btn btn-dark btn-lg btn-block" id="skip"  type="submit">Skip</button>
+                  </div>
+
+                  <a href="/" class="btn" id="ok" style="display: none;">ok</a>
+
+                  {{#if userBlocked}}
+                  <span style="color: red;">Your account has been Blocked </span>
+                  {{/if}}
+                  
+                   {{#if wrongPass}}
+                  <span style="color: red;">Incorrect Password </span>
+                  {{/if}}
+
+                  {{#if error}}
+                  <div class="section text-danger text-center">
+                    Sorry, your email and password doesnot match.
+                  </div>
+                  {{/if}}
+
+                
+                
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>

@@ -58,6 +58,7 @@ function addToCart(prodID){
 function changeQuantity(cartId,prodId,userId,count){
     let quantity = parseInt(document.getElementById(prodId).innerHTML)
     count = parseInt(count)
+    console.log(count,'fashfhisfdu');
     $.ajax({
         url:'/change-product-quantity',
         data:{
@@ -77,6 +78,10 @@ function changeQuantity(cartId,prodId,userId,count){
             }else{
                 document.getElementById(prodId).innerHTML=quantity+count
                 document.getElementById('total').innerHTML = response.totalView
+                let productSinglePrice = parseInt(document.getElementById('productSingle'+prodId).innerHTML)
+                // let productTotalPrice = parseInt(document.getElementById('product-price-total').innerHTML)
+                document.getElementById('productTotal'+prodId).innerHTML = productSinglePrice *(quantity+count)
+                
 
             }
             
@@ -209,4 +214,36 @@ function selected(){
         
     }
    })
+  }
+
+  function validateReferral(){
+    console.log('validation called')
+    let inputReferral = document.getElementById('refer').value
+    console.log(inputReferral,'input Referral')
+    $.ajax({
+        url:'/referral',
+        data:{
+            enteredReferral : inputReferral
+        },
+        method:'post',
+        success:(response)=>{
+            if(response.referralValid){
+                console.log(response,'checking to give in swal')
+                swal({
+                    title: "Success",
+                    text: "Rs."+response.showAmount+' has been credited to your wallet!',
+                    icon: "success",
+                    button: "OK",
+                  });
+                  setTimeout(function(){
+                    document.getElementById('apply').style.display = 'none'
+                    document.getElementById('skip').style.display = 'none'
+                    document.getElementById('ok').style.display = 'block'
+                   
+                   }, 2000);
+                   
+                  
+            }
+        }
+    })
   }

@@ -25,6 +25,8 @@ uploadOne
 
 /****************************** */
 
+let firstUser 
+
 //VerifyLogin
 const verifyLogin =(req,res,next)=>{
   var url = req.url
@@ -47,6 +49,7 @@ router.post('/signup',(req,res)=>{
     if(response.status==false){
       res.render('signup',{emailExistError:true})
     }else{
+      firstUser = true
       res.redirect('/signin')
     }
 
@@ -64,12 +67,21 @@ router.post('/signin',(req,res)=>{
     if(response.status==false){
       res.render('user/signin',{userBlocked:true,newuser:true})
     }
+  
     else{
       console.log(response.user,'ppppppppppppppppppppppppppppppppppppppp',response.status);
       req.session.loginStatus = response.status
       req.session.user = response.user
       console.log('Login success')
-      res.redirect(req.session.url)
+      console.log(firstUser,'check iin signin')
+ 
+      if(firstUser==true){
+        console.log('redirect to referal')
+        res.redirect('/referral')
+      }
+      else{
+        res.redirect(req.session.url)
+      }
     }
   })
   .catch((response)=>{
@@ -84,6 +96,61 @@ router.post('/signin',(req,res)=>{
   })
 })
 
+
+//-------------------------------REFERAL PAGE--------------------------------------//
+router.get('/referral',(req,res)=>{
+    
+    res.render('user/referral')
+
+})
+router.post('/referral',(req,res)=>{
+  let userId = req.session.user._id
+  let userName = req.session.user?.name
+  firstUser = false
+
+  console.log(req.body.enteredReferral,'data from input referral')
+  userHelpers.checkReferral(userId,userName,req.body.enteredReferral)
+  .then((response)=>{
+    console.log(response,'got in route to pass to ajax')
+    res.json(response)
+  })
+
+
+})
+//*********************************************************************************//
+
+//-----------------------------------------W A L L E T-------------------------------------//
+router.get('/user-wallet',async(req,res)=>{
+  let userId = req.session.user._id
+  let walletRefInfo = await userHelpers.getWallet(userId)
+  let referralID = walletRefInfo.referalId
+  let walletTotal = walletRefInfo.wallet
+  let walletHistory = walletRefInfo.walletHistory.reverse()
+  walletHistory = walletHistory.slice(0,5)
+  let walletHistoryCount = walletRefInfo.walletHistory.length
+  let limit = 5
+  let pages = Math.ceil(walletHistoryCount/limit)
+  console.log(pages,'this is pages')
+  let pageNum =[]
+  for(i=1;i<=pages;i++){
+     pageNum.push(i)
+  }
+  console.log(pageNum,'finally');
+  console.log(walletHistoryCount,'wallet hist docs')
+  
+  res.render('user/wallet',{walletTotal,referralID,walletHistory,pageNum})
+})
+
+
+router.get('/user-wallet-data/',(req,res)=>{
+  let userId = req.session.user._id
+  let num = req.query.num
+  let ToLimit = 5
+  let ToSkip = (num-1)*ToLimit
+  // let paginationWallet = userHelpers.getFilteredWallet(ToLimit,ToSkip,userId)
+  console.log(num,'its pg number')
+})
+//*****************************************************************************************//
 
 
 
@@ -168,6 +235,7 @@ router.get('/', async function(req, res, next) {
 //--------------------------------------USER PROFILE--------------------------------------//
 
 router.get('/user-profile',verifyLogin,async(req,res)=>{
+  console.log(firstUser,'main check')
  
  if(req.session.user){
   let userName = req.session.user.name
@@ -380,10 +448,12 @@ router.get('/cart',verifyLogin,async(req,res)=>{
   let products = await userHelpers.getCart(userID)
   let category = await categoryHelpers.getAllCategory()
   let total = 0
+ 
   let cartNotEmpty = false
 
   if (products.length > 0) {
      total = await userHelpers.totalPrice(userID)
+
      cartNotEmpty = true
     console.log(products)
   
@@ -567,20 +637,35 @@ router.get('/view-order-products/:id',verifyLogin,async(req,res)=>{
   let orderProducts = await userHelpers.getOrderProductDetails(req.params.id)
   let orderId = req.params.id
   let category = await categoryHelpers.getAllCategory()
-
+  let paymentMethod = await userHelpers.getOrderPaymentDetail(orderId)
   let commonDetail=orderProducts[0]
   commonDetail.date=commonDetail.date.toDateString()
   console.log(orderProducts,'oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo')
-  res.render('user/viewOrderProducts',{orderProducts,orderId,userName,commonDetail,cartCount,category})
+  res.render('user/viewOrderProducts',{orderProducts,orderId,userName,commonDetail,cartCount,category,paymentMethod})
 })
 
+
 //Cancel orders
-router.post('/cancel-order',(req,res)=>{
+router.post('/cancel-order',async(req,res)=>{
+
   console.log(req.body.orderID, req.body.itemID, req.body.cancelStatus,'hitting.............');
-  userHelpers.cancelOrder(req.body.orderID,req.body.itemID,req.body.cancelStatus).then(()=>{
-    res.json({status:true})
+  
+  userHelpers.cancelOrder(req.body.orderID,req.body.itemID,req.body.cancelStatus).then((response)=>{
+    res.json(response)
   })
 })
+
+//Return Orders
+router.post('/return-order',async(req,res)=>{
+
+  console.log(req.body.orderID, req.body.itemID, req.body.returnStatus,'hitting.............');
+  
+  userHelpers.returnOrder(req.body.orderID,req.body.itemID,req.body.returnStatus).then((response)=>{
+    res.json(response)
+  })
+})
+
+
 
 
 //Selecting Address from dropdown and returning values to the input field

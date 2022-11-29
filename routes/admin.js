@@ -331,10 +331,31 @@ router.get('/delete-product/:id',(req,res)=>{
 //update Order Status
 router.post('/change-order-status',(req,res)=>{
     console.log(req.body.itemID,'dddddddddddddddddddddddddddddddddddddddddddddddddddd')
-    adminHelpers.updateOrder(req.body.orderID,req.body.itemID,req.body.orderStatus).then(()=>{
-        res.json({status:true})
+    adminHelpers.updateOrder(req.body.orderID,req.body.itemID,req.body.orderStatus).then((response)=>{
+        res.json(response)
     })
 })
+//------------------------------------------------------------------Refund Admin Side----------------------------------------------//
+router.post('/get-admin-cancel-order-detail',async(req,res)=>{
+    let totalQuantity = await userHelpers.getOrderTotalQuantity(req.body.OrderID)
+    console.log(totalQuantity,'total qyantitiy recieved in router')
+    userHelpers.getCancelOrderDetail(req.body.OrderID,req.body.ItemID,totalQuantity).then((response)=>{
+      res.json(response)
+    })
+    .catch(()=>{
+      console.log('connection timeout')
+    })
+})
+
+router.post('/payment-cancelled-wallet',(req,res)=>{
+    req.body.refund = parseInt(req.body.refund)
+    console.log(req.body,'infos to push to userWallet')
+    userHelpers.updateCancelledInWallet(req.body.userID,req.body.product,req.body.orderID,req.body.refund,req.body.paymentMethod)
+    .then((response)=>{
+      res.json(response)
+    })
+  })
+//*********************************************************************************************************************************//
 
 //-------------------------------------------------------------------Updated Order Manage------------------------------------------//
 router.get('/order-manage',async(req,res)=>{
@@ -366,8 +387,10 @@ router.post('/sales-date-apply',async(req,res)=>{
   
 
     let filteredItem = await chartHelpers.getFilteredReport(req.body.fromDate,req.body.toDate)
+    let fromDate = req.body.fromDate
+    let toDate = req.body.toDate
     console.log(filteredItem,'dddddddddaaaaaaaaaaaaaaaaaattttttttttttttttttttaaaaaaaaaaaaaaa');
-    res.render('admin/filtersales',{ layout: 'adminlayout', admin: true ,filteredItem })
+    res.render('admin/filtersales',{ layout: 'adminlayout', admin: true ,filteredItem ,fromDate, toDate})
 })
 //**************************************************************************************************************************//
 

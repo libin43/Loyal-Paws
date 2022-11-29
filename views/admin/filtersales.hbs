@@ -238,25 +238,30 @@ $(document).ready(function(){
 <main id="main" class="main">
     <div class="container-xl">
     <div class="table-responsive">
+		 <div class="mt-5" id="invoice">
         <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
                     <div style="color:black ;" class="col-sm-8">
                         <h2>Sales <b>Report</b></h2>
-						<div class="row">
+						<div class="row"  data-html2canvas-ignore="true">
 							<a href="#" class="btn btn-primary w-25" onclick="generatePDF()"><i class="material-icons">&#xE863;</i> <span>Export To Pdf</span></a>
 							<a href="#" class="btn btn-primary w-25" onclick="export2excel()"><i class="material-icons">&#xE24D;</i> <span>Export to Excel</span></a>
 						</div>
                     </div>
-					<div class="col-sm-4 pt-2">
+					<div class="col-sm-4 pt-2 align-items-center">
 						
 					
 						
 						{{!-- Passing from and to date --}}
 						<form action="/admin/sales-date-apply" method="post">
-						<span><input type="date" id="start" name="fromDate" ></span>
-						<span class="pl-4"><input type="date" id="toDate" name="toDate" ></span>
-							<div class="pt-2"><button class="btn btn-primary" onclick="submitDate()">Apply</button></div>
+						
+						
+							<div class="pt-2">
+								<span style="color: black;">From  :<input type="date" id="start" name="fromDate" value="{{fromDate}}" style="width: 115px;"></span>
+						<span style="color: black;">To  :<input type="date" id="toDate" name="toDate" value="{{toDate}}" style="width: 115px;"></span>
+								<button class="btn btn-primary" onclick="submitDate()"  data-html2canvas-ignore="true">Apply</button>
+								</div>
 						</form>
 						
 
@@ -292,16 +297,16 @@ $(document).ready(function(){
             </table>
           
         </div>
+		</div>
     </div>        
 </div>
-</main>  
+</main> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>   
 <script>
 	//-----------------------------------------------Table Index---------------------------------------------------//
     var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
 
-    $(function(){
-        $('#userTable').DataTable();
-      })
+   
 	  //**************************************************************************************************************//
 
 
@@ -322,8 +327,7 @@ $(document).ready(function(){
 
 	     function generatePDF() {
         const element = document.getElementById('invoice');
-		element.style.width = '700px';
-		element.style.height = '900px';
+	
 		let opt = {
 			margin: 10,
 			filename: 'loyalpaws.pdf',

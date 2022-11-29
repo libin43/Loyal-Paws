@@ -5,6 +5,7 @@ const { USER_COLLECTION, PRODUCT_COLLECTION } = require('../config/collections')
 const { response } = require('../app')
 var objectId = require('mongodb').ObjectId
 const Razorpay = require('razorpay');
+const {uid} =require('uid')
 
 //Razorpay integration
 let  instance = new Razorpay({
@@ -15,6 +16,7 @@ let  instance = new Razorpay({
 
 module.exports ={
    doSignup:(userData)=>{
+    console.log(userData,'lets start')
     return new Promise(async(resolve,reject)=>{
         let user = await db.get().collection(collection.USER_COLLECTION).findOne({email:userData.email})
         if(user){
@@ -23,7 +25,9 @@ module.exports ={
         }
         
         else{
-                      
+            userData.referalId = uid()
+            userData.wallet =0 
+            userData.walletHistory =[]    
             userData.password =await bcrypt.hash(userData.password,10)
             db.get().collection(collection.USER_COLLECTION).insertOne(userData).then((response)=>{
             resolve({status:true})
@@ -110,6 +114,81 @@ module.exports ={
         resolve(userDetails[0])
         reject("Login First")
     })
+
+   },
+
+   checkReferral:(userID,userName,inputReferral)=>{
+    return new Promise(async(resolve,reject)=>{
+        console.log(userID,'helper callled')
+        let userWithReferral = await db.get().collection(collection.USER_COLLECTION).findOne({referalId: inputReferral})
+        if(userWithReferral!=null){
+            console.log(userWithReferral,'referal given user details')
+            let walletObj = {
+                date : new Date(),
+                title:'Referal Code',
+                walletdetail:'Rs.100 credited through Referral Code',
+                amount:100,
+                user:userWithReferral.name
+
+            }
+            let referredWalletObj = {
+                date : new Date(),
+                title:'Referral Code',
+                walletdetail:'Rs.200 credited by using your Referral Code',
+                amount:200,
+                user:userName
+            }
+
+            db.get().collection(collection.USER_COLLECTION).updateOne(
+
+                {_id:objectId(userID)},
+
+                {
+                   $inc: { wallet : 100},
+                   $push:{
+                    walletHistory:walletObj
+                   }
+                }
+                
+                ).then(()=>{
+                    db.get().collection(collection.USER_COLLECTION).updateOne(
+                        {_id:objectId(userWithReferral._id)},
+
+                        {
+                            $inc: { wallet : 200},
+                            $push:{
+                             walletHistory:referredWalletObj
+                            }
+                        }
+                    ).then(()=>{
+                        console.log(walletObj.amount,'checking+')
+                        let showAmount = walletObj.amount
+                        console.log('All set in helpers')
+                        resolve({referralValid:true,showAmount})
+                    })
+                })
+  
+        }
+        else{
+            resolve({invalidReferral:true})
+        }
+    })
+   },
+
+//walletRef = wallet+walletHistory+referralId
+   getWallet:(userID)=>{
+    return new Promise(async(resolve,reject)=>{
+       let walletRef = await db.get().collection(collection.USER_COLLECTION).aggregate([
+        {$match: {_id: objectId(userID)} },
+        {$project: {referalId:1,wallet:1,walletHistory:1} },
+        {$limit:5}
+       ]).toArray()
+       console.log(walletRef[0],'helpers')
+       resolve(walletRef[0])
+    })
+   },
+
+   getFilteredWallet:()=>{
 
    },
 
@@ -265,6 +344,16 @@ module.exports ={
                     quantity:1,
                     cartItems:{$arrayElemAt:['$cartItems',0]}
                 }
+            },
+       
+            {
+                $project:{
+                    item:1,
+                    quantity:1,
+                    cartItems:1,
+                    productPriceTotal:{$multiply:['$quantity','$cartItems.price']}
+
+                }
             }
 
             // {$lookup:{
@@ -280,7 +369,7 @@ module.exports ={
             //     as:'cartItems'
             // }}
         ]).toArray()
-        // console.log(cartItems[2].cartItems)
+         console.log(cartItems,'logigin final')
         resolve(cartItems)
     })
    },
@@ -385,6 +474,30 @@ module.exports ={
     })
    },
 
+//    totalProductPrice:(userID)=>{
+//     return new Promise(async(resolve,reject)=>{
+//         let productTotal = await db.get().collection(collection.CART_COLLECTION).aggregate([
+            
+//             {$match:{user: objectId(userID)}},
+            
+//             {$unwind:'$products'},
+            
+//             {$project:{item:'$products.item',quantity:'$products.quantity'}},
+            
+//             {$lookup:{from:'PRODUCT',localField:'item',foreignField:'_id',as:'cartItems'}},
+            
+//             {$project:{item:1,quantity:1,cartItems:{$arrayElemAt:['$cartItems',0]}}},
+            
+//             {$project:{item:1,quantity:1,price:'$cartItems.price'}},
+            
+//             {$project:{item:1,quantity:1,productTotal:{$multiply:['$quantity','$price']}}}
+        
+//         ]).toArray()
+//         console.log(productTotal,'product total got in helper')
+//         resolve(productTotal)
+//     })
+//    },
+
    placeOrder:(order,products,total,noCouponTotal,discount)=>{
     return new Promise((resolve,reject)=>{
       
@@ -435,8 +548,27 @@ module.exports ={
 
    },
 
+   returnOrder:(orderID,itemID,returnStat)=>{
+    console.log(orderID,'ret');
+    
+    console.log(itemID,'ret');
+    return new Promise((resolve,reject)=>{
+        db.get().collection(collection.ORDER_COLLECTION).updateOne(
+           { $and :[ {_id : objectId(orderID)}, {'products.item': objectId(itemID)}]},
+           {
+            $set: {
+                'products.$.status' : returnStat
+            }
+           }
+        ).then(()=>{
+            resolve({status:true,orderID,itemID})
+        })
+    })
+   },
+
    cancelOrder:(orderID,itemID,cancelStat)=>{
     console.log(orderID,'oderseeeeeeeeeeeeeeeeeeee');
+    
     console.log(itemID,'oderseeeeeeeeeeeeeeeeeeee');
     return new Promise((resolve,reject)=>{
         db.get().collection(collection.ORDER_COLLECTION).updateOne(
@@ -447,7 +579,78 @@ module.exports ={
             }
            }
         ).then(()=>{
-            resolve()
+            resolve({status:true,orderID,itemID})
+        })
+    })
+   },
+
+   getOrderTotalQuantity:(orderID)=>{
+    return new Promise(async(resolve,reject)=>{
+        let TotalQuantity = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+            
+            {$match:{_id:objectId(orderID)}},
+            
+            {$unwind:'$products'},
+            
+            {$group:{_id:null,totalQuantity:{$sum:'$products.quantity'}}}
+        
+        ]).toArray()
+
+        let totalOrderQuantity = TotalQuantity[0]
+        console.log(totalOrderQuantity)
+        resolve(totalOrderQuantity.totalQuantity)
+    })
+   },
+
+
+   getCancelOrderDetail:(orderID,itemID,totalQuantity)=>{
+    return new Promise(async(resolve,reject)=>{
+        let cancelOrderDetail = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+            
+            {$match:{_id: objectId(orderID)}},
+            
+            {$unwind:'$products'},{$match:{'products.item': objectId(itemID)}},
+            
+            {$project:{userId:1,discount:1,paymentMethod:1,totalAmount:1,product:'$products.item',quantityCancelled:'$products.quantity'}},
+            
+            {$lookup:{from:'PRODUCT',localField:'product',foreignField:'_id',as:'Product'}},
+            
+            {$project:{userId:1,discount:1,paymentMethod:1,totalAmount:1,quantityCancelled:1,Product:{$arrayElemAt:['$Product',0]}}},
+            
+            {$project:{userId:1,discount:1,paymentMethod:1,totalAmount:1,quantityCancelled:1,product:'$Product.product',price:'$Product.price'}}
+        
+        ]).toArray()
+        console.log(cancelOrderDetail,'cancel order detail in helper')
+        if(cancelOrderDetail!=null){
+            resolve({cancelOrderDetail,totalQuantity,cancelledOrderDetail:true})
+        }
+        else{
+            reject()
+        }
+    })
+   },
+
+   updateCancelledInWallet:(userID,productName,orderID,refund,paymentMethod)=>{
+    return new Promise((resolve,reject)=>{
+        let walletObj = {
+            date : new Date(),
+            title: paymentMethod,
+            walletdetail:'Rs.'+refund+' credited for return on order cancellation of '+productName+' with order number '+orderID,
+            amount:refund,
+            
+
+        }
+        db.get().collection(collection.USER_COLLECTION).updateOne(
+            {_id:objectId(userID)},
+
+            {
+                $inc: { wallet : refund},
+                $push:{
+                 walletHistory:walletObj
+                }
+            }
+        ).then(()=>{
+            resolve({updatedWallet:true})
         })
     })
    },
@@ -610,7 +813,18 @@ module.exports ={
          let products = await db.get().collection(collection.PRODUCT_COLLECTION).find({price:{$gte:min,$lte:max}}).toArray()
          resolve(products)
         })
-    }
+    },
+
+    getOrderPaymentDetail:(orderID)=>{
+        return new Promise(async(resolve,reject)=>{
+            let orderDetail = await db.get().collection(collection.ORDER_COLLECTION).findOne({_id:objectId(orderID)})
+            console.log(orderDetail.paymentMethod,'paymentdetail helper')
+            let orderPaymentMethod = orderDetail.paymentMethod
+            resolve(orderPaymentMethod)
+        })
+    },
+
+
 
    
 }

@@ -79,8 +79,12 @@
                        
                         {{/isEqual}}
 
-                        {{#isEqual this.status 'Cancelled'}}
-                       
+                        {{#isEqual this.status 'Cancel Requested'}}
+                        <option value="Cancelled">Cancelled</option>
+                        {{/isEqual}}
+
+                        {{#isEqual this.status 'Return Requested'}}
+                        <option value="Return Done">Return Done</option>
                         {{/isEqual}}
 
                         </select>
@@ -126,7 +130,84 @@ function changeOrderStatus(orderId,itemId){
     console.log(subSelection,' youuuuuuuuuuu');
 
     
-  swal({
+  if(subSelection == 'Cancelled'){
+    console.log('cancelled condition hitting')
+    swal({
+  title: "Are you sure to Approve?",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    swal("Order status updated. Cancel Refund Inititated.", {
+      icon: "success",
+    });
+
+     $.ajax({
+        url:'/admin/change-order-status',
+        data:{
+            orderID : orderId,
+            itemID : itemId,
+            orderStatus : subSelection
+        },
+        method:'post',
+        success:(response)=>{
+            if(response.status){
+              setTimeout(function(){
+              getAdminRefundOrderDetail(response.orderID,response.itemID)
+              }, 1000);
+                
+            }
+        }
+    })
+  } else {
+    location.reload()
+  }
+});
+  }
+
+  else if(subSelection == 'Return Done'){
+     console.log('return condition hitting')
+    swal({
+  title: "Are you sure to Approve?",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    swal("Order status updated. Return Refund Inititated.", {
+      icon: "success",
+    });
+
+     $.ajax({
+        url:'/admin/change-order-status',
+        data:{
+            orderID : orderId,
+            itemID : itemId,
+            orderStatus : subSelection
+        },
+        method:'post',
+        success:(response)=>{
+            if(response.status){
+              setTimeout(function(){
+              getAdminRefundOrderDetail(response.orderID,response.itemID)
+              }, 1000);
+                
+            }
+        }
+    })
+  } else {
+    location.reload()
+  }
+});
+  }
+
+
+  else{
+    console.log('other status change hitting')
+    swal({
   title: "Are you sure?",
   icon: "warning",
   buttons: true,
@@ -159,7 +240,90 @@ function changeOrderStatus(orderId,itemId){
     location.reload()
   }
 });
+  }
    
+}
+
+//function for refunding  to user
+function getAdminRefundOrderDetail(OrderId,ItemId){
+console.log(OrderId,ItemId,'function called in Get cancel order detail')
+ $.ajax({
+  url:'/admin/get-admin-cancel-order-detail',
+  data:{
+    OrderID: OrderId,
+    ItemID: ItemId,
+  },
+  method:'post',
+  success:(response)=>{
+    if(response.cancelledOrderDetail){
+      let orderDetailCancelled = response.cancelOrderDetail[0]
+      let productName = orderDetailCancelled.product
+      let userId = orderDetailCancelled.userId
+      let orderId = orderDetailCancelled._id
+      let totalOrderQuantity = response.totalQuantity
+      console.log(totalOrderQuantity,'totalqyantity order')
+      let priceDeductSingle = orderDetailCancelled.discount/totalOrderQuantity
+      let totalPriceDeduct = orderDetailCancelled.quantityCancelled*priceDeductSingle
+      let refundAmt = orderDetailCancelled.quantityCancelled * orderDetailCancelled.price - totalPriceDeduct
+      let refundAmount = Math.floor(refundAmt)
+
+      console.log(refundAmount,'refundamount')
+
+      console.log(orderDetailCancelled,'received in ajax')
+      if(orderDetailCancelled.paymentMethod =='ONLINE'){
+        console.log('razorpay hitting')
+        $.ajax({
+          url:'/admin/payment-cancelled-wallet',
+          data:{
+            userID : userId,
+            product : productName,
+            orderID : orderId,
+            refund : refundAmount,
+            paymentMethod : orderDetailCancelled.paymentMethod,
+          },
+          method:'post',
+          success:(response)=>{
+            if(response.updatedWallet){
+              alert('refund success of razorpay')
+              location.reload()
+            }
+          }
+        })
+        
+
+
+      }
+      else if(orderDetailCancelled.paymentMethod =='PAYPAL'){
+         console.log('paypal hitting')
+            $.ajax({
+          url:'/admin/payment-cancelled-wallet',
+          data:{
+            userID : userId,
+            product : productName,
+            orderID : orderId,
+            refund : refundAmount,
+            paymentMethod : orderDetailCancelled.paymentMethod,
+          },
+          method:'post',
+          success:(response)=>{
+            if(response.updatedWallet){
+              alert('refund success of paypal')
+              location.reload()
+            }
+          }
+        })
+      }
+      else if(orderDetailCancelled.paymentMethod =='COD'){
+         console.log('cod hitting')
+         alert('status updated')
+         location.reload()
+      }
+      else{
+        console.log('payment method not found')
+      }
+    }
+  }
+ })
 }
 //------------------------END of changing the order status by admin----------------------------------//
 </script>

@@ -245,7 +245,7 @@ $(document).ready(function(){
                 <div class="row">
                     <div style="color:black ;" class="col-sm-8">
                         <h2>Sales <b>Report</b></h2>
-						<div class="row">
+						<div class="row"  data-html2canvas-ignore="true">
 							<a href="#" class="btn btn-primary w-25" onclick="generatePDF()"><i class="material-icons">&#xE863;</i> <span>Export To Pdf</span></a>
 							<a href="#" class="btn btn-primary w-25" onclick="export2excel()"><i class="material-icons">&#xE24D;</i> <span>Export to Excel</span></a>
 						</div>
@@ -255,9 +255,13 @@ $(document).ready(function(){
 					
 						
 						{{!-- Passing from and to date --}}
-						<form action="/admin/sales-date-apply" method="post">
-						<span><input type="date" id="start" name="fromDate" ></span>
-						<span class="pl-4"><input type="date" id="toDate" name="toDate" ></span>
+						<form action="/admin/sales-date-apply" method="post"  data-html2canvas-ignore="true">
+						<div class="col">
+							<h6 style="color: black;">From  :<input type="date" id="start" name="fromDate" style="width: 115px;"></h6>
+							<h6 style="color: black;">To  :<input type="date" id="toDate" name="toDate" style="width: 115px;"></h6>
+						</div>
+						
+						
 							<div class="pt-2"><button class="btn btn-primary" onclick="submitDate()">Apply</button></div>
 						</form>
 						
@@ -302,9 +306,7 @@ $(document).ready(function(){
 	//-----------------------------------------------Table Index---------------------------------------------------//
     var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
 
-    $(function(){
-        $('#userTable').DataTable();
-      })
+    
 	  //**************************************************************************************************************//
 
 
@@ -322,6 +324,7 @@ $(document).ready(function(){
 
 	   function export2excel(){
 		let table2excel = new Table2Excel();
+		console.log(table2excel)
         table2excel.export(document.querySelectorAll("table.table"));
 	   }
 

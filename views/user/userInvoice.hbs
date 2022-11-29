@@ -1,4 +1,3 @@
-
 <div class="super_container">
   <section class="h-100 gradient-custom" style="margin-top: 50px;">
   <div class="container py-5 h-100">
@@ -72,34 +71,7 @@
                      
                     </div>
                   </div>
-                  {{#isEqual this.status 'Placed'}}
-                  <div class="col-md-6" data-html2canvas-ignore="true">
-                    <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}')">Cancel Order</button>
-
-                  </div>
-                  {{/isEqual}}
-
-                  {{#isEqual this.status 'Shipped'}}
-                  <div class="col-md-6" data-html2canvas-ignore="true">
-                     <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}')">Cancel Order</button>
-
-                  </div>
-                  {{/isEqual}}
-
-                    {{#isEqual this.status 'On the Way'}}
-                  <div class="col-md-6" data-html2canvas-ignore="true">
-                  <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}')">Cancel Order</button>
-
-                  </div>
-                  {{/isEqual}}
-
-                  
-
-                  {{#isEqual this.status 'Delivered'}}
-                  <div class="col-md-6">
-                    <button  class="btn btn-warning" style="border-radius: 6px; background-color: rgb(245, 182, 21); color: white;" onclick="orderReturn('{{../../orderId}}','{{../this.item}}')">Return Order</button>
-                  </div>
-                  {{/isEqual}}
+                 
                 </div>
               </div>
             </div>
@@ -135,100 +107,3 @@
   </div>
 </section>
 </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>  
-<script src="../js/export2pdf.js"></script>
-<script>
-  function orderCancel(orderId,itemId,paymentMethod){
-    console.log('ordercancel callled')
-    console.log(orderId,'thus is order id')
-     console.log(itemId,'thus is item id')
-     console.log(paymentMethod,'this is payment method')
-     if(paymentMethod=='COD'){
-      console.log('payment cod')
-
-      $.ajax({
-		url: '/cancel-order',
-		data: {
-     
-			 orderID : orderId,
-       itemID : itemId,
-			cancelStatus: 'Cancelled'
-		},
-		method: 'post',
-		 success:(response)=>{
-			console.log(response.status)
-            if(response.status){
-              alert('Cancelled')
-                location.reload()
-            }
-        }
-	})
-     }
-     else{
-      console.log('other payment')
-
-      $.ajax({
-		url: '/cancel-order',
-		data: {
-     
-			 orderID : orderId,
-       itemID : itemId,
-			cancelStatus: 'Cancel Requested'
-		},
-		method: 'post',
-		 success:(response)=>{
-			console.log(response.status)
-            if(response.status){
-              alert('Cancel Request Inititated')
-                location.reload()
-            }
-        }
-	})
-     }
-	
-}
-
-function orderReturn(orderId,itemId){
-      console.log('orderReturn callled')
-    console.log(orderId,'thus is order id')
-     console.log(itemId,'thus is item id')
-	$.ajax({
-		url: '/return-order',
-		data: {
-			 orderID : orderId,
-       itemID : itemId,
-			returnStatus: 'Return Requested'
-		},
-		method: 'post',
-		 success:(response)=>{
-			console.log(response.status)
-            if(response.status){
-              alert('Return Request Inititated')
-                location.reload()
-            }
-        }
-	})
-}
-
-
-
-   
-     function generatePDF() {
-        const element = document.getElementById('invoice');
-		element.style.width = '700px';
-		element.style.height = '900px';
-		let opt = {
-			margin: 10,
-			filename: 'loyalpaws.pdf',
-			image:{type:'jpeg',quality:0.98},
-			html2canvas :{scale:1},
-			jsPDF:{unit:'mm',orientation:'portrait'}
-
-		}
-        html2pdf().set(opt)
-            .from(element)
-            .save();
-
-           }
-
-</script>
