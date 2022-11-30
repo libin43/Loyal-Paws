@@ -128,6 +128,7 @@ router.get('/user-wallet',async(req,res)=>{
   let walletHistory = walletRefInfo.walletHistory.reverse()
   walletHistory = walletHistory.slice(0,5)
   let walletHistoryCount = walletRefInfo.walletHistory.length
+  console.log(walletHistoryCount,'takenumber');
   let limit = 5
   let pages = Math.ceil(walletHistoryCount/limit)
   console.log(pages,'this is pages')
@@ -142,13 +143,41 @@ router.get('/user-wallet',async(req,res)=>{
 })
 
 
-router.get('/user-wallet-data/',(req,res)=>{
+router.get('/user-wallet-data/',async(req,res)=>{
   let userId = req.session.user._id
   let num = req.query.num
+  
+  let prev =1
+  if(num>1){
+     prev = num-1
+  }
+  
   let ToLimit = 5
   let ToSkip = (num-1)*ToLimit
-  // let paginationWallet = userHelpers.getFilteredWallet(ToLimit,ToSkip,userId)
+  let walletRefInfo = await userHelpers.getWallet(userId)
+  let referralID = walletRefInfo.referalId
+  let walletTotal = walletRefInfo.wallet
+  let walletHistoryCount = walletRefInfo.walletHistory.length
+  console.log(walletHistoryCount,'takenumber');
+  let limit = 5
+  let pages = Math.ceil(walletHistoryCount/limit)
+
+  let next =pages
+  if(num<pages){
+     num = parseInt(num)
+     next = num+1
+  }
+
+  console.log(pages,'this is pages')
+  let pageNum =[]
+  for(i=1;i<=pages;i++){
+     pageNum.push(i)
+  }
+  
+  let paginationWallet = await userHelpers.getFilteredWallet(ToLimit,ToSkip,userId)
+  console.log(paginationWallet,'recf in route')
   console.log(num,'its pg number')
+  res.render('user/walletPagination',{walletTotal,referralID,paginationWallet,pageNum,prev,next})
 })
 //*****************************************************************************************//
 

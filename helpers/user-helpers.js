@@ -188,7 +188,28 @@ module.exports ={
     })
    },
 
-   getFilteredWallet:()=>{
+   getFilteredWallet:(toLimit,toSkip,userID)=>{
+    console.log(toLimit,toSkip,'recieved in helpers')
+    return new Promise(async(resolve,reject)=>{
+        let paginationWallet = await db.get().collection(collection.USER_COLLECTION).aggregate([
+            
+            {$match:{_id:objectId(userID)}},
+            
+            {$unwind:'$walletHistory'},
+            
+            {$project:{_id:0,date:'$walletHistory.date',title:'$walletHistory.title',amount:'$walletHistory.amount',walletDetail:'$walletHistory.walletdetail'}},
+            
+            {$sort:{date:-1}},
+            
+            {$skip:toSkip},
+            
+            {$limit:toLimit}
+        
+        ]).toArray()
+        console.log(paginationWallet,'waysssss')
+        resolve(paginationWallet)
+      
+    })
 
    },
 
