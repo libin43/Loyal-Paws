@@ -8,6 +8,7 @@ const session = require('express-session')
 const db = require('./config/connection')
 
 
+
 db.connect((err)=>{
   if(err){
     console.log('Connection Error')

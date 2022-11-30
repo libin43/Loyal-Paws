@@ -1,8 +1,9 @@
 const { response } = require('../app')
-
-var accountSid ='AC3f74062b96c03d1722a2cd47c77ff8a8'
-var authToken = '4f6ab5fa70ebe78a3a15fc0542f4b985'
-var serviceId = 'VA4dcd320c9ec21aaa544cc5491e1cbc29'
+const env = require('dotenv').config()
+console.log(process.env,'env hitting') 
+var accountSid = process.env.twilio_Sid
+var authToken = process.env.twilio_Token
+var serviceId = process.env.twilio_Id
 const client = require('twilio')(accountSid,authToken,serviceId)
 let mobile
 module.exports= {
@@ -32,6 +33,7 @@ module.exports= {
                 code: otpData
             })
             .then((response)=>{
+                
                 resolve('SUCCESS!')
             })
             .catch((err)=>{

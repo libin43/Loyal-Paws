@@ -227,7 +227,7 @@ router.get('/enter-otp',(req,res)=>{
 router.post('/enter-otp',(req,res)=>{
   const otpData = req.body.otp
   otpHelpers.verifyOtp(otpData).then((response)=>{
-    console.log(response)
+    console.log(response,'response in post otp')
     res.redirect('/')
   })
   .catch((err)=>{
