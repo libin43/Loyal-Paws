@@ -38,6 +38,7 @@
                     <th scope="col">PRODUCT NAME</th>
                     <th scope="col">PRICE</th>
                     <th scope="col">CATEGORY NAME</th>
+                    <th scope="col">STOCK</th>
                     <th scope="col">ACTION</th>
                   </tr>
                 </thead>
@@ -51,6 +52,7 @@
                     <td>{{this.product}}</td>
                     <td>RS. {{this.price}}</td>
                      <td>{{this.category}}</td>
+                     <td>{{this.stock}}</td>
                     <td>
                         <a href="/admin/edit-product?id={{this._id}}" class="btn btn-primary">Edit</a>
                         <button class="btn btn-danger" onclick="prodDelete('{{this._id}}','{{this.product}}')" >Delete</button>

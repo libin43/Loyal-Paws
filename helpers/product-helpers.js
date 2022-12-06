@@ -50,6 +50,7 @@ module.exports ={
                     productOffer:productDetails.productOffer,
                     price:productDetails.price,
                     totalOffer:productDetails.totalOffer,
+                    stock:productDetails.stockFinal,
                     imageMany:productDetails.imageMany
                     
                 }

@@ -39,7 +39,8 @@ module.exports={
     })
 },
 
-updateOrder:(orderID,itemID,orderStats)=>{
+updateOrder:(orderID,itemID,orderStats,quantity)=>{
+    console.log(orderID,itemID,quantity,'checkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
     return new Promise((resolve,reject)=>{
         db.get().collection(collection.ORDER_COLLECTION).updateOne(
             { $and:[{_id:objectId(orderID)}, {'products.item':objectId(itemID) }]},
@@ -50,8 +51,57 @@ updateOrder:(orderID,itemID,orderStats)=>{
                 }
             }
             ).then((response)=>{
+                console.log(quantity,'this is quantity to be added to stock in admin helper')
+                quantity = parseInt(quantity)
+                db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectId(itemID)},
+                {$inc:{stock:quantity}})
+                .then((response)=>{
+                    resolve({status:true,orderID,itemID,quantity})
+
+                })
+                .catch(()=>{
+                    reject()
+                })
+            })
+            .catch(()=>{
+                reject()
+            })
+    })
+},
+
+updateorder:(orderID,itemID,orderStats)=>{
+    return new Promise((resolve,reject)=>{
+        db.get().collection(collection.ORDER_COLLECTION).updateOne(
+            { $and:[{_id:objectId(orderID)}, {'products.item':objectId(itemID) }]},
+            {
+                $set:{
+                 'products.$.status':orderStats,
+                  
+                }
+            }
+            ).then(()=>{
                 resolve({status:true,orderID,itemID})
             })
+            .catch(()=>{
+                reject()
+            })
+    })
+},
+
+validateCatName:(name)=>{
+    return new Promise(async(resolve,reject)=>{
+        var re = new RegExp(name, "i");
+        console.log(re,"reeeeeeeeee");
+        let catExist = await db.get().collection(collection.CATEGORY_COLLECTION).find({category:re}).toArray()
+        console.log(catExist)
+        if(catExist.length==0){
+            console.log('category name is not taken')
+            resolve()
+        }
+        else{
+            console.log('cat name taken')
+            reject()
+        }
     })
 }
 

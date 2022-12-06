@@ -60,7 +60,7 @@
                              <div class="col-md-4 mb-4">
                                 <div class="form-floating">
                                     <input name="categoryOffer" type="number" class="form-control" id="catOffer" value=""
-                                        placeholder="City">
+                                        placeholder="City" readonly>
                                     <label for="floatingCity">Category Offer</label>
                                 </div>
                             </div>
@@ -80,6 +80,7 @@
                                     <input name="productOffer" type="number" class="form-control" id="offer" onkeyup="calculate()"
                                         placeholder="City">
                                     <label for="floatingCity">Product Offer %</label>
+                                    <span style="color: red;" id="offer-error"></span>
                                 </div>
                             </div>
 
@@ -91,8 +92,14 @@
                                 </div>
                             </div>
 
-                            
-                          
+                            <div class="row"></div>
+                            <div class="col-md-4 mb-4">
+                                <div class="form-floating">
+                                    <input name="stock" type="number" class="form-control" id="stockAdd"
+                                        placeholder="City">
+                                    <label for="floatingCity">Stock</label>
+                                </div>
+                            </div>
                             
                            
                             <div class="row mb-3">

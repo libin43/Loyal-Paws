@@ -49,7 +49,7 @@
                       <div class="progress-bar" role="progressbar"
                         style="width: 10%; border-radius: 16px; background-color:  #904606;;" aria-valuenow="65"
                         aria-valuemin="0" aria-valuemax="100"></div>
-                        {{/isEqual}}
+                        {{/isEqual}}`
                         {{#isEqual this.status 'Shipped'}}
                       <div class="progress-bar" role="progressbar"
                         style="width: 30%; border-radius: 16px; background-color:  #904606;;" aria-valuenow="65"
@@ -74,21 +74,21 @@
                   </div>
                   {{#isEqual this.status 'Placed'}}
                   <div class="col-md-6" data-html2canvas-ignore="true">
-                    <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}')">Cancel Order</button>
+                    <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}','{{../this.quantity}}')">Cancel Order</button>
 
                   </div>
                   {{/isEqual}}
 
                   {{#isEqual this.status 'Shipped'}}
                   <div class="col-md-6" data-html2canvas-ignore="true">
-                     <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}')">Cancel Order</button>
+                     <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}','{{../this.quantity}}')">Cancel Order</button>
 
                   </div>
                   {{/isEqual}}
 
                     {{#isEqual this.status 'On the Way'}}
                   <div class="col-md-6" data-html2canvas-ignore="true">
-                  <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}')">Cancel Order</button>
+                  <button  class="btn btn-danger" style="border-radius: 6px; background-color: rgb(245, 21, 21); color: white;" onclick="orderCancel('{{../../orderId}}','{{../this.item}}','{{../../paymentMethod}}','{{../this.quantity}}')">Cancel Order</button>
 
                   </div>
                   {{/isEqual}}
@@ -138,11 +138,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>  
 <script src="../js/export2pdf.js"></script>
 <script>
-  function orderCancel(orderId,itemId,paymentMethod){
+  function orderCancel(orderId,itemId,paymentMethod,quantity){
     console.log('ordercancel callled')
     console.log(orderId,'thus is order id')
      console.log(itemId,'thus is item id')
      console.log(paymentMethod,'this is payment method')
+     console.log(quantity,'quantity of cancelled item')
      if(paymentMethod=='COD'){
       console.log('payment cod')
 
@@ -152,6 +153,7 @@
      
 			 orderID : orderId,
        itemID : itemId,
+       quantity: quantity,
 			cancelStatus: 'Cancelled'
 		},
 		method: 'post',
@@ -166,8 +168,19 @@
      }
      else{
       console.log('other payment')
+      swal({
+         title: "Are you sure?",
+         icon: "warning",
+         buttons: true,
+         dangerMode: true,
+        })
+     .then((willDelete) => {
+      if (willDelete) {
+    swal("Cancel Request Inititated", {
+      icon: "success",
+    }); 
 
-      $.ajax({
+    $.ajax({
 		url: '/cancel-order',
 		data: {
      
@@ -179,11 +192,19 @@
 		 success:(response)=>{
 			console.log(response.status)
             if(response.status){
-              alert('Cancel Request Inititated')
-                location.reload()
+                setTimeout(function(){
+               location.reload()
+              }, 1000);
             }
         }
 	})
+
+  } else {
+    console.log('No action')
+  }
+});
+
+      
      }
 	
 }

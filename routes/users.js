@@ -9,6 +9,7 @@ const paypalHelpers = require('../helpers/paypal-helpers');
 const multer = require('multer');
 const wishlistHelpers = require('../helpers/wishlist-helpers');
 const couponHelpers = require('../helpers/coupon-helpers');
+const bannerHelpers = require('../helpers/banner-helpers');
 
 /************************multer  */
 const multerStorageCategory = multer.diskStorage({
@@ -240,19 +241,20 @@ router.post('/enter-otp',(req,res)=>{
 //------------------------------------------H O M E--------------------------------//
 
 router.get('/', async function(req, res, next) {
- req.session.url = req.url
+
  
 
  let userName = req.session.user?.name
  let cartCount = await userHelpers.getCartCount(req.session.user?._id)
  let wishListCount = await wishlistHelpers.getWishCount(req.session.user?._id)
  let category = await categoryHelpers.getAllCategory()
+ let banner = await bannerHelpers.getAllBanner()
  console.log(category,'checkinggggggggggcat');
     console.log(userName)
 
 
     productHelpers.getAllProduct().then((prod_data) => {
-      res.render('user/index', { category, prod_data, userName, cartCount ,wishListCount})
+      res.render('user/index', { category, prod_data, userName, cartCount ,wishListCount ,banner})
     })
 
  
@@ -319,7 +321,7 @@ router.get('/add-address/',verifyLogin,async(req,res)=>{
   res.render('user/addAddress',{userID, userName, cartCount})
 })
 
-router.post('/add-address/',(req,res)=>{
+router.post('/add-address/',verifyLogin,(req,res)=>{
   let userID = req.query.id
   let userAddress = req.body
   console.log(userID,userAddress,'eeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
@@ -333,7 +335,7 @@ router.post('/add-address/',(req,res)=>{
 
 //-----------------------------------DELETE USER ADDRESS-------------------------------------//
 
-router.post('/delete-address',(req,res)=>{
+router.post('/delete-address',verifyLogin,(req,res)=>{
   console.log('haaiiiii')
   userHelpers.deleteUserAddress(req.body.addressID).then((response)=>{
     res.json(response)
@@ -360,7 +362,7 @@ router.get('/category/',async(req,res)=>{
 //-----------------------------------------------View Product------------------------------------//
 
 router.get('/viewproduct/', async (req, res) => {
-  req.session.url = req.url
+
   let userName = req.session.user?.name
   let cartCount = await userHelpers.getCartCount(req.session.user?._id)
 
@@ -408,7 +410,7 @@ router.post('/add-2-cart',(req,res)=>{
 })
 
 
-router.post('/delete-wish-product',(req,res)=>{
+router.post('/delete-wish-product',verifyLogin,(req,res)=>{
   console.log(req.body,'userjsssss')
   wishlistHelpers.deleteWishProduct(req.body).then((response)=>{
     res.json(response)
@@ -434,7 +436,7 @@ router.post('/search-input-products',(req,res)=>{
     
   })
   .catch((err)=>{
-    console.log(err.productNotFound,'its an error')
+   
     if(err.productNotFound){
       console.log('rendring yo not found')
       res.render('user/search',{err})
@@ -477,20 +479,75 @@ router.get('/cart',verifyLogin,async(req,res)=>{
   let products = await userHelpers.getCart(userID)
   let category = await categoryHelpers.getAllCategory()
   let total = 0
- 
   let cartNotEmpty = false
+  let outOfStock = false
 
   if (products.length > 0) {
      total = await userHelpers.totalPrice(userID)
 
      cartNotEmpty = true
-    console.log(products)
+  
+    console.log('start'+products,'Checking products in routes to pass into cart')
+    let limit = products.length
+   //if product exist in cart for longer time and stock decreased
+    for(i=0;i<limit;i++){
+      console.log('start',products[i].quantity,'end')
+      if(products[i].quantity > products[i].stock){
+        console.log('quantity greater than stock');
+        products[i].quantity = products[i].stock
+        let quantity = products[i].quantity
+        let itemID = products[i].item
+        let cartID = products[i]._id
+        userHelpers.updateProductQuantity(cartID,itemID,quantity)
+        
+      }
+      
+    }
+    //if products are out of stock show status and button to remove those products
+    for(i=0;i<limit;i++){
+      let singleProduct = products[i]
+      
+
+      if(singleProduct.stock==0){
+        console.log('Here theres out of stock products');
+        outOfStock = true
+        break;
+      }
+
+    }
+
+    console.log(outOfStock,'dfajhiufhjiuahiweurfhuihaquierhfglibin')
   
   }
+  let length = products.length
+  console.log(length)
   
-    res.render('user/cart',{products,cartNotEmpty,total,userID,userName,category})
+    res.render('user/cart',{products,cartNotEmpty,total,userID,userName,category,outOfStock,length})
 
  
+})
+
+//Verify cart from proceed to checkout button
+router.get('/verify-cart',async(req,res)=>{
+  const userID = req.session.user._id
+  let products = await userHelpers.getCart(userID)
+  let limit = products.length
+  let reload = false
+
+   for(i=0;i<limit;i++){
+
+     if(products[i].quantity > products[i].stock || products[i].stock == 0){
+       reload = true
+       break; 
+     } 
+   }
+   if(reload == true){
+    res.json({Reload:true})
+   }
+   else if(reload == false){
+    res.json({noReload:true})
+   }
+  
 })
 
 //Change Product quantity ajax 
@@ -520,6 +577,7 @@ router.get('/checkout',verifyLogin,async(req,res)=>{
   let total = await userHelpers.totalPrice(req.session.user._id)
   let allAddress = await userHelpers.getUserAddress(useR)
   let category = await categoryHelpers.getAllCategory()
+
  
   res.render('user/checkout',{total,useR,allAddress,userName,cartCount,category})
 })
@@ -527,9 +585,10 @@ router.get('/checkout',verifyLogin,async(req,res)=>{
 
 //Order Address,details everything sent and new order collection created and cart deleted
 //Theres also razorpay integration
-router.post('/checkout',async(req,res)=>{
- 
+router.post('/checkout',verifyLogin,async(req,res)=>{
+  let userID = req.session.user._id
   let products = await userHelpers.getCartProductList(req.body.userID)
+  
   
   // let totalPrice = await userHelpers.totalPrice(req.body.userID)
   console.log(req.body.orderTotal,'coooooooooo')
@@ -541,7 +600,21 @@ router.post('/checkout',async(req,res)=>{
 
 
     if(req.body['payment-method']== 'COD'){
-      res.json({codSuccess:true})
+      console.log(products,'ORDER products in cod')
+      res.json({codSuccess:true,products})
+    }
+
+    else if(req.body['payment-method']=='WALLET'){
+      console.log('wallet hitting')
+      userHelpers.generateWalletPayment(orderID,userID).then(()=>{
+        userHelpers.changePaymentOrderStatus(orderID,userID).then(()=>{
+          res.json({walletSuccess:true,products})
+        })
+      }).catch(()=>{
+        
+        res.json({insufficientBalance:true})
+      })
+      
     }
 
 //Paypal    
@@ -583,6 +656,7 @@ router.post('/checkout',async(req,res)=>{
 
               transaction.orderId = orderID
               transaction.paypalSuccess = true
+         
               res.json(transaction)
                
                 
@@ -595,7 +669,8 @@ router.post('/checkout',async(req,res)=>{
     }
 //Razorpay
     else{
-      userHelpers.generateRazorpay(orderID,totalPrice).then((response)=>{
+      console.log('razorpay hitting');
+      userHelpers.generateRazorpay(orderID,totalPrice,products).then((response)=>{
         res.json(response)
       })
     }
@@ -610,10 +685,12 @@ router.post('/checkout',async(req,res)=>{
 //verifyPayment Razorpay           //In receipt we have order id 
 router.post('/verify-payment',(req,res)=>{
   console.log('verifying');
-  console.log(req.body,'lllllllllllllllllllllllllllll')
+  console.log(req.body.products,'lllllllllllllllllllllllllllll')
   userHelpers.verifyPayment(req.body).then(()=>{
     userHelpers.changePaymentOrderStatus(req.body['order[receipt]'],req.session.user._id).then(()=>{
-      res.json({status:true})
+      userHelpers.decreaseStock(req.body.products).then(()=>{
+        res.json({stockDecrease:true})
+      })
     })
     
 
@@ -630,10 +707,15 @@ router.get('/order-placed',(req,res)=>{
 })
 
 //Paypal Order Placed
-router.get('/orderpaypal-placed/:id',(req,res)=>{
-  userHelpers.changePaymentOrderStatus(req.params.id,req.session.user._id).then(()=>{ 
-    res.render('user/orderplaced')                         
+router.get('/orderpaypal-placed/:id',async(req,res)=>{
+  let products = await userHelpers.getPaypalOrderDetail(req.params.id)
+  products = JSON.stringify(products)
+  userHelpers.decreaseStock(products).then(()=>{
+    userHelpers.changePaymentOrderStatus(req.params.id,req.session.user._id).then(()=>{ 
+      res.render('user/orderplaced')                         
+    })
   })
+
 })
 
 //Order failure
@@ -645,19 +727,58 @@ router.get('/payment-failed',(req,res)=>{
 })
  
 
-//view orders
+//----------------------------------------VIEW ORDERS----------------------------------//
 router.get('/view-orders',verifyLogin,async(req,res)=>{
   let userID = req.session.user._id
   let userName = req.session.user.name
   let cartCount = await userHelpers.getCartCount(userID)
-  let orderDetail=await userHelpers.getOrderDetails(userID)
+  let orderdetail= await userHelpers.getOrderDetails(userID)
   let category = await categoryHelpers.getAllCategory()
+
+
+  let orderTotalCount = orderdetail.length
+  console.log(orderTotalCount,'total doc count')
+  let limit = 5
+  let pages = Math.ceil(orderTotalCount/limit)
+  console.log(pages,'this is pages')
+  let pageNum =[]
+  for(i=1;i<=pages;i++){
+     pageNum.push(i)
+  }
+  console.log(pageNum,'page number of view order')
+  let orderDetail = orderdetail.slice(0,5)
+  
 
   userHelpers.removePendingStatus().then(()=>{ 
    console.log(orderDetail,'hitting');
-  res.render('user/vieworders',{orderDetail, userName, cartCount, category})
+  res.render('user/vieworders',{orderDetail, userName, cartCount, category,pageNum})
   })
 })
+
+router.get('/user-order-data/',async(req,res)=>{
+  let userID = req.session.user._id
+  let num = req.query.num
+  let ToLimit = 5
+  let ToSkip = (num-1)*ToLimit
+  console.log(num,'these are number of page')
+  let orderdetail= await userHelpers.getOrderDetails(userID)
+  let orderTotalCount = orderdetail.length
+  console.log(orderTotalCount,'total doc count')
+  let limit = 5
+  let pages = Math.ceil(orderTotalCount/limit)
+  console.log(pages,'this is pages')
+  let pageNum =[]
+  for(i=1;i<=pages;i++){
+     pageNum.push(i)
+  }
+  let orderDetailLimit = await userHelpers.getOrderDetailsPagination(userID,ToLimit,ToSkip)
+  let userName = req.session.user.name
+  let cartCount = await userHelpers.getCartCount(userID)
+  let category = await categoryHelpers.getAllCategory()
+
+  res.render('user/viewordersPagination',{userName,cartCount,category,orderDetailLimit,pageNum})
+})
+//************************************************************************************//
 
 //view order products
 router.get('/view-order-products/:id',verifyLogin,async(req,res)=>{
@@ -676,12 +797,22 @@ router.get('/view-order-products/:id',verifyLogin,async(req,res)=>{
 
 //Cancel orders
 router.post('/cancel-order',async(req,res)=>{
-
   console.log(req.body.orderID, req.body.itemID, req.body.cancelStatus,'hitting.............');
-  
-  userHelpers.cancelOrder(req.body.orderID,req.body.itemID,req.body.cancelStatus).then((response)=>{
-    res.json(response)
-  })
+  if(req.body.cancelStatus == 'Cancel Requested'){
+    console.log('cancel requested hitting')
+    userHelpers.cancelOrder(req.body.orderID,req.body.itemID,req.body.cancelStatus).then((response)=>{
+      res.json(response)
+    })
+  }
+  else if(req.body.cancelStatus == 'Cancelled'){
+    console.log(req.body.quantity,'cancelled hitting')
+    userHelpers.cancelCodOrder(req.body.orderID,req.body.itemID,req.body.cancelStatus,req.body.quantity).then((response)=>{
+      res.json(response)
+    })
+    .catch(()=>{
+      console.log('Connection Time')
+    })
+  }
 })
 
 //Return Orders
@@ -723,6 +854,16 @@ router.post('/coupon-apply',(req,res)=>{
   })
 })
 
+//Stock Decrease
+router.post('/order-stock',(req,res)=>{
+  console.log(req.body.products,'pass from ajax check')
+  userHelpers.decreaseStock(req.body.products).then(()=>{
+    res.json({stockDecrease:true})
+  })
+  .catch(()=>{
+    console('Connection timeout')
+  })
+})
 
 //Logout
 router.get('/logout',(req,res)=>{

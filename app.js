@@ -37,7 +37,14 @@ helpers:{
     return options.fn(this)
   }
   return options.inverse(this)
-}}
+},
+  isGreater:(status, value, options)=>{
+    if(status > value) {
+      return options.fn(this)
+    }
+    return options.inverse(this)
+  }
+}
 }))
 
 app.use(logger('dev'));

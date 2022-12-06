@@ -1,70 +1,103 @@
+<main id="main" class="main">
 
 
-  <main id="main" class="main">
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title">Add Category</h2>
 
+      <!-- Horizontal Form -->
+      <form action="/admin/add-category" method="post" enctype="multipart/form-data">
+        <div class="row mb-3">
+          <label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>
+          <div class="col-sm-10 w-50">
+            <input name="category" type="text" class="form-control tex" onkeyup="validateCategory()" id="catName"
+              required>
+            <span>
+              <h6 id="error-msg" style="color: red;"></h6>
+            </span>
+          </div>
+        </div>
 
-          <div class="card">
-            <div class="card-body">
-              <h2 class="card-title">Add Category</h2>
+        <div class="row mb-3">
+          <label for="inputEmail3" class="col-sm-2 col-form-label">Category Offer</label>
+          <div class="col-sm-10 w-25">
 
-              <!-- Horizontal Form -->
-              <form action="/admin/add-category" method="post" enctype="multipart/form-data">
-                <div class="row mb-3">
-                  <label for="inputEmail3" class="col-sm-2 col-form-label">Name</label>
-                  <div class="col-sm-10 w-50">
-                    <input name="category" type="text" class="form-control" id="catName" required>
-                  
-                  </div>
-                </div>
-
-                <div class="row mb-3">
-                  <label for="inputEmail3" class="col-sm-2 col-form-label">Category Offer</label>
-                  <div class="col-sm-10 w-25">
-                
-                    <div class="form-floating">
-                      <input name="categoryOffer" type="text" class="form-control" id="offer" placeholder="City">
-                      <label for="floatingCity">Category Offer %</label>
-                    </div>
-                  </div>
-                </div>
-
-                  <div class="col-md-3">
-                                
-                            </div>
-               
-              
-                
-                <div class="row mb-3">
-                    <label for="inputEmail3" class="col-sm-2 col-form-label">Description</label>
-                    <div class="col-sm-10">
-                
-                        <textarea name="description" rows="5" class="form-control" id="inputText" required></textarea>
-                    </div>
-                </div>
-               
-                <div class="row mb-3">
-                  
-                    <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
-                    <div class="col-sm-10 w-75">
-                      <img id="imgView" src="/category-images/{{catID.image}}" alt="" style="width: 50px;height: 50px; margin-bottom: 1em;">
-                        <input type="file" class="form-control" name="image" required onchange="viewImage(event)">
-                    </div>
-                </div>
-
-             
-               
-                <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Add</button>
-                  <button type="reset" class="btn btn-secondary">Cancel</button>
-                </div>
-              </form><!-- End Horizontal Form -->
-
+            <div class="form-floating">
+              <input name="categoryOffer" type="text" class="form-control" id="offer" placeholder="City">
+              <label for="floatingCity">Category Offer %</label>
             </div>
           </div>
+        </div>
 
-          <script>
-            function viewImage(event){
-                document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+        <div class="col-md-3">
+
+        </div>
+
+
+
+        <div class="row mb-3">
+          <label for="inputEmail3" class="col-sm-2 col-form-label">Description</label>
+          <div class="col-sm-10">
+
+            <textarea name="description" rows="5" class="form-control" id="inputText" required></textarea>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+
+          <label for="inputNumber" class="col-sm-2 col-form-label">Image Upload</label>
+          <div class="col-sm-10 w-75">
+            <img id="imgView" src="/category-images/{{catID.image}}" alt=""
+              style="width: 50px;height: 50px; margin-bottom: 1em;">
+            <input type="file" class="form-control" name="image" required onchange="viewImage(event)">
+          </div>
+        </div>
+
+
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary" id="addBtn">Add</button>
+          <button type="reset" class="btn btn-secondary">Cancel</button>
+        </div>
+      </form><!-- End Horizontal Form -->
+
+    </div>
+  </div>
+
+  <script>
+    function viewImage(event) {
+      document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+    }
+    function validateCategory() {
+      let name = document.getElementById('catName').value
+      console.log(name, 'its name')
+      if (name.match(/(^[a-zA-Z][a-zA-Z\s]{0,20}[a-zA-Z]$)/)) {
+        $.ajax({
+          url: '/admin/validate-category-name',
+          data: {
+            catName: name,
+          },
+          method: 'post',
+          success: (response) => {
+            console.log(response)
+            if (response.catNotExist) {
+              console.log('sucess')
+              document.getElementById('addBtn').disabled = false
+              document.getElementById('error-msg').innerHTML = ''
             }
-            
-          </script>
+            else if (response.catExist || !name.match(/(^[a-zA-Z][a-zA-Z\s]{0,20}[a-zA-Z]$)/)) {
+              console.log('Already exist')
+              document.getElementById('addBtn').disabled = true
+              document.getElementById('error-msg').innerHTML = 'Category Name Already Taken'
+            }
+
+          }
+        })
+      }
+      else {
+        document.getElementById('addBtn').disabled = true
+      }
+
+
+    }
+  </script>

@@ -1,9 +1,10 @@
 const paypal = require('paypal-rest-sdk')
+const env = require('dotenv').config()
 
 paypal.configure({
     'mode': 'sandbox',
-    'client_id': 'AfmkHLTfLs4YUvwHsWcQIHBe0598Op6hx6QHAzmhwizWOcyuIX-_bLy-fkJJDDpHDbiM4gMhK9FsLUQf',
-    'client_secret': 'EP2wvu37UCA4PNGdX3JQ3WE6AcRzxNxEcIvL-66R6lBWcWFTgDPy3QxaG_45nWmJHdNlI8o3gGYhgpHl'
+    'client_id': process.env.PayPal_id,
+    'client_secret': process.env.PayPal_secret
   });
 
   module.exports={

@@ -47,24 +47,25 @@
             </tbody>
         </table>
     </div>
-    <div  class="d-flex justify-content-between align-items-center results" > <span id="pagination" style="display: block;" class="pl-md-3">Showing<b
-                class="text"> 1-7 0f 200 </b> trasactions</span>
+    <div class="d-flex justify-content-between align-items-center results"> <span id="pagination" style="display: block;"
+            class="pl-md-3">Showing<b class="text"> 1-7 0f 200 </b> trasactions</span>
         <div class="pt-3" id="next" style="display: block;">
-           <nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-end">
-    <li class="page-item disabled">
-      <a class="page-link" href="#" tabindex="-1">Previous</a>
-    </li>
-    {{#each pageNum}}
-    <li class="page-item"><a href="/user-wallet-data?num={{this}}"><button  class="page-link" >{{this}}</button></a></li>
-
-    {{/each}}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    {{#each pageNum}}
+                    <li class="page-item"><a href="/user-wallet-data?num={{this}}"><button
+                                class="page-link">{{this}}</button></a></li>
     
-    <li class="page-item">
-      <a class="page-link" href="#">Next</a>
-    </li>
-  </ul>
-</nav>
+                    {{/each}}
+    
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 
@@ -98,22 +99,5 @@
         document.getElementById('next').style.display = 'block';
         document.getElementById('referral').style.display = 'none'; 
     }
-    function pagination(num){
-       
-        console.log(num,'pass digjit to get data')
-        let limit = 5
-        let skip = (num-1)*limit
-        $.ajax({
-            url:'/user-wallet-data/'+num,
-            data:{
-                pageNum : num,
-                Tolimit : limit,
-                Toskip : skip,
-            },
-            method:'post',
-            success:(response)=>{
-                location.href
-            }
-        })
-    }
+
 </script>

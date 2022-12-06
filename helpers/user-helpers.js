@@ -6,11 +6,12 @@ const { response } = require('../app')
 var objectId = require('mongodb').ObjectId
 const Razorpay = require('razorpay');
 const {uid} =require('uid')
+const env = require('dotenv').config()
 
 //Razorpay integration
 let  instance = new Razorpay({
-  key_id: 'rzp_test_bZDcL6JRT4zjki',
-  key_secret: '1z5GxYh1NbBUCujrkqB10Okj',
+  key_id: process.env.RazorPay_id,
+  key_secret: process.env.RazorPay_secret,
 });
 
 
@@ -372,6 +373,7 @@ module.exports ={
                     item:1,
                     quantity:1,
                     cartItems:1,
+                    stock:'$cartItems.stock',
                     productPriceTotal:{$multiply:['$quantity','$cartItems.price']}
 
                 }
@@ -430,6 +432,17 @@ module.exports ={
                 resolve({status:true})
             })
         }
+    })
+   },
+
+   updateProductQuantity:(cartID,itemID,quantity)=>{
+    return new Promise((resolve,reject)=>{
+        db.get().collection(collection.CART_COLLECTION).updateOne(
+            {_id:objectId(cartID),'products.item':objectId(itemID)},
+            {$set:{'products.$.quantity':quantity}} 
+        ).then(()=>{
+            resolve()
+        })
     })
    },
 
@@ -521,6 +534,7 @@ module.exports ={
 
    placeOrder:(order,products,total,noCouponTotal,discount)=>{
     return new Promise((resolve,reject)=>{
+        console.log(products,'its products')
       
         console.log(order,products,total);
        
@@ -601,6 +615,33 @@ module.exports ={
            }
         ).then(()=>{
             resolve({status:true,orderID,itemID})
+        })
+    })
+   },
+
+   cancelCodOrder:(orderID,itemID,cancelStat,quantity)=>{
+    console.log(quantity,'quantity to bee returned in helper');
+    quantity = parseInt(quantity)
+    return new Promise((resolve,reject)=>{
+        db.get().collection(collection.ORDER_COLLECTION).updateOne(
+           { $and :[ {_id : objectId(orderID)}, {'products.item': objectId(itemID)}]},
+           {
+            $set: {
+                'products.$.status' : cancelStat
+            }
+           }
+        ).then(()=>{
+            db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectId(itemID)},
+                {$inc:{stock:quantity}})
+                .then(()=>{
+                    resolve({status:true,orderID,itemID})
+                })
+                .catch(()=>{
+                    reject()
+                })
+        })
+        .catch(()=>{
+            reject()
         })
     })
    },
@@ -694,6 +735,14 @@ module.exports ={
         })
     },
 
+    getOrderDetailsPagination:(userID,ToLimit,ToSkip)=>{
+        return new Promise(async(resolve,reject)=>{
+            let orderListPagination = await db.get().collection(collection.ORDER_COLLECTION).find({userId:objectId(userID)}).sort({_id:-1}).skip(ToSkip).limit(ToLimit).toArray()
+            resolve(orderListPagination)
+
+        })
+    },
+
     getOrderProductDetails:(orderID)=>{
         return new Promise(async(resolve,reject)=>{
             let orderProductList = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
@@ -722,7 +771,7 @@ module.exports ={
                     foreignField:'_id',
                     as:'orderProducts'
                 }},
-
+                
                 {$project:{
                     item:1,
                     quantity:1,
@@ -746,7 +795,7 @@ module.exports ={
         })
     },
 
-    generateRazorpay:(orderID,total)=>{
+    generateRazorpay:(orderID,total,products)=>{
         return new Promise((resolve,reject)=>{
             let options = {
                 amount: total*100,  // amount in the smallest currency unit
@@ -755,7 +804,7 @@ module.exports ={
               };
               instance.orders.create(options, function(err, order) {
                 console.log(order,'this is the order');
-                resolve(order)
+                resolve({razorPaySuccess:true,order,products})
               });
             
         })
@@ -844,6 +893,76 @@ module.exports ={
             resolve(orderPaymentMethod)
         })
     },
+
+    generateWalletPayment:(orderID,userID)=>{
+        return new Promise(async(resolve,reject)=>{
+            let orderDetail = await db.get().collection(collection.ORDER_COLLECTION).findOne({_id:objectId(orderID)})
+            let totalDeducted = orderDetail.totalAmount
+            totalDeducted = parseInt(totalDeducted)
+            let walletDetail = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userID)})
+            let walletTotal = walletDetail.wallet
+            if(totalDeducted>walletTotal){
+               console.log('Insufficient wallet balance')
+               db.get().collection(collection.ORDER_COLLECTION).deleteMany( { products: {$elemMatch: { status:'Pending' } } }).then(()=>{
+                reject()       
+               })
+
+            }else{
+                db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectId(userID)},
+                {$inc:{
+                    wallet:-totalDeducted
+                }}
+                ).then(()=>{
+                    resolve()
+                })
+            }
+
+        })
+    },
+
+    decreaseStock:(products)=>{
+        return new Promise((resolve,reject)=>{
+
+          if(products!=null){
+            console.log(products,'remove stock helper')
+            let Products = JSON.parse(products)
+            let limit = Products.length
+            console.log(Products.length,'product array length')
+            console.log(Products,'fiankdadksfjaoksjd');
+            
+          
+            for(i=0;i<limit;i++){
+
+                let proID = Products[i].item
+                let proQuantity = Products[i].quantity
+        
+                db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id : objectId(proID)},{$inc:{stock:-proQuantity}})
+            }
+
+            resolve()
+          }
+
+          else{
+            reject()
+          }
+
+          
+
+        })
+    },
+
+
+    getPaypalOrderDetail:(orderID)=>{
+        return new Promise(async(resolve,reject)=>{
+            let itemQuantity = await db.get().collection(collection.ORDER_COLLECTION).aggregate([{$match:{_id:objectId(orderID)}},{$project:{_id:0,products:1}}]).toArray()
+            console.log(itemQuantity[0].products)
+            resolve(itemQuantity[0].products)
+        })
+       
+        
+    }
+
+
 
 
 

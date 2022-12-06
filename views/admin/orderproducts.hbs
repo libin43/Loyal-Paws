@@ -52,7 +52,7 @@
                 <td>{{this.quantity}}</td>
                 <td>{{this.orderProduct.price}}</td>
                 <td>
-                    <select onchange="changeOrderStatus('{{this._id}}','{{this.item}}')" name="orderstatus" id="{{this.item}}" class="form-select" id="floatingSelect">
+                    <select onchange="changeOrderStatus('{{this._id}}','{{this.item}}','{{this.quantity}}')" name="orderstatus" id="{{this.item}}" class="form-select" id="floatingSelect">
                         <option selected value="{{this.status}}">{{this.status}}</option>
 
                         {{#isEqual this.status 'Placed'}}
@@ -124,7 +124,7 @@
        var divs = document.querySelectorAll('.create_index'); for (var i = 0; i < divs.length; ++i) { divs[i].innerHTML = i + 1 ;}
 
 //------------------------Changing the order status by admin----------------------------------//
-function changeOrderStatus(orderId,itemId){
+function changeOrderStatus(orderId,itemId,quantity){
     let fieldMain =document.getElementById(itemId)
     let subSelection = fieldMain.options[fieldMain.selectedIndex].text
     console.log(subSelection,' youuuuuuuuuuu');
@@ -140,20 +140,21 @@ function changeOrderStatus(orderId,itemId){
 })
 .then((willDelete) => {
   if (willDelete) {
-    swal("Order status updated. Cancel Refund Inititated.", {
-      icon: "success",
-    });
 
      $.ajax({
         url:'/admin/change-order-status',
         data:{
             orderID : orderId,
             itemID : itemId,
+            quantity: quantity,
             orderStatus : subSelection
         },
         method:'post',
         success:(response)=>{
             if(response.status){
+                  swal("Order status updated and "+response.quantity+ " quantity added to stock. Cancel Refund Inititated.", {
+                   icon: "success",
+                  });
               setTimeout(function(){
               getAdminRefundOrderDetail(response.orderID,response.itemID)
               }, 1000);
@@ -177,20 +178,21 @@ function changeOrderStatus(orderId,itemId){
 })
 .then((willDelete) => {
   if (willDelete) {
-    swal("Order status updated. Return Refund Inititated.", {
-      icon: "success",
-    });
 
      $.ajax({
         url:'/admin/change-order-status',
         data:{
             orderID : orderId,
             itemID : itemId,
+            quantity: quantity,
             orderStatus : subSelection
         },
         method:'post',
         success:(response)=>{
             if(response.status){
+                  swal("Order status updated and "+response.quantity+ " quantity added to stock. Return Refund Inititated.", {
+                   icon: "success",
+                  });
               setTimeout(function(){
               getAdminRefundOrderDetail(response.orderID,response.itemID)
               }, 1000);

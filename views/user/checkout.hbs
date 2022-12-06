@@ -1,9 +1,6 @@
 <link rel="stylesheet" type="text/css" href="../styles/checkout.css">
 <link rel="stylesheet" type="text/css" href="../styles/checkout_responsive.css">
-<div class="super_container"
-
-
-	<!-- Home -->
+<div class="super_container"> <!-- Home -->
 
 	{{!-- <div class="home">
 		<div class="home_background parallax-window" data-parallax="scroll" data-image-src="" data-speed="0.8"></div>
@@ -32,389 +29,473 @@
 	<div class="checkout">
 		<div class="container">
 			<form action="#" id="checkout-form">
-			<div class="row">
+				<div class="row">
 
-				<!-- Billing Details -->
-				<div class="col-lg-6">
-					<div class="billing">
-						<div class="form-group">
-							<label for="demo_overview">Add from Existing Address *</label>
-							<select onchange="selectedAddress()"  id="address" class="form-control" data-role="select-dropdown" required>
-								<!-- options -->
-								<option selected value="{{this._id}}">Add from Existing Address</option>
+					<!-- Billing Details -->
+					<div class="col-lg-6">
+						<div class="billing">
+							<div class="form-group">
+								<label for="demo_overview">Add from Existing Address *</label>
+								<select onchange="selectedAddress()" id="address" class="form-control"
+									data-role="select-dropdown" required>
+									<!-- options -->
+									<option selected value="{{this._id}}">Add from Existing Address</option>
 
-								{{#each allAddress}}	
-						
-						         
-								<option value="{{this._id}}">{{this.firstName}} {{this.lastName}}, {{this.mobile}}, {{this.address}}, {{this.town}}, {{this.pin}}</option>
-								
-								{{/each}}
-								
-								
-								
-							</select>
-						</div>
-						<div class="checkout_title">billing details</div>
-						<div class="checkout_form_container">
-							
+									{{#each allAddress}}
+
+
+									<option value="{{this._id}}">{{this.firstName}} {{this.lastName}}, {{this.mobile}},
+										{{this.address}}, {{this.town}}, {{this.pin}}</option>
+
+									{{/each}}
+
+
+
+								</select>
+							</div>
+							<div class="checkout_title">billing details</div>
+							<div class="checkout_form_container">
+
 								<div class="d-flex flex-lg-row flex-column align-items-start justify-content-between">
-									<input type="text" id="first" name="fname" class="checkout_input checkout_input_50" placeholder="First Name" required="required">
-									<input type="text" id="last" name="lname" class="checkout_input checkout_input_50" placeholder="Last Name" required="required">
+									<input type="text" id="first" name="fname" class="checkout_input checkout_input_50"
+										placeholder="First Name" required="required">
+									<input type="text" id="last" name="lname" class="checkout_input checkout_input_50"
+										placeholder="Last Name" required="required">
 								</div>
-								
-								{{!-- <input type="text" class="checkout_input" placeholder="E-mail" required="required"> --}}
+
+								{{!-- <input type="text" class="checkout_input" placeholder="E-mail"
+									required="required"> --}}
 								{{!-- <select name="country" id="country" class="country_select checkout_input">
 									<option>India</option>
 									<option>United Kingdom</option>
 									<option>U.A.E</option>
 								</select> --}}
-								<input type="text" id="street" name="address" class="checkout_input" placeholder="Address" required="required">
-								<input type="text" id="town" name="town" class="checkout_input" placeholder="Town" required="required">
+								<input type="text" id="street" name="address" class="checkout_input"
+									placeholder="Address" required="required">
+								<input type="text" id="town" name="town" class="checkout_input" placeholder="Town"
+									required="required">
 								<div class="d-flex flex-lg-row flex-column align-items-start justify-content-between">
-									<input type="text" id="pin" name="pin" class="checkout_input checkout_input_50" placeholder="Zipcode" required="required">
-									<input type="text" id="mobile" name="mobile" class="checkout_input checkout_input_50" placeholder="Phone No" required="required">
+									<input type="text" id="pin" name="pin" class="checkout_input checkout_input_50"
+										placeholder="Zipcode" required="required">
+									<input type="text" id="mobile" name="mobile"
+										class="checkout_input checkout_input_50" placeholder="Phone No"
+										required="required">
 								</div>
-								<input type="text" name="userID" id="" value='{{useR}}' hidden >
-								<textarea name="comment" id="checkout_comment" class="checkout_comment" placeholder="Leave a comment about your order"></textarea>
-									
-							
+								<input type="text" name="userID" id="" value='{{useR}}' hidden>
+								<textarea name="comment" id="checkout_comment" class="checkout_comment"
+									placeholder="Leave a comment about your order"></textarea>
+
+
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<!-- Cart Details -->
-				<div class="col-lg-6">
-					<div class="cart_details">
-						<div class="checkout_title">cart total</div>
-						<div class="cart_total">
-		
+					<!-- Cart Details -->
+					<div class="col-lg-6">
+						<div class="cart_details">
+							<div class="checkout_title">cart total</div>
+							<div class="cart_total">
+
 								<div class="cart_coupon">
-								<div class="cart_title">coupon code</div>
-								<input type="text"   id="coupon-field" class="cart_coupon_input" placeholder="Coupon code">
-								<button type="button" onclick="applyCoupon()" id="apply-btn" class="btn button_clear cart_button_2 " style="margin-top: 1em;">apply coupon</button>
-								<button type="button" onclick="removeCoupon()" id="remove-btn" class="btn button_clear cart_button_2 " style="margin-top: 1em; display: none;">remove coupon</button>
+									<div class="cart_title">coupon code</div>
+									<input type="text" id="coupon-field" class="cart_coupon_input"
+										placeholder="Coupon code">
+									<div id="coupon-success" style="color: green;"></div>
+									<button type="button" onclick="applyCoupon()" id="apply-btn"
+										class="btn button_clear cart_button_2 " style="margin-top: 1em;">apply
+										coupon</button>
+									<button type="button" onclick="removeCoupon()" id="remove-btn"
+										class="btn button_clear cart_button_2 "
+										style="margin-top: 1em; display: none;">remove coupon</button>
 
-								<div id="coupon-error" style="color: red;"></div>
-				
-							
+									<div id="coupon-error" style="color: red;"></div>
+
+
+								</div>
+
+								{{#if couponApplied}}
+								<div class="cart_coupon">
+									<div class="cart_title">coupon code</div>
+
+									<input type="text" class="cart_coupon_input" placeholder="Coupon code" readonly>
+									<button onclick="" class="button_clear cart_button_2"
+										style="margin-top: 1em;">remove coupon</button>
+									<div id="coupon-info">coupon of 15%</div>
+
+								</div>
+								{{/if}}
+								<ul>
+									{{!-- <li class="d-flex flex-row align-items-center justify-content-start">
+										<div class="cart_total_title">Product</div>
+										<div class="cart_total_price ml-auto">Total</div>
+									</li> --}}
+
+									<li class="d-flex flex-row align-items-center justify-content-start">
+										<div class="cart_total_title">Subtotal</div>
+										<div id="sub-total" class="cart_total_price ml-auto">{{total}}</div>
+										<input type="text" name="subTotal" id="sub-total" value="{{total}}" hidden>
+									</li>
+									<li class="d-flex flex-row align-items-center justify-content-start">
+										<div class="cart_total_title">Discount</div>
+										<div class="cart_total_price ml-auto" id="billDiscount">0</div>
+									</li>
+									<li class="d-flex flex-row align-items-start justify-content-start total_row">
+										<div class="cart_total_title">Total</div>
+										<div id="display-total" class="cart_total_price ml-auto">{{total}}</div>
+										<input type="text" name="orderTotal" id="order-total" value="{{total}}" hidden>
+									</li>
+								</ul>
 							</div>
-					
-							{{#if couponApplied}}
-							<div class="cart_coupon">
-								<div class="cart_title">coupon code</div>
-							
-								<input type="text" class="cart_coupon_input" placeholder="Coupon code" readonly>
-								<button onclick="" class="button_clear cart_button_2" style="margin-top: 1em;">remove coupon</button>
-								<div id="coupon-info">coupon of 15%</div>
-							
+
+							<input type="text" name="discount" id="discount" value="0" hidden>
+
+							<div class="payment">
+								<p>Payment Method</p>
+								<div class="cod">
+									<label for="" class="radio-inline">
+										<input type="radio" name="payment-method" value="COD" checked>COD
+									</label>
+								</div>
+								<div class="wallet">
+									<label for="" class="radio-inline">
+										<input type="radio" name="payment-method" value="WALLET">WALLET
+									</label>
+								</div>
+								<div class="online">
+									<label for="" class="radio-inline mt-2">
+										<input type="radio" name="payment-method" value="ONLINE">RAZORPAY
+									</label>
+								</div>
+								<div class="paypal">
+									<label for="" class="radio-inline mt-2">
+										<input type="radio" name="payment-method" value="PAYPAL">PAYPAL
+									</label>
+								</div>
+								<div class="visa payment_option"><a href=""><img src="images/visa.jpg" alt=""></a></div>
+								<div class="master payment_option"><a href=""><img src="images/master.jpg" alt=""></a>
+								</div>
+								<button type="submit" class="cart_total_button">place order</button>
 							</div>
-							{{/if}}
-							<ul>
-								<li class="d-flex flex-row align-items-center justify-content-start">
-									<div class="cart_total_title">Product</div>
-									<div class="cart_total_price ml-auto">Total</div>
-								</li>
-								
-								<li class="d-flex flex-row align-items-center justify-content-start">
-									<div class="cart_total_title">Subtotal</div>
-									<div id="sub-total" class="cart_total_price ml-auto">{{total}}</div>
-									<input type="text" name="subTotal" id="sub-total" value="{{total}}" hidden>
-								</li>
-								<li class="d-flex flex-row align-items-center justify-content-start">
-									<div class="cart_total_title">Shipping</div>
-									<div class="cart_total_price ml-auto">$5.00</div>
-								</li>
-								<li class="d-flex flex-row align-items-start justify-content-start total_row">
-									<div class="cart_total_title">Total</div>
-									<div id="display-total" class="cart_total_price ml-auto">{{total}}</div>
-									<input type="text" name="orderTotal" id="order-total" value="{{total}}" hidden>
-								</li>
-							</ul>
+
+
 						</div>
-
-						<input type="text" name="discount" id="discount" value="0" hidden>
-
-						<div class="payment">
-							<p>Payment Method</p>
-							<div class="cod">
-								<label for="" class="radio-inline">
-								<input type="radio" name="payment-method" value="COD" checked>COD
-							</label>
-							</div>
-							<div class="online">
-								<label for="" class="radio-inline mt-2">
-								<input type="radio" name="payment-method" value="ONLINE" >RAZORPAY
-							</label>
-							</div>
-							<div class="paypal">
-								<label for="" class="radio-inline mt-2">
-								<input type="radio" name="payment-method" value="PAYPAL" >PAYPAL
-							</label>
-							</div>
-							<div class="visa payment_option"><a href=""><img src="images/visa.jpg" alt=""></a></div>
-							<div class="master payment_option"><a href=""><img src="images/master.jpg" alt=""></a></div>
-							<button type="submit" class="cart_total_button">place order</button>
-						</div>
-
-
 					</div>
 				</div>
-			</div>
 			</form>
 		</div>
 	</div>
 
-	
+
 
 	<!-- Newsletter -->
 
-	
 
-					<!-- Options Item -->
-					<div class="container">
-						<div class="row">
-						<div class="col-lg-3">
-						<div class="options_item d-flex flex-row align-items-center justify-content-start">
-							<div class="option_image"><img src="images/option_1.png" alt=""></div>
-							<div class="option_content">
-								<div class="option_title">30 Days Returns</div>
-								<div class="option_subtitle">No questions asked</div>
-							</div>
-						</div>
+
+	<!-- Options Item -->
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-3">
+				<div class="options_item d-flex flex-row align-items-center justify-content-start">
+					<div class="option_image"><img src="images/option_1.png" alt=""></div>
+					<div class="option_content">
+						<div class="option_title">30 Days Returns</div>
+						<div class="option_subtitle">No questions asked</div>
 					</div>
+				</div>
+			</div>
 
-					<!-- Options Item -->
-					<div class="col-lg-3">
-						<div class="options_item d-flex flex-row align-items-center justify-content-start">
-							<div class="option_image"><img src="images/option_2.png" alt=""></div>
-							<div class="option_content">
-								<div class="option_title">Free Delivery</div>
-								<div class="option_subtitle">On all orders</div>
-							</div>
-						</div>
+			<!-- Options Item -->
+			<div class="col-lg-3">
+				<div class="options_item d-flex flex-row align-items-center justify-content-start">
+					<div class="option_image"><img src="images/option_2.png" alt=""></div>
+					<div class="option_content">
+						<div class="option_title">Free Delivery</div>
+						<div class="option_subtitle">On all orders</div>
 					</div>
+				</div>
+			</div>
 
-					<!-- Options Item -->
-					<div class="col-lg-3">
-						<div class="options_item d-flex flex-row align-items-center justify-content-start">
-							<div class="option_image"><img src="images/option_3.png" alt=""></div>
-							<div class="option_content">
-								<div class="option_title">Secure Payments</div>
-								<div class="option_subtitle">No need to worry</div>
-							</div>
-						</div>
+			<!-- Options Item -->
+			<div class="col-lg-3">
+				<div class="options_item d-flex flex-row align-items-center justify-content-start">
+					<div class="option_image"><img src="images/option_3.png" alt=""></div>
+					<div class="option_content">
+						<div class="option_title">Secure Payments</div>
+						<div class="option_subtitle">No need to worry</div>
 					</div>
+				</div>
+			</div>
 
-					<!-- Options Item -->
-					<div class="col-lg-3">
-						<div class="options_item d-flex flex-row align-items-center justify-content-start">
-							<div class="option_image"><img src="images/option_4.png" alt=""></div>
-							<div class="option_content">
-								<div class="option_title">24/7 Support</div>
-								<div class="option_subtitle">Just call us</div>
-							</div>
-						</div>
+			<!-- Options Item -->
+			<div class="col-lg-3">
+				<div class="options_item d-flex flex-row align-items-center justify-content-start">
+					<div class="option_image"><img src="images/option_4.png" alt=""></div>
+					<div class="option_content">
+						<div class="option_title">24/7 Support</div>
+						<div class="option_subtitle">Just call us</div>
 					</div>
-					</div>
-					</div>
-
-				
-
-
+				</div>
+			</div>
+		</div>
+	</div>
 
 
-<script>
-	$('#checkout-form').submit((e)=>{
-    e.preventDefault()
-    $.ajax({
-        url:'/checkout',
-        method:'post',
-        data:$('#checkout-form').serialize( ),
-		success:(response)=>{
-			alert(response)
-			console.log(response,'checking....')
 
-			if(response.codSuccess){
-				location.href='/order-placed'
-			}
 
-			else if(response.paypalSuccess){
-				console.log('checking. inner...')
 
-				location.replace(response.linkto)
-			}
-			
-			else{
-				razorpayPayment(response)
-			}
-		}
-    })
- })
-//Razorpay
-function razorpayPayment(order){
-	
-	
-	var options = {
-    "key": "rzp_test_bZDcL6JRT4zjki", // Enter the Key ID generated from the Dashboard
-    "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    "currency": "INR",
-    "name": "Paws India",
-    "description": "Test Transaction",
-    "image": "https://example.com/your_logo",
-    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    "handler": function (response){
-        alert(response.razorpay_payment_id);
-        alert(response.razorpay_order_id);
-        alert(response.razorpay_signature)
 
-		verifyPayment(response,order)          //aftergetting these ids and signature pass it to ajax with order 
+	<script>
+		$('#checkout-form').submit((e) => {
+			e.preventDefault()
+			$.ajax({
+				url: '/checkout',
+				method: 'post',
+				data: $('#checkout-form').serialize(),
+				success: (response) => {
+					alert(response)
+					console.log(response, 'checking....')
 
-    },
-	"modal": {
-    "ondismiss": function(){
-         window.location.replace("http://localhost:7000/payment-failed");
-     }
-    },
-    "prefill": {
-        "name": "Gaurav Kumar",
-        "email": "gaurav.kumar@example.com",
-        "contact": "9999999999"
-    },
-    "notes": {
-        "address": "Razorpay Corporate Office"
-    },
-    "theme": {
-        "color": "#3399cc"
-    }
-};
+					if (response.codSuccess) {
+						console.log(response.products, 'ORDER products in cod')
+						$.ajax({
+							url: '/order-stock',
 
-var rzp1 = new Razorpay(options);
+							data: {
+								products: JSON.stringify(response.products)
+							},
+							method: 'post',
+							success: (response) => {
+								if (response.stockDecrease) {
+									location.href = '/order-placed'
+								}
 
-rzp1.open();
-}
 
-function verifyPayment(payment,order){
-	$.ajax({
-		url:'/verify-payment',
-		data:{
-			payment,
-			order
-		},
-		method:'post',
-		success:(response)=>{
-			if(response.status){
-					location.href='/order-placed'
-			}
-			else{
-				alert('Payment Failed')
-			}
-		}
-	})
-}
+							}
+						})
 
-function selectedAddress(){
-	let e = document.getElementById('address');
-    let addressID = e.value;
+					}
 
-	$.ajax({
-		url: '/selected-address/'+addressID,
-		
-		method: 'get',
-		success:(response)=>{
-			document.getElementById('first').value = response.firstName,
-			document.getElementById('last').value = response.lastName,
-			document.getElementById('street').value = response.address
-			document.getElementById('town').value = response.town
-			document.getElementById('pin').value = response.pin
-			document.getElementById('mobile').value = response.mobile
-		}
-	})
+					else if (response.insufficientBalance) {
+						swal({
+							title: "Insufficient Balance",
+							icon: "warning",
+							button: "OK",
+							dangerMode: true,
+						});
+					}
 
-}
+					else if (response.walletSuccess) {
+						$.ajax({
+							url: '/order-stock',
 
-function applyCoupon(){
-	
-	let couponField = document.getElementById('coupon-field').value
-	
-	let oldTotal = document.getElementById('sub-total').innerHTML
-	if(couponField!=''){
-		console.log(couponField,'value')
-		console.log(oldTotal,'ajaxtotal')
+							data: {
+								products: JSON.stringify(response.products)
+							},
+							method: 'post',
+							success: (response) => {
+								if (response.stockDecrease) {
+									location.href = '/order-placed'
+								}
 
-		$.ajax({
-		url:'/coupon-apply',
-		data:{
-			couponField : couponField,
-	
-		},
-		method:'post',
-		success:(response)=>{
-			if(response.Invalid){
-				console.log('invuuu')
-				document.getElementById('coupon-error').innerHTML = 'Invalid Coupon'
-			}
-			else if(response.couponExpired){
-				document.getElementById('coupon-error').innerHTML = 'Coupon Expired'
-			}
-			else{
-				console.log(response,'hi its final')
-				console.log(oldTotal,response.couponOffer,'caluclate')
-				let discount = oldTotal * response.couponOffer/100
-				let finalTotal = 0
 
-				console.log(discount,'discount')
+							}
+						})
+					}
 
-				if(response.minSpend>oldTotal){
-					let moreAmount = response.minSpend-oldTotal
-				document.getElementById('coupon-error').innerHTML = 'You need to purchase for RS.'+moreAmount+' more to redeem this coupon'
+					else if (response.paypalSuccess) {
+						console.log('checking. inner...')
+						console.log(response.linkto, 'link To')
+						location.replace(response.linkto)
+
+					}
+
+					else if (response.razorPaySuccess) {
+						console.log(response.products)
+						razorpayPayment(response.order, response.products)
+					}
 				}
-				else if(discount>response.maxSpend){
+			})
+		})
+		//Razorpay
+		function razorpayPayment(order, products) {
+			console.log(products, 'function called of razor')
 
-					discount = response.maxSpend
-					finalTotal = oldTotal - discount
-					finalTotal = Math.round(finalTotal)
-					console.log(finalTotal)
-					document.getElementById('coupon-error').innerHTML = 'Coupon of '+response.couponOffer+' applied upto Rs.'+response.maxSpend+' Total Amount to be paid Rs.'+finalTotal
-					document.getElementById('display-total').innerHTML = finalTotal
-					document.getElementById('order-total').value = finalTotal
-					document.getElementById('discount').value = discount
-					document.getElementById('apply-btn').style.display = 'none'
-					document.getElementById('remove-btn').style.display = 'block'
 
+			var options = {
+				"key": "rzp_test_bZDcL6JRT4zjki", // Enter the Key ID generated from the Dashboard
+				"amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+				"currency": "INR",
+				"name": "Loyal Paws",
+				"description": "Test Transaction",
+				"image": "https://example.com/your_logo",
+				"order_id": order.id,
+				"handler": function (response) {
+					alert(response.razorpay_payment_id);
+					alert(response.razorpay_order_id);
+					alert(response.razorpay_signature)
+
+					verifyPayment(response, order, products)          //aftergetting these ids and signature pass it to ajax with order 
+
+				},
+				"modal": {
+					"ondismiss": function () {
+						window.location.replace("http://localhost:7000/payment-failed");
+					}
+				},
+				"prefill": {
+					"name": "Libin Biji",
+					"email": "libinbiji43@gmail.com",
+					"contact": "8089688206"
+				},
+				"notes": {
+					"address": "Razorpay Corporate Office"
+				},
+				"theme": {
+					"color": "#3399cc"
 				}
-				else if(discount<response.maxSpend){
+			};
 
-					finalTotal = oldTotal - discount
-					finalTotal = Math.round(finalTotal)
-					discount = Math.round(discount)
-					document.getElementById('coupon-error').innerHTML = 'Coupon of '+response.couponOffer+' applied upto Rs.'+response.maxSpend+' Total Amount to be paid Rs.'+finalTotal
-					document.getElementById('display-total').innerHTML = finalTotal
-					document.getElementById('order-total').value = finalTotal
-					document.getElementById('discount').value = discount
-					document.getElementById('apply-btn').style.display = 'none'
-					document.getElementById('remove-btn').style.display = 'block'
+			var rzp1 = new Razorpay(options);
 
-				}
-			}
-			
+			rzp1.open();
 		}
-	   })
-	}
 
-}
+		function verifyPayment(payment, order, products) {
+			console.log('Verify payment hbs ', products)
+			$.ajax({
+				url: '/verify-payment',
+				data: {
+					payment,
+					order,
+					products: JSON.stringify(products)
+				},
+				method: 'post',
+				success: (response) => {
+					if (response.stockDecrease) {
+						location.href = '/order-placed'
+					}
+					else {
+						alert('Payment Failed')
+					}
+				}
+			})
+		}
+
+		function selectedAddress() {
+			let e = document.getElementById('address');
+			let addressID = e.value;
+
+			$.ajax({
+				url: '/selected-address/' + addressID,
+
+				method: 'get',
+				success: (response) => {
+					document.getElementById('first').value = response.firstName,
+						document.getElementById('last').value = response.lastName,
+						document.getElementById('street').value = response.address
+					document.getElementById('town').value = response.town
+					document.getElementById('pin').value = response.pin
+					document.getElementById('mobile').value = response.mobile
+				}
+			})
+
+		}
+
+		function applyCoupon() {
+
+			let couponField = document.getElementById('coupon-field').value
+
+			let oldTotal = document.getElementById('sub-total').innerHTML
+			if (couponField != '') {
+				console.log(couponField, 'value')
+				console.log(oldTotal, 'ajaxtotal')
+
+				$.ajax({
+					url: '/coupon-apply',
+					data: {
+						couponField: couponField,
+
+					},
+					method: 'post',
+					success: (response) => {
+						if (response.Invalid) {
+							console.log('invuuu')
+							document.getElementById('coupon-error').innerHTML = 'Invalid Coupon'
+							setTimeout(function () {
+								document.getElementById('coupon-error').innerHTML = ''
+							}, 2000);
+						}
+						else if (response.couponExpired) {
+							document.getElementById('coupon-error').innerHTML = 'Coupon Expired'
+							setTimeout(function () {
+								document.getElementById('coupon-error').innerHTML = ''
+							}, 2000);
+						}
+						else {
+							console.log(response, 'hi its final')
+							console.log(oldTotal, response.couponOffer, 'caluclate')
+							let discount = oldTotal * response.couponOffer / 100
+							let finalTotal = 0
+
+							console.log(discount, 'discount')
+
+							if (response.minSpend > oldTotal) {
+								let moreAmount = response.minSpend - oldTotal
+								document.getElementById('coupon-error').innerHTML = 'You need to purchase for RS.' + moreAmount + ' more to redeem this coupon'
+								setTimeout(function () {
+									document.getElementById('coupon-error').innerHTML = ''
+								}, 2000);
+							}
+							else if (discount > response.maxSpend) {
+
+								discount = response.maxSpend
+								finalTotal = oldTotal - discount
+								finalTotal = Math.round(finalTotal)
+								console.log(finalTotal)
+								document.getElementById('coupon-success').innerHTML = 'Coupon of ' + response.couponOffer + ' applied upto Rs.' + response.maxSpend + ' Total Amount to be paid Rs.' + finalTotal
+								document.getElementById('display-total').innerHTML = finalTotal
+								document.getElementById('order-total').value = finalTotal
+								document.getElementById('discount').value = discount
+								document.getElementById('billDiscount').innerHTML = discount
+								document.getElementById('apply-btn').style.display = 'none'
+								document.getElementById('remove-btn').style.display = 'block'
+
+							}
+							else if (discount < response.maxSpend) {
+
+								finalTotal = oldTotal - discount
+								finalTotal = Math.round(finalTotal)
+								discount = Math.round(discount)
+								document.getElementById('coupon-success').innerHTML = 'Coupon of ' + response.couponOffer + ' applied upto Rs.' + response.maxSpend + ' Total Amount to be paid Rs.' + finalTotal
+								document.getElementById('display-total').innerHTML = finalTotal
+								document.getElementById('order-total').value = finalTotal
+								document.getElementById('discount').value = discount
+								document.getElementById('billDiscount').innerHTML = discount
+								document.getElementById('apply-btn').style.display = 'none'
+								document.getElementById('remove-btn').style.display = 'block'
+
+							}
+						}
+
+					}
+				})
+			}
+
+		}
 
 
-function removeCoupon(){
-	let oldTotal = document.getElementById('sub-total').innerHTML
-	document.getElementById('display-total').innerHTML = oldTotal
-	document.getElementById('order-total').value = oldTotal
-	
-	document.getElementById('remove-btn').style.display = 'none'
-	document.getElementById('apply-btn').style.display = 'block'
-}
+		function removeCoupon() {
+			let oldTotal = document.getElementById('sub-total').innerHTML
+			document.getElementById('display-total').innerHTML = oldTotal
+			document.getElementById('order-total').value = oldTotal
+			document.getElementById('coupon-success').innerHTML = ''
+			document.getElementById('billDiscount').innerHTML = 0
+			document.getElementById('remove-btn').style.display = 'none'
+			document.getElementById('apply-btn').style.display = 'block'
+		}
 
 
 
-</script>
+	</script>
 
-></div>
+</div>

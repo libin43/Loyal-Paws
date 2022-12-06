@@ -94,6 +94,7 @@
                                         <input name="productOffer" type="text" class="form-control" id="offer" value="{{prodID.productOffer}}" onkeyup="calculate()"
                                             placeholder="City">
                                         <label for="floatingCity">Product Offer %</label>
+                                        <span style="color: red;" id="offer-error"></span>
                                     </div>
                                 </div>
                             </div>
@@ -106,12 +107,33 @@
                                 <div class="col-md-4 col-6">
                                     <div class="form-floating">
                                     <input name="price" type="number" class="form-control" id="offerPrice" value="{{prodID.price}}"
-                                        placeholder="City" required>
+                                        placeholder="City" required readonly>
                                     <label for="floatingCity">Price</label>
                                 </div>
                             
                                     
                                 </div>
+                            </div>
+
+
+                            <div class="row mb-3">
+                                <label for="inputEmail3" class="col-sm-2 col-form-label">Product Stock</label>
+                                <div class="col-md-4 col-6">
+                                    <div class="form-floating">
+                                    <input name="exist-stock" type="number" class="form-control" id="existStock" value="{{prodID.stock}}"
+                                        placeholder="City" required readonly>
+                                    <label for="floatingCity">Existing</label>
+                                </div>
+                                </div>
+
+                                <div class="col-md-4 col-6">
+                                    <div class="form-floating">
+                                    <input name="add-stock" type="number" class="form-control" onkeyup="updateStock()" id="addStock" value=""
+                                        placeholder="City" required>
+                                    <label for="floatingCity">Add Stock</label>
+                                </div>
+                                </div>
+                                <input type="text" name="stockFinal" id="stockFinal">
                             </div>
                            
 
@@ -155,6 +177,21 @@
           <script>
             function viewImage(event){
                 document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+            }
+
+            function updateStock(){
+                console.log('fn called')
+                let existStock = parseInt(document.getElementById('existStock').value)
+                let addStock = parseInt(document.getElementById('addStock').value)
+                let finalStock 
+                if(addStock>0){
+                    let finalStock = existStock + addStock
+                    document.getElementById('stockFinal').value = finalStock
+                }
+                else{
+                    document.getElementById('stockFinal').value = existStock
+                }
+
             }
           </script>
 

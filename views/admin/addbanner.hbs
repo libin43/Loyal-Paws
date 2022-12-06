@@ -1,0 +1,105 @@
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Add banner</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/admin/banner">Banner</a></li>
+                <li class="breadcrumb-item active">Add Banner</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section" >
+        <div class="row">
+
+            <div class="col-lg-10">
+
+                <div class="card" >
+                    <div class="card-body">
+                        <h5 class="card-title">Add Banner Form</h5>
+
+                        <!-- Floating Labels Form -->
+                        <form class="row g-3" action="/admin/add-banner" method="post" enctype="multipart/form-data">
+                            <div class="col-md-10">
+                                <div class="form-floating">
+                                    <input name="title" type="text" class="form-control" id="floatingName"
+                                        placeholder="State" required>
+                                    <label for="floatingName">Title</label>
+                                </div>
+                            </div>
+                            
+                        
+                            
+
+                           
+                           
+                           <div class="col-12 mb-4">
+                                <div class="form-floating">
+                                    <textarea name="description" class="form-control" placeholder="Address"
+                                        id="floatingTextarea" style="height: 100px;" required></textarea>
+                                    <label for="floatingTextarea">Banner Description</label>
+                                </div>
+                            </div>
+
+                        
+
+                           <div class="row"></div>
+
+
+                           
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="large-img">
+                                    
+                                        <img id="imglgView" src="/banner-images/{{catID.image}}" alt=""
+                                            style="width: 100%;height: 300px; margin-bottom: 1em;">
+                                        <input type="file" class="form-control" name="lgImage" required onchange="viewlgImage(event)">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="large-img">
+                                        <img id="imgsmView" src="/banner-images/{{catID.image}}" alt=""
+                                            style="width: 100%;height: 300px; margin-bottom: 1em;">
+                                        <input type="file" class="form-control" name="smImage" required onchange="viewsmImage(event)">
+                                    </div>
+                                </div>
+                            </div>
+                           
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="reset" class="btn btn-secondary">Cancel</button>
+                            </div>
+                        </form><!-- End floating Labels Form -->
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<script>
+    
+
+
+    function viewlgImage(event) {
+        document.getElementById('imglgView').src = URL.createObjectURL(event.target.files[0])
+    }
+
+     function viewsmImage(event) {
+        document.getElementById('imgsmView').src = URL.createObjectURL(event.target.files[0])
+    }
+
+
+
+</script>
+
+

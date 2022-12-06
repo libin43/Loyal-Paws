@@ -1,0 +1,111 @@
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>BANNER MANAGEMENT</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/admin/product">Banner</a></li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section" >
+        <div class="row">
+
+            <div class="col-lg-12">
+
+                <div class="card" >
+                    <div class="card-body">
+                        <h5 class="card-title">BANNERS</h5>
+                        <a href="/admin/add-banner"><button class="btn btn-success">Add Banner +</button></a>
+
+                        <!-- Floating Images -->
+                        {{#each bannerDetail}}
+                       
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="large-img">
+                                            <label for="">
+                                                <h5>Large Image</h5>
+                                            </label>
+                                            <img class="img-fluid" src="../banner-images/{{this.lgImage}}" alt="">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="small-img">
+                                            <label for="">
+                                                <h5>Small Image</h5>
+                                            </label>
+                                            <img class="img-fluid" src="../banner-images/{{this.smImage}}" alt="">
+                                        </div>
+                                    </div>
+                                </div>
+                                <h5 class="card-title">{{this.title}}</h5>
+                                <p class="card-text">{{this.description}}</p>
+                                <a href="/admin/edit-banner?id={{this._id}}" class="btn btn-primary">Edit</a>
+                            
+                                <button onclick="bannerDelete('{{this._id}}','{{this.title}}')" class="btn btn-danger">Delete</button>
+                            </div>
+                        </div>
+                        <hr>
+                        {{/each}}
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<script>
+    
+
+
+    function viewImage(event) {
+        document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+    }
+
+
+    function bannerDelete(bannerId,bannerName){
+          swal({
+            title: "Delete " +bannerName+ " banner ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+           })
+           .then((willDelete) => {
+               if (willDelete) {
+                   swal("Deleted!", {
+                   icon: "success",
+              });
+
+                   $.ajax({
+            url:'/admin/delete-banner/'+bannerId,
+            method:'get',
+            success:(response)=>{
+                if(response.status){
+                      setTimeout(function(){
+                             location.reload()
+                       }, 1000);
+                   }
+               }
+             })
+        } else {}
+        });
+       
+    }
+
+
+
+</script>
+
+

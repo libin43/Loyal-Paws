@@ -1,6 +1,6 @@
 const { response } = require('../app')
 const env = require('dotenv').config()
-console.log(process.env,'env hitting') 
+
 var accountSid = process.env.twilio_Sid
 var authToken = process.env.twilio_Token
 var serviceId = process.env.twilio_Id

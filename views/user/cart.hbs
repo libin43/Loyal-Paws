@@ -64,43 +64,79 @@
 					<div class="cart_products">
 						{{#each products}}
                         <ul>
-							
+							{{#isEqual this.stock 0}}
 							<li class=" cart_product d-flex flex-md-row flex-column align-items-md-center align-items-start justify-content-start">
 								<!-- Product Image -->
-								<div class="cart_product_image"><img style="width:100px ;height:100px ;" src="../product-images/{{this.cartItems.imageMany.[0]}}" alt=""></div>
+								<div class="cart_product_image"><img style="width:100px ;height:100px ;" src="../product-images/{{../this.cartItems.imageMany.[0]}}" alt=""></div>
 								<!-- Product Name -->
-								<div class="cart_product_name"><a href="product.html">{{this.cartItems.product}}</a></div>
+								<div class="cart_product_name"><a href="product.html">{{../this.cartItems.product}}</a></div>
 								<div class="cart_product_info ml-auto">
 									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
 								    
 									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
 
 										<!-- Product Price -->
-										<div class="cart_product_price" id="productSingle{{this.cartItems._id}}">{{this.cartItems.price}}</div>
-									   <div class="cart_product_price total" id="productTotal{{this.cartItems._id}}">{{this.productPriceTotal}}</div>
+										<div class="cart_product_price" id="productSingle{{../this.cartItems._id}}">{{../this.cartItems.price}}</div>
+									   <div class="cart_product_price total" id="productTotal{{../this.cartItems._id}}">{{../this.productPriceTotal}}</div>
 										<!-- Product Quantity -->
 										<div class="product_quantity_container">
-											<div class="product_quantity clearfix">
-										<button style="width: 25px;" onclick="changeQuantity('{{this._id}}','{{this.cartItems._id}}','{{../userID}}',-1)" class="cart-item-count  rounded ">-</button>
-
-
-										<span class="p-2" id="{{this.cartItems._id}}">{{this.quantity}}</span>
-
-
-										<button style="width: 25px;" onclick="changeQuantity('{{this._id}}','{{this.cartItems._id}}','{{../userID}}',1)"class="cart-item-count  rounded">+</button>
-                                         </div>
+											
+										  <h6 style="color: red;">Out of Stock</h6>
+										 
                                       </div>
 
 										<!-- Products Total Price -->
 										
 										<!-- Product Cart Trash Button -->
 										<div class="cart_product_button">
-											<button class="cart_product_remove" onclick="deleteProduct('{{this._id}}','{{this.cartItems._id}}')" ><img src="images/trash.png" alt=""></button>
+											<button class="cart_product_remove" onclick="deleteProduct('{{../this._id}}','{{../this.cartItems._id}}')" ><img src="images/trash.png" alt=""></button>
 										</div>
                                       </div>
 									</div>
 								</div>
+								<input type="text" placeholder="stock" id="stock{{../this.cartItems._id}}" value="{{../this.stock}}" readonly >
 							</li>
+							{{/isEqual}}
+							{{#isGreater this.stock 0}}
+							<li class=" cart_product d-flex flex-md-row flex-column align-items-md-center align-items-start justify-content-start">
+								<!-- Product Image -->
+								<div class="cart_product_image"><img style="width:100px ;height:100px ;" src="../product-images/{{../this.cartItems.imageMany.[0]}}" alt=""></div>
+								<!-- Product Name -->
+								<div class="cart_product_name"><a href="product.html">{{../this.cartItems.product}}</a></div>
+								<div class="cart_product_info ml-auto">
+									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
+								    
+									<div class="cart_product_info_inner d-flex flex-row align-items-center justify-content-md-end justify-content-start">
+
+										<!-- Product Price -->
+										<div class="cart_product_price" id="productSingle{{../this.cartItems._id}}">{{../this.cartItems.price}}</div>
+									   <div class="cart_product_price total" id="productTotal{{../this.cartItems._id}}">{{../this.productPriceTotal}}</div>
+										<!-- Product Quantity -->
+										<div class="product_quantity_container">
+											<div class="product_quantity clearfix">
+										<button style="width: 25px;" onclick="changeQuantity('{{../this._id}}','{{../this.cartItems._id}}','{{../../userID}}',-1)" class="cart-item-count  rounded ">-</button>
+
+
+										<span class="p-2" id="{{../this.cartItems._id}}">{{../this.quantity}}</span>
+
+
+										<button style="width: 25px;" onclick="changeQuantity('{{../this._id}}','{{../this.cartItems._id}}','{{../../userID}}',1)"class="cart-item-count  rounded">+</button>
+                                         </div>
+										 <div class="row pl-5" id="stock-message{{../this.cartItems._id}}" style="color: red;"></div>
+                                      </div>
+
+										<!-- Products Total Price -->
+										
+										<!-- Product Cart Trash Button -->
+										<div class="cart_product_button">
+											<button class="cart_product_remove" onclick="deleteProduct('{{../this._id}}','{{../this.cartItems._id}}')" ><img src="images/trash.png" alt=""></button>
+										</div>
+                                      </div>
+									</div>
+								</div>
+								<input type="text" placeholder="stock" id="stock{{../this.cartItems._id}}" value="{{../this.stock}}" readonly >
+							</li>
+							{{/isGreater}}
 						</ul>
                         {{/each}}
 					</div>
@@ -144,7 +180,14 @@
 								<div class="cart_total_price ml-auto"><span id="total">{{total}}</span></div>
 							</li>
 						</ul>
-						<a href="/checkout"><button class="cart_total_button">proceed to checkout</button></a>
+						{{!-- <button class="cart_total_button" onclick="validateStock()">proceed to checkout</button> --}}
+						{{#unless outOfStock}}
+						<button class="cart_total_button" onclick="checkCart()">proceed to checkout</button>
+						{{/unless}}
+
+						{{#if outOfStock}}
+						<button class="cart_total_button" onclick="stockAlert()" >proceed to checkout</button>
+						{{/if}}
 						
 						
 					</div>
@@ -328,6 +371,35 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
   button: "OK",
 });
 
+	}
+
+	function validateStock(prodID){
+		
+	}
+
+	function stockAlert(){
+				swal({
+             title: "Alert!",
+             text: "Please remove Out of Stock Products to checkout !",
+             icon: "warning",
+             button: "OK",
+             });
+	}
+
+	function checkCart(products){
+		$.ajax({
+			url:'/verify-cart',
+			method:'get',
+			success:(response)=>{
+				if(response.Reload){
+					location.reload()
+				}
+				else if(response.noReload){
+					location.href='/checkout'
+				}
+			}
+		})
+		
 	}
 	
 </script>
