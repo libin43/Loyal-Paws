@@ -459,6 +459,7 @@ router.get('/add-coupon',verifyAdmin,(req,res)=>{
 })
 
 router.post('/add-coupon',verifyAdmin,(req,res)=>{
+    req.body.addDate = new Date(req.body.addDate)
     req.body.expiry = new Date(req.body.expiry)
     req.body.minSpend = parseInt(req.body.minSpend)
     req.body.maxSpend = parseInt(req.body.maxSpend)

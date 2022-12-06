@@ -35,7 +35,7 @@ module.exports ={
                 // resolve(couponExist)
                 // console.log(couponExist)
 
-               let couponNotExpired = await db.get().collection(collection.COUPON_COLLECTION).findOne({_id:couponExist._id,expiry:{$gt:new Date()}})
+               let couponNotExpired = await db.get().collection(collection.COUPON_COLLECTION).findOne( { _id:couponExist._id, expiry:{$gte:new Date()}, addDate:{$lte:new Date()}} )
                if(couponNotExpired!=null){
                  resolve(couponNotExpired)
             console.log(couponNotExpired,'not expired')
