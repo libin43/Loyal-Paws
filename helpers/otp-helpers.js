@@ -1,9 +1,9 @@
 const { response } = require('../app')
 const env = require('dotenv').config()
 
-var accountSid = process.env.twilio_Sid
-var authToken = process.env.twilio_Token
-var serviceId = process.env.twilio_Id
+var accountSid = process.env.Twilio_sid
+var authToken = process.env.Twilio_Token
+var serviceId = process.env.Twilio_serviceid
 const client = require('twilio')(accountSid,authToken,serviceId)
 let mobile
 module.exports= {
