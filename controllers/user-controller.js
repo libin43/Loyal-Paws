@@ -381,7 +381,7 @@ module.exports = {
         console.log(req.body,'coming')
         userHelpers.filterPrice(req.body.minimum,req.body.maximum).then((products)=>{
           console.log(products,'final theeeeee')
-          res.render('user/pricefilter',{products,noProduct:true})
+          res.render('user/pricefilter',{products})
         })
       },
 

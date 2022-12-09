@@ -888,9 +888,17 @@ module.exports ={
         console.log(min,max)
         min = parseInt(min)
         max = parseInt(max)
+        let products = null
         return new Promise(async(resolve,reject)=>{
-         let products = await db.get().collection(collection.PRODUCT_COLLECTION).find({price:{$gte:min,$lte:max}}).toArray()
-         resolve(products)
+         products = await db.get().collection(collection.PRODUCT_COLLECTION).find({price:{$gte:min,$lte:max}}).toArray()
+         if(products!=null){
+            resolve(products)
+         }
+         else{
+           products = false
+            resolve(products)
+         }
+         
         })
     },
 
