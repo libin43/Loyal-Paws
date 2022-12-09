@@ -1,15 +1,8 @@
 var express = require('express');
 const { response } = require('../app');
 var router = express.Router();
-const userHelpers = require('../helpers/user-helpers');
-const categoryHelpers = require('../helpers/category-helpers');
-const productHelpers = require('../helpers/product-helpers');
-const otpHelpers = require('../helpers/otp-helpers');
-const paypalHelpers = require('../helpers/paypal-helpers');
+
 const multer = require('multer');
-const wishlistHelpers = require('../helpers/wishlist-helpers');
-const couponHelpers = require('../helpers/coupon-helpers');
-const bannerHelpers = require('../helpers/banner-helpers');
 const { getSignup, postSignup, getLogin, postLogin, getReferral, postReferral, getWalletPage, getWalletDataPage, getOtpPage, postOtpPage, verifyOtpPage, postVerifyOtpPage, getHomePage, getUserProfilePage, postUserProfilePage, getUserAddressPage, getAddUserAddressPage, postAddUserAddressPage, getDeleteUserAddress, getCategoryPage, getViewProductPage, addToWishPopUp, getWishListPage, getWishAddToCart, deleteWishFromPage, getSearchResult, getFilterResult, addToCartByUser, addToCartByGuest, getCartPage, verifyCartBtn, changeQuantityBtn, deleteCartProductBtn, getCheckoutPage, postCheckoutPage, postVerifyRazorPay, getOrderPlacedPage, getPayPalSuccessPage, getOrderFailedPage, getViewOrderPage, getViewOrdersPage, getViewOrdersPagination, getViewOrderProductsPage, getCancelOrderBtnPage, getReturnOrderBtnPage, getAddressFromDrpDwn, postCouponApply, postStockDecrease, getLogoutPage, } = require('../controllers/user-controller');
 /************************multer  */
 const multerStorageCategory = multer.diskStorage({
@@ -32,6 +25,10 @@ uploadOne
 const verifyLogin =(req,res,next)=>{
   var url = req.url
   console.log(url)
+  res.header(
+    "Cache-Control",
+    "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0"
+  );
   if(req.session.loginStatus==true){
     next()
   }else{

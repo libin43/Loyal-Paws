@@ -67,7 +67,7 @@
 							{{#isEqual this.stock 0}}
 							<li class=" cart_product d-flex flex-md-row flex-column align-items-md-center align-items-start justify-content-start">
 								<!-- Product Image -->
-								<div class="cart_product_image"><img style="width:100px ;height:100px ;" src="../product-images/{{../this.cartItems.imageMany.[0]}}" alt=""></div>
+								<div class="cart_product_image"><img class="img-fluid" style="width:100px ;height:100px ;" src="../product-images/{{../this.cartItems.imageMany.[0]}}" alt=""></div>
 								<!-- Product Name -->
 								<div class="cart_product_name"><a href="product.html">{{../this.cartItems.product}}</a></div>
 								<div class="cart_product_info ml-auto">
@@ -94,13 +94,13 @@
                                       </div>
 									</div>
 								</div>
-								<input type="text" placeholder="stock" id="stock{{../this.cartItems._id}}" value="{{../this.stock}}" readonly >
+								<input type="text" placeholder="stock" id="stock{{../this.cartItems._id}}" value="{{../this.stock}}" readonly hidden>
 							</li>
 							{{/isEqual}}
 							{{#isGreater this.stock 0}}
 							<li class=" cart_product d-flex flex-md-row flex-column align-items-md-center align-items-start justify-content-start">
 								<!-- Product Image -->
-								<div class="cart_product_image"><img style="width:100px ;height:100px ;" src="../product-images/{{../this.cartItems.imageMany.[0]}}" alt=""></div>
+								<div class="cart_product_image"><img class="img-fluid" style="width:100px ;height:100px ;" src="../product-images/{{../this.cartItems.imageMany.[0]}}" alt=""></div>
 								<!-- Product Name -->
 								<div class="cart_product_name"><a href="product.html">{{../this.cartItems.product}}</a></div>
 								<div class="cart_product_info ml-auto">
@@ -134,7 +134,7 @@
                                       </div>
 									</div>
 								</div>
-								<input type="text" placeholder="stock" id="stock{{../this.cartItems._id}}" value="{{../this.stock}}" readonly >
+								<input type="text" placeholder="stock" id="stock{{../this.cartItems._id}}" value="{{../this.stock}}" readonly hidden >
 							</li>
 							{{/isGreater}}
 						</ul>
@@ -154,13 +154,7 @@
 			<div class="row cart_extra">
 				<!-- Cart Coupon -->
 				<div class="col-lg-6">
-					<div class="cart_coupon">
-						<div class="cart_title">coupon code</div>
-						<form action="#" class="cart_coupon_form d-flex flex-row align-items-start justify-content-start" id="cart_coupon_form">
-							<input type="text" class="cart_coupon_input" placeholder="Coupon code" required="required">
-							<button class="button_clear cart_button_2">apply coupon</button>
-						</form>
-					</div>
+					
 				</div>
 				<!-- Cart Total -->
 				<div class="col-lg-5 offset-lg-1">
@@ -340,7 +334,7 @@
 						<ul>
 							<li><a href="index.html">home</a></li>
 							<li><a href="categories.html">food</a></li>
-							<li><a href="categories.html">accessories</a></li>
+							<li><a href="categories.html">travel carrier</a></li>
 							<li><a href="categories.html">collars</a></li>
 							<li><a href="contact.html">contact</a></li>
 						</ul>

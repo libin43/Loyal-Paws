@@ -207,7 +207,8 @@ module.exports = {
               res.redirect('/')
             })
             .catch(()=>{
-
+              console.log('User not matched')
+              res.render('user/forgotpassword', { newuser: true })
             })
            
         })
@@ -533,8 +534,8 @@ module.exports = {
                 "payment_method": "paypal"
               },
               "redirect_urls": {
-                "return_url": "http://localhost:7000/orderpaypal-placed/"+orderID,
-                "cancel_url": "http://localhost:7000/payment-failed"
+                "return_url": "http://localhost:3000/orderpaypal-placed/"+orderID,
+                "cancel_url": "http://localhost:3000/payment-failed"
               },
               "transactions": [{
                 "amount": {

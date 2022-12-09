@@ -8,9 +8,9 @@
       <h1> USER MANAGEMENT</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item">Tables</li>
-          <li class="breadcrumb-item active">General</li>
+          <li class="breadcrumb-item"><a href="/admin/dashboard">Home</a></li>
+    
+          <li class="breadcrumb-item active">User Management</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -33,7 +33,7 @@
                     <th scope="col">MOBILE</th>
                     
                     <th scope="col">STATUS</th>
-                    <th scope="col">ACTION</th>
+                 
                   </tr>
                 </thead>
                 <tbody>
@@ -46,12 +46,12 @@
                  
                     <td>
                       {{#if this.block}}
-                       <button style="background-color: rgb(66, 174, 66);"><a style="text-decoration: none; color: inherit;" href="/admin/usermanagement/unblock/{{this._id}}">Unblock</a> </button>
+                       <button class="btn" style="background-color: rgb(66, 174, 66); color: white;"><a style="text-decoration: none; color: inherit;" href="/admin/usermanagement/unblock/{{this._id}}">Unblock</a> </button>
                      {{else}}
-                      <button style="background-color: rgb(252, 0, 0);"><a style="text-decoration: none; color: inherit;" href="/admin/usermanagement/block/{{this._id}}">Block</a> </button> 
+                      <button class="btn" style="background-color: rgb(252, 0, 0);border-color: #fff;"><a style="text-decoration: none; color: inherit;" href="/admin/usermanagement/block/{{this._id}}">Block</a> </button> 
                      {{/if}} 
                     </td>
-                    <td>delete</td>
+                
                   </tr>
                   {{/each}}
 

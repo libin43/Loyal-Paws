@@ -6,6 +6,7 @@ const logger = require('morgan');
 const hbs = require('express-handlebars')
 const session = require('express-session')
 const db = require('./config/connection')
+const nocache = require("nocache")
 
 
 
@@ -56,7 +57,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 //session
-app.use(session({secret:'Key',cookie:{maxAge:6000000000}}))
+app.use(session({
+  secret:'Key',
+  resave:true,
+  saveUninitialized:true,
+  cookie:{maxAge:6000000000},
+}))
+//nocache
+app.use(nocache())
 
 app.use('/', userRouter);
 app.use('/admin', adminRouter);

@@ -30,7 +30,7 @@
 				
 			</ul>
 		</nav>
-		<div class="header_content ml-auto">
+		<div class="header_content ml-5">
 			<div class="search header_search">
 				<form action="/search-input-products" method="post">
 					<input type="text" name = 'search' class="search_input"  >
@@ -61,8 +61,16 @@
 						</div>
 					</div>
 				</a>
-				<!-- Avatar -->
-				<div class="dropdown">
+				
+				
+				
+				
+			</div>
+			
+		</div>
+		<!-- Avatar -->
+			
+			<div class="d-none d-md-block dropdown">
 					<button class="dropbtn">
 						<div class="avatar">
 							<img class="img-fluid" src="../images/avatar.svg" alt="">
@@ -79,9 +87,6 @@
 						{{/if}}
 					</div>
 				</div>
-				
-			</div>
-		</div>
 
 		<div class="burger_container d-flex flex-column align-items-center justify-content-around menu_mm">
 			<div></div>
@@ -95,19 +100,62 @@
 
 <!-- Menu -->
 
-	<div class="menu d-flex flex-column align-items-end justify-content-start text-right menu_mm trans_400">
+	<div class="menu d-flex flex-column align-items-center justify-content-start text-center menu_mm trans_400">
 		<div class="menu_close_container"><div class="menu_close"><div></div><div></div></div></div>
-		<div class="logo menu_mm"><a href="#">PawsIndia</a></div>
+		<div class="logo menu_mm"><a href="/">PawsIndia</a></div>
 		<div class="search">
-			<form action="#">
-				<input type="search" class="search_input menu_mm" required="required">
+			<form action="/search-input-products" method="post">
+				<input type="text" name = 'search' class="search_input menu_mm" required="required">
 				<button type="submit" id="search_button_menu" class="search_button menu_mm"><img class="menu_mm" src="images/magnifying-glass.svg" alt=""></button>
 			</form>
 		</div>
+			<div class="d-sm-none">
+					<button class="dropbtn">
+						<div class="avatar">
+							<img class="img-fluid" src="../images/avatar.svg" alt="">
+							<span style="text-decoration: none;color: black;">{{userName}}</span>
+						</div>
+					</button>
+					<div class="dropdown-content">
+						{{#if userName}}
+						<a class="dropdown-item" href="/user-profile">Profile</a>
+						<a class="dropdown-item" href="/user-wallet">Wallet</a>
+						<a class="dropdown-item" href="/logout">Logout</a>
+						{{else}}
+						<a class="dropdown-item" href="/signin">Login</a>
+						{{/if}}
+					</div>
+				</div>
 		<nav class="menu_nav">
 			<ul class="menu_mm">
-				<li class="menu_mm"><a href="">Home</a></li>
-				<li class="menu_mm"><a href="#">Shop</a></li>
+				<li class="menu_mm pb-3"><a href="/">Home</a></li>
+				<div class="dropdown">
+					<li class="menu_mm pb-3"><a class="dropbtn " href="/">Shop</a>
+				
+						<div class="dropdown-content">
+							{{#each category}}
+							<a href="/category?name={{this.category}}" class="text-center">{{this.category}}</a>
+							{{/each}}
+						</div>
+					</li>
+				</div>
+
+				{{#if userName}}
+					<li class="menu_mm pb-3"><a href="/view-orders">View Orders</a></li>
+					<li class="menu_mm pb-3"><a href="/user-profile">Profile</a></li>
+					<li class="menu_mm pb-3"><a href="/user-wallet">Wallet</a></li>
+					<li class="menu_mm pb-3"><a href="/logout">Logout</a></li>
+					{{else}}
+					<li class="menu_mm pb-3"><a href="/signin">Login</a></li>
+					{{/if}}
+				
+
+
+				
+				
+
+					
+				
 				
 			</ul>
 		</nav>

@@ -452,7 +452,7 @@
 								finalTotal = oldTotal - discount
 								finalTotal = Math.round(finalTotal)
 								console.log(finalTotal)
-								document.getElementById('coupon-success').innerHTML = 'Coupon of ' + response.couponOffer + ' applied upto Rs.' + response.maxSpend + ' Total Amount to be paid Rs.' + finalTotal
+								document.getElementById('coupon-success').innerHTML = 'Coupon of ' + response.couponOffer + ' % applied upto Rs.' + response.maxSpend + ' Total Amount to be paid Rs.' + finalTotal
 								document.getElementById('display-total').innerHTML = finalTotal
 								document.getElementById('order-total').value = finalTotal
 								document.getElementById('discount').value = discount
@@ -466,7 +466,7 @@
 								finalTotal = oldTotal - discount
 								finalTotal = Math.round(finalTotal)
 								discount = Math.round(discount)
-								document.getElementById('coupon-success').innerHTML = 'Coupon of ' + response.couponOffer + ' applied upto Rs.' + response.maxSpend + ' Total Amount to be paid Rs.' + finalTotal
+								document.getElementById('coupon-success').innerHTML = 'Coupon of ' + response.couponOffer + ' % applied upto Rs.' + response.maxSpend + ' Total Amount to be paid Rs.' + finalTotal
 								document.getElementById('display-total').innerHTML = finalTotal
 								document.getElementById('order-total').value = finalTotal
 								document.getElementById('discount').value = discount
