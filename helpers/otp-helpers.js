@@ -34,7 +34,7 @@ module.exports= {
             })
             .then((response)=>{
                 
-                resolve('SUCCESS!')
+                resolve(mobile)
             })
             .catch((err)=>{
                 reject('Your otp doesnot match')

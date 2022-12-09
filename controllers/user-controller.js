@@ -193,11 +193,23 @@ module.exports = {
         res.render('user/enterOtp', { newuser: true })
     },
 
-    postVerifyOtpPage: (req, res) => {
+    postVerifyOtpPage:  (req, res) => {
         const otpData = req.body.otp
-        otpHelpers.verifyOtp(otpData).then((response) => {
+        otpHelpers.verifyOtp(otpData).then(async(response) => {
+
             console.log(response, 'response in post otp')
-            res.redirect('/')
+            let mobile = response.slice(3)
+            console.log(mobile)
+            userHelpers.matchUser(mobile).then((user)=>{
+              console.log(user,'New user from otp verify')
+              req.session.user = user
+              req.session.loginStatus = true
+              res.redirect('/')
+            })
+            .catch(()=>{
+
+            })
+           
         })
             .catch((err) => {
                 console.log(err)

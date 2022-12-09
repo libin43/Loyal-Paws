@@ -94,6 +94,15 @@ module.exports ={
     })
    },
 
+   matchUser:(mobile)=>{
+    return new Promise(async(resolve,reject)=>{
+        let response ={}
+        let user = await db.get().collection(collection.USER_COLLECTION).findOne({phone:mobile})
+        resolve(user)
+        reject()
+    })
+   },
+
 
 
    getUserDetails:(userID)=>{
