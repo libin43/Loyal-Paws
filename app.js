@@ -7,7 +7,9 @@ const hbs = require('express-handlebars')
 const session = require('express-session')
 const db = require('./config/connection')
 const nocache = require("nocache")
-
+const dotenv = require('dotenv')
+dotenv.config()
+const {PORT} = process.env
 
 
 db.connect((err)=>{
@@ -71,7 +73,7 @@ app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  next(createError(404)); 
 });
 
 // error handler
@@ -84,5 +86,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+app.listen(PORT,()=>{
+  console.log(`server is running on port ${PORT}`)
+})
 
 module.exports = app;

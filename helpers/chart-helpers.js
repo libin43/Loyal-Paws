@@ -65,7 +65,7 @@ module.exports={
                 }
 
             ]).toArray()
-            // console.log('COD', COD[0], 'ONLINE', ONLINE[0] , 'PAYPAL',PAYPAL[0]);
+            console.log('COD', COD[0], 'ONLINE', ONLINE[0] , 'PAYPAL',PAYPAL[0]);
 
             const payments={}
             payments.cod = COD[0].count,
