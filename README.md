@@ -2,6 +2,24 @@
 
 Welcome to Loyal Paws, an ecommerce website designed specifically for dog lovers. This project is built using Node.js, Express.js, Handlebars, HTML, CSS, and Bootstrap. The goal of this application is to provide a seamless online shopping experience for dog-related products, catering to the needs of dog owners and enthusiasts.
 
+
+## Technologies Used
+
+The Loyal Paws Ecommerce Website is built using the following technologies:
+
+- Node.js
+- MongoDB
+- Twilio
+- Razorpay
+- Paypal
+- Amazon Web Services (AWS)
+- NGINX
+- EC2
+- Bootstrap
+- Chart.js
+- Express.js
+- HBS
+
 ## Features
 
 - **Ecommerce Functionalities:** Loyal Paws includes all the necessary functionalities of an ecommerce platform, allowing users to browse and purchase dog-related products with ease.
