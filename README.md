@@ -24,6 +24,30 @@ Welcome to Loyal Paws, an ecommerce website designed specifically for dog lovers
 
 - **Image Cropping and Zooming:** The website includes image cropping and zooming functionality, allowing users to view product images in detail and make informed purchasing decisions.
 
+- | User Side Feature                    | Admin Side Feature                          |
+|--------------------------------------|----------------------------------------------|
+| User registration and login          | Login and Dashboard                          |
+| OTP Login (Twilio)                   | Chart, Graph & Sales reports                 |
+| Multiple Address Management          | User management (Block/Unblock)               |
+| Category wise product list           | Category management                          |
+| Product Search bar                   | Product management                           |
+| Product description with multiple images (Multer) | Stock management               |
+| Product & Category discounts         | Order Management                             |
+| Image Zooming                        | Coupon management                            |
+| Wishlist & Cart Management           | Banner management                            |
+| Order Summary                        | Form Validation (add & edit data)             |
+| Invoice                              | Image cropping                               |
+| Special Offers & Coupons Codes       | Report                                       |
+| COD, Wallet and Online payment       |                                              |
+| Payment failure handling and Cash refund policy |                                           |
+| Order History                        |                                              |
+| Order Monitoring, Cancellation and Return |                                             |
+| User Profile                         |                                              |
+| Referral code                        |                                              |
+| Wallet and Transaction History       |                                              |
+| Out of Stock alerts                  |                                              |
+
+
 ## Installation
 
 To set up the Loyal Paws Ecommerce Website on your local machine, follow these steps:
