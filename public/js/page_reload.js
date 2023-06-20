@@ -1,36 +1,25 @@
-// const { response } = require("../../app");
 
 function calculate() {
-    var mrp = document.getElementById('originalPrice').value
-    var categoryOffer = document.getElementById('catOffer').value
-    // console.log(mrp, 'orggggggggggg')
-    var productOffer = document.getElementById('offer').value
-    var totalOffer = parseInt(categoryOffer) + parseInt(productOffer)
-    // console.log(totalOffer, 'offfffffffffffff')
+    let mrp = document.getElementById('originalPrice').value
+    let categoryOffer = document.getElementById('catOffer').value
+    let productOffer = document.getElementById('offer').value
+    let totalOffer = parseInt(categoryOffer) + parseInt(productOffer)
     if(totalOffer>90){
-        console.log('gt than 90')
         document.getElementById('offer-error').innerHTML ='Offer cannot be above 90%'
         setTimeout(function(){
             document.getElementById('offer-error').innerHTML =''
            }, 2000);
-        
     }
     else{
-        var firstStep = (mrp / 100) * totalOffer
-        var offerPrice = mrp - firstStep
-        var newOfferPrice = Math.round(offerPrice)
-        // console.log(newOfferPrice, 'resssssssssssss')
+        let firstStep = (mrp / 100) * totalOffer
+        let offerPrice = mrp - firstStep
+        let newOfferPrice = Math.round(offerPrice)
         document.getElementById('offerPrice').value = newOfferPrice
     }
-
 }
 
 
-
-
-function addToCart(prodID){
-    
-    console.log('jddddddddddddddd')
+function addToCart(prodID){ 
     $.ajax({
         url:'/add-to-cart/'+prodID,
         method: 'get',
@@ -44,24 +33,18 @@ function addToCart(prodID){
             else{
                 swal({
                     title: "Login To Continue !",
-                    // text: "Once deleted, you will not be able to recover this imaginary file!",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,
                   })
                   .then((willDelete) => {
                     if (willDelete) {
-                    //   swal("Poof! Your imaginary file has been deleted!", {
-                    //     icon: "success",
-                    //   });
                       location.href = '/signin'
                     } else {
                       swal("Login Required !");
                     }
                   });
-              
-            }
-            
+            }  
         }
     })
 }
@@ -69,31 +52,18 @@ function addToCart(prodID){
 function changeQuantity(cartId,prodId,userId,count){
     let quantity = parseInt(document.getElementById(prodId).innerHTML)
     count = parseInt(count)
-    console.log(count,'count');
-    console.log(quantity,'quantity');
     let finalQuantity = quantity+count
-    console.log(finalQuantity,'final')
-
     let stock = parseInt(document.getElementById('stock'+prodId).value)
-
     let reminder = stock-(quantity+count)
-    console.log(reminder,'its reminder')
 
     if(reminder<3 && reminder>=0){
-        console.log('hitting')
             document.getElementById('stock-message'+prodId).innerHTML = 'Only '+reminder+' left in stock'
         setTimeout(function(){
             document.getElementById('stock-message'+prodId).innerHTML = ''
            }, 1000);
        
     }
-
     if(finalQuantity<=stock){
-        console.log(finalQuantity,'finalQ in if')
-        console.log(quantity,'quantity in if')
-        console.log(count,'count in if')
-
-
         $.ajax({
             url:'/change-product-quantity',
             data:{
@@ -106,25 +76,18 @@ function changeQuantity(cartId,prodId,userId,count){
             method: 'post',
             success:(response)=>{
                 if(response.removeProduct){
-                    // alert('Product removed from cart')
-                    // location.reload()
                     swal("Item Deleted!", "Your item removed from cart!", "success");
                     location.reload()
                 }else{
                     document.getElementById(prodId).innerHTML=quantity+count
                     document.getElementById('total').innerHTML = response.totalView
                     let productSinglePrice = parseInt(document.getElementById('productSingle'+prodId).innerHTML)
-                    // let productTotalPrice = parseInt(document.getElementById('product-price-total').innerHTML)
                     document.getElementById('productTotal'+prodId).innerHTML = productSinglePrice *(quantity+count)
-                    
-    
                 }
                 
             }
         })
     }
-
-
     else{
         swal({
             title: "Oops!",
@@ -133,16 +96,12 @@ function changeQuantity(cartId,prodId,userId,count){
             button: "OK",
           });
     }
-    
-   
 }
 
 //Delete icon function-cart
 function deleteProduct(cartId, prodId) {
-
     swal({
         title: "Are you sure?",
-        // text: "Once deleted, you will not be able to recover this imaginary file!",
         icon: "warning",
         buttons: true,
         dangerMode: true,
@@ -154,38 +113,27 @@ function deleteProduct(cartId, prodId) {
                 });
 
                 $.ajax({
-
-
                     url: '/delete-cart-product',
                     data: {
                         cart: cartId,
-                        product: prodId
+                        product: prodId,
                     },
                     method: 'post',
                     success: (response) => {
                         if (response.deleteProduct) {
-                            // swal("Item Deleted!", "Your item removed from cart!", "success");
-                            // alert('Product removed from Cart')
                             location.reload()
-
                         }
                     }
                 })
-
-
             } else {
                 //   swal("Your imaginary file is safe!");
             }
         });
-
 }
-
-
 
 function deleteWishProduct(wishId, prodId) {
     swal({
         title: "Are you sure?",
-        // text: "Once deleted, you will not be able to recover this imaginary file!",
         icon: "warning",
         buttons: true,
         dangerMode: true,
@@ -217,7 +165,6 @@ function deleteWishProduct(wishId, prodId) {
 
 
 function add2Cart(prodId,wishId){
-    console.log(prodId,'its pdt')
     $.ajax({
         url:'/add-2-cart',
         data:{
@@ -239,12 +186,8 @@ function add2Cart(prodId,wishId){
 }
 
 
-
 function selected(){
-   
-    console.log('calcujr');
-    let selectCat = document.getElementById('selectedCat').value
-   console.log(selectCat,'dhaskdfyhjasdfb')
+   let selectCat = document.getElementById('selectedCat').value
    $.ajax({
     url:'/admin/category-offer',
     data:{
@@ -253,30 +196,24 @@ function selected(){
     method:'post',
     success:(response)=>{
         if(response){
-            console.log(response,'hitiing');
             let offer = response.categoryOffer
-            console.log(offer,'fina;;;;;')
             document.getElementById('catOffer').value = offer
             calculate()
         }
-        
     }
    })
   }
 
   function validateReferral(){
-    console.log('validation called')
     let inputReferral = document.getElementById('refer').value
-    console.log(inputReferral,'input Referral')
     $.ajax({
         url:'/referral',
         data:{
-            enteredReferral : inputReferral
+            enteredReferral : inputReferral,
         },
         method:'post',
         success:(response)=>{
             if(response.referralValid){
-                console.log(response,'checking to give in swal')
                 swal({
                     title: "Success",
                     text: "Rs."+response.showAmount+' has been credited to your wallet!',
@@ -287,10 +224,7 @@ function selected(){
                     document.getElementById('apply').style.display = 'none'
                     document.getElementById('skip').style.display = 'none'
                     document.getElementById('ok').style.display = 'block'
-                   
-                   }, 2000);
-                   
-                  
+                   }, 2000);    
             }
         }
     })

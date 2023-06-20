@@ -1,6 +1,5 @@
 var db = require('../config/connection')
 var collection = require('../config/collections')
-var objectId = require('mongodb').ObjectId
 
 module.exports={
     getPaymentGraph:()=>{
@@ -15,9 +14,6 @@ module.exports={
                         
                     }
                 },
-                // {
-                //      $match: { $expr: { $gt: [ "$date", { $dateSubtract: { startDate: "$$NOW", unit: "day", amount: 3 } }] } } 
-                // },
                 {
                     $group:{
                         _id:'$paymentMethod',
@@ -65,14 +61,10 @@ module.exports={
                 }
 
             ]).toArray()
-            console.log('COD', COD[0], 'ONLINE', ONLINE[0] , 'PAYPAL',PAYPAL[0]);
-
             const payments={}
-            payments.cod = COD[0].count,
-            payments.online = ONLINE[0].count,
-            payments.paypal = PAYPAL[0].count
-       
-          
+            payments.cod = COD[0] === undefined ? 0 : COD[0].count,
+            payments.online = ONLINE[0] === undefined ? 0 : ONLINE[0].count,
+            payments.paypal = PAYPAL[0] === undefined ? 0 : PAYPAL[0].count   
             resolve(payments)
         })
     },
@@ -80,7 +72,6 @@ module.exports={
     getTotalSales:()=>{
        return new Promise(async(resolve,reject)=>{
         let sales = await db.get().collection(collection.ORDER_COLLECTION).count()
-   
         resolve(sales)
        })
     },
@@ -123,7 +114,6 @@ module.exports={
                 {$project:{name:'$productName.product',orderQuantity:'$totalQuantity',price:'$productName.price',revenue: { $multiply: [ "$totalQuantity", "$productName.price" ] }}}
             
             ]).toArray()
-            console.log(salesReport)
             resolve(salesReport)
         })
     },
@@ -131,7 +121,6 @@ module.exports={
     getRecentSale:()=>{
         return new Promise(async(resolve,reject)=>{
             let recents = await db.get().collection(collection.ORDER_COLLECTION).find().sort({_id:-1}).limit(5).toArray()
-            console.log(recents,'recentssss')
             resolve(recents)
         })
     },
@@ -148,10 +137,7 @@ module.exports={
 
                 {$limit:12}
 
-               
-
             ]).toArray()
-            console.log(monthlyGraph,'chzaarttttttt')
 //-----------converting month number to month name----------------//
             monthlyGraph.forEach(element => {
                 function toMonthName(month) {
@@ -164,24 +150,14 @@ module.exports={
                 element.month = toMonthName(element.month)
               });
 //-----------end converting month number to month name----------------//
-
-
-              console.log(monthlyGraph,'newwwwwwwwwwwwwwww')
-
-
-
             resolve(monthlyGraph)
         })
     },
 
     
     getFilteredReport:(fromDate,toDate)=>{
-        console.log(fromDate,toDate,'helper')
         return new Promise(async(resolve,reject)=>{
             let filteredSalesReport = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
-
-               
-
                 {$unwind:'$products'},
 
                 {$match:{date: { $gte : new Date(fromDate), $lte : new Date(toDate) } } },
@@ -195,7 +171,6 @@ module.exports={
                 {$project:{name:'$productName.product',orderQuantity:'$totalQuantity',price:'$productName.price',revenue: { $multiply: [ "$totalQuantity", "$productName.price" ] }}}
             
             ]).toArray()
-            console.log(filteredSalesReport,'ggggggggggggggggggggggg')
             resolve(filteredSalesReport)
         })
     },
@@ -214,14 +189,9 @@ module.exports={
             
             ]).toArray()
                 
-            console.log(revenueWeekly,'rev weekly')
             revenueWeekly.forEach(revenueWeekly=>{
                 revenueWeekly.ddmmyy = revenueWeekly.date+'/'+revenueWeekly.month+'/'+revenueWeekly.year
             })
-            
-
-            console.log(revenueWeekly,'final')
-
             resolve(revenueWeekly)
         })
     },
@@ -239,9 +209,6 @@ module.exports={
                 {$limit:7}
             
             ]).toArray()
-
-            console.log(quantityweekly,'quantityy')
-
             resolve(quantityweekly)
         })
     }

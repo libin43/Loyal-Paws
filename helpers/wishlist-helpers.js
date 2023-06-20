@@ -47,14 +47,11 @@ module.exports ={
             
             ])
               .toArray()
-              console.log(wishProducts,'kkkkkkkkkkkkkkkkkkkkkkkkk')
               resolve(wishProducts)
-           
         })
     },
 
     deleteWishProduct:(details)=>{
-        console.log(details,'hjhjhjhjhjhjhjhjhjhjhjhjhj')
         return new Promise((resolve,reject)=>{
             db.get().collection(collection.WISHLIST_COLLECTION).updateOne(
                 {_id:objectId(details.wishID)},
@@ -73,7 +70,6 @@ module.exports ={
             let count =0
            let wishList= await db.get().collection(collection.WISHLIST_COLLECTION).findOne({user:objectId(userID)})
            if(wishList){
-            console.log(wishList)
             count = wishList.productWish.length
            }
            resolve(count)

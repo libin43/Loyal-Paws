@@ -17,14 +17,12 @@ let  instance = new Razorpay({
 
 module.exports ={
    doSignup:(userData)=>{
-    console.log(userData,'lets start')
     return new Promise(async(resolve,reject)=>{
         let user = await db.get().collection(collection.USER_COLLECTION).findOne({email:userData.email})
         if(user){
             resolve({status:false})
 
         }
-        
         else{
             userData.referalId = uid()
             userData.wallet =0 
@@ -34,10 +32,7 @@ module.exports ={
             resolve({status:true})
         })
         }
-       
-        
-    })
-     
+    })  
    },
 
    doLogin:(userLogged)=>{
@@ -49,28 +44,19 @@ module.exports ={
            
             bcrypt.compare(userLogged.password,user.password).then((status)=>{
                 if(status){
-                    console.log('user blocked',user.block)
                     if(user.block){
-                    
-                        console.log('blocked')
-                       
                         resolve({status:false})
                     }
                     else{
-                        console.log('login success')
-                        response.user = user
-                        
+                        response.user = user    
                         response.status = true
                         resolve(response)
                     }
-                   
                 }else{
-                    console.log('password wrong')
                     reject({status:true})
                 }
             })
         }else{
-            console.log('User Doesnt Exist')
             reject({status:false})  
         }
 
@@ -96,21 +82,16 @@ module.exports ={
 
    matchUser:(mobile)=>{
     return new Promise(async(resolve,reject)=>{
-        let response ={}
         let user = await db.get().collection(collection.USER_COLLECTION).findOne({phone:mobile})
         resolve(user)
         reject()
     })
    },
 
-
-
    getUserDetails:(userID)=>{
     return new Promise(async(resolve,reject)=>{
         let userDetails = await db.get().collection(collection.USER_COLLECTION).aggregate([
-
             {$match : { _id : objectId(userID)}} ,
-
             {$project:{
                 name:1,
                 email:1,
@@ -119,20 +100,15 @@ module.exports ={
             }}
 
         ]).toArray()
-        
-
         resolve(userDetails[0])
         reject("Login First")
     })
-
    },
 
    checkReferral:(userID,userName,inputReferral)=>{
     return new Promise(async(resolve,reject)=>{
-        console.log(userID,'helper callled')
         let userWithReferral = await db.get().collection(collection.USER_COLLECTION).findOne({referalId: inputReferral})
         if(userWithReferral!=null){
-            console.log(userWithReferral,'referal given user details')
             let walletObj = {
                 date : new Date(),
                 title:'Referal Code',
@@ -171,13 +147,10 @@ module.exports ={
                             }
                         }
                     ).then(()=>{
-                        console.log(walletObj.amount,'checking+')
                         let showAmount = walletObj.amount
-                        console.log('All set in helpers')
                         resolve({referralValid:true,showAmount})
                     })
                 })
-  
         }
         else{
             resolve({invalidReferral:true})
@@ -193,13 +166,11 @@ module.exports ={
         {$project: {referalId:1,wallet:1,walletHistory:1} },
         {$limit:5}
        ]).toArray()
-       console.log(walletRef[0],'helpers')
        resolve(walletRef[0])
     })
    },
 
    getFilteredWallet:(toLimit,toSkip,userID)=>{
-    console.log(toLimit,toSkip,'recieved in helpers')
     return new Promise(async(resolve,reject)=>{
         let paginationWallet = await db.get().collection(collection.USER_COLLECTION).aggregate([
             
@@ -216,9 +187,7 @@ module.exports ={
             {$limit:toLimit}
         
         ]).toArray()
-        console.log(paginationWallet,'waysssss')
         resolve(paginationWallet)
-      
     })
 
    },
@@ -249,7 +218,6 @@ module.exports ={
    fetchImage:(userID)=>{
     return new Promise(async(resolve,reject)=>{
         let data = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userID)})
-        console.log(data)
         resolve(data.image)
     })
  },
@@ -276,7 +244,6 @@ module.exports ={
         let allAddress = await db.get().collection(collection.ADDRESS_COLLECTION).find(
             { user: objectId(userID)}
         ).sort({_id:-1}).toArray()
-        console.log(allAddress,'ggggggggggggggggggggggggggggggg');
         resolve(allAddress)
     })
 
@@ -294,17 +261,9 @@ module.exports ={
    getSelectedAddress:(addressID)=>{
     return new Promise(async(resolve,reject)=>{
         let selectedAddress = await db.get().collection(collection.ADDRESS_COLLECTION).findOne( { _id: objectId(addressID) })
-        console.log(selectedAddress,'helperrrrrrrrrrrrrrr');
             resolve({selectedAddress})
-       
     })
    },
-
-
-
-
-
-
 
    addToCart:(prodID,userID)=>{
     let prodObj = {
@@ -316,8 +275,6 @@ module.exports ={
 
         if(userCart){
             let prodExist = userCart.products.findIndex(product=> product.item == prodID)
-            console.log(prodExist);
-
             if (prodExist != -1) {
                 db.get().collection(collection.CART_COLLECTION).updateOne(
                     { user: objectId(userID), 'products.item': objectId(prodID) },
@@ -333,8 +290,7 @@ module.exports ={
                 }).then((response) => {
                     resolve()
                 })
-            }
-             
+            }     
         }
         else{
             let cartObj = {
@@ -387,31 +343,16 @@ module.exports ={
 
                 }
             }
-
-            // {$lookup:{
-            //     from: collection.PRODUCT_COLLECTION,
-            //     let:{prodList:'$products'},
-            //     pipeline:[{
-            //         $match:{
-            //             $expr:{
-            //                 $in:['$_id','$$prodList']
-            //             }
-            //         }
-            //     }],
-            //     as:'cartItems'
-            // }}
         ]).toArray()
-         console.log(cartItems,'logigin final')
         resolve(cartItems)
     })
    },
 
    getCartCount:(userID)=>{
     return new Promise(async(resolve,reject)=>{
-        let count =0
+       let count =0
        let cart= await db.get().collection(collection.CART_COLLECTION).findOne({user:objectId(userID)})
        if(cart){
-        console.log(cart)
         count = cart.products.length
        }
        resolve(count)
@@ -517,40 +458,11 @@ module.exports ={
     })
    },
 
-//    totalProductPrice:(userID)=>{
-//     return new Promise(async(resolve,reject)=>{
-//         let productTotal = await db.get().collection(collection.CART_COLLECTION).aggregate([
-            
-//             {$match:{user: objectId(userID)}},
-            
-//             {$unwind:'$products'},
-            
-//             {$project:{item:'$products.item',quantity:'$products.quantity'}},
-            
-//             {$lookup:{from:'PRODUCT',localField:'item',foreignField:'_id',as:'cartItems'}},
-            
-//             {$project:{item:1,quantity:1,cartItems:{$arrayElemAt:['$cartItems',0]}}},
-            
-//             {$project:{item:1,quantity:1,price:'$cartItems.price'}},
-            
-//             {$project:{item:1,quantity:1,productTotal:{$multiply:['$quantity','$price']}}}
-        
-//         ]).toArray()
-//         console.log(productTotal,'product total got in helper')
-//         resolve(productTotal)
-//     })
-//    },
-
    placeOrder:(order,products,total,noCouponTotal,discount)=>{
     return new Promise((resolve,reject)=>{
-        console.log(products,'its products')
-      
-        console.log(order,products,total);
-       
         let status = order['payment-method'] ==='COD'? 'Placed':'Pending'
 
       //-----status field is pushed into products array of objects----//
-      console.log(status,'impppppppppppppppppppppp')
         products.forEach(products=>{
             products.status = status
         })
@@ -580,22 +492,13 @@ module.exports ={
             
             if (status=='Placed'){
             db.get().collection(collection.CART_COLLECTION).deleteOne({user:objectId(order.userID)})
-
             }
-         
-          
-            console.log(response.insertedId);
             resolve(response.insertedId)// This is done to pass order id to razorpay so far 
-            
         })
    })
-
    },
 
    returnOrder:(orderID,itemID,returnStat)=>{
-    console.log(orderID,'ret');
-    
-    console.log(itemID,'ret');
     return new Promise((resolve,reject)=>{
         db.get().collection(collection.ORDER_COLLECTION).updateOne(
            { $and :[ {_id : objectId(orderID)}, {'products.item': objectId(itemID)}]},
@@ -611,9 +514,6 @@ module.exports ={
    },
 
    cancelOrder:(orderID,itemID,cancelStat)=>{
-    console.log(orderID,'oderseeeeeeeeeeeeeeeeeeee');
-    
-    console.log(itemID,'oderseeeeeeeeeeeeeeeeeeee');
     return new Promise((resolve,reject)=>{
         db.get().collection(collection.ORDER_COLLECTION).updateOne(
            { $and :[ {_id : objectId(orderID)}, {'products.item': objectId(itemID)}]},
@@ -629,7 +529,6 @@ module.exports ={
    },
 
    cancelCodOrder:(orderID,itemID,cancelStat,quantity)=>{
-    console.log(quantity,'quantity to bee returned in helper');
     quantity = parseInt(quantity)
     return new Promise((resolve,reject)=>{
         db.get().collection(collection.ORDER_COLLECTION).updateOne(
@@ -668,7 +567,6 @@ module.exports ={
         ]).toArray()
 
         let totalOrderQuantity = TotalQuantity[0]
-        console.log(totalOrderQuantity)
         resolve(totalOrderQuantity.totalQuantity)
     })
    },
@@ -691,7 +589,6 @@ module.exports ={
             {$project:{userId:1,discount:1,paymentMethod:1,totalAmount:1,quantityCancelled:1,product:'$Product.product',price:'$Product.price'}}
         
         ]).toArray()
-        console.log(cancelOrderDetail,'cancel order detail in helper')
         if(cancelOrderDetail!=null){
             resolve({cancelOrderDetail,totalQuantity,cancelledOrderDetail:true})
         }
@@ -708,12 +605,9 @@ module.exports ={
             title: paymentMethod,
             walletdetail:'Rs.'+refund+' credited for return on order cancellation of '+productName+' with order number '+orderID,
             amount:refund,
-            
-
         }
         db.get().collection(collection.USER_COLLECTION).updateOne(
             {_id:objectId(userID)},
-
             {
                 $inc: { wallet : refund},
                 $push:{
@@ -726,7 +620,6 @@ module.exports ={
     })
    },
 
-   
     getCartProductList:(userID)=>{
         return new Promise(async(resolve,reject)=>{
             let cart = await db.get().collection(collection.CART_COLLECTION).findOne({user:objectId(userID)})
@@ -738,9 +631,7 @@ module.exports ={
     getOrderDetails:(userID)=>{
         return new Promise(async(resolve,reject)=>{
             let orderList = await db.get().collection(collection.ORDER_COLLECTION).find({userId:objectId(userID)}).sort({_id:-1}).toArray()
-            console.log(orderList[0])
             resolve(orderList)
-
         })
     },
 
@@ -799,7 +690,6 @@ module.exports ={
 
                 
             ]).toArray()
-            console.log(orderProductList[0])
             resolve(orderProductList)
         })
     },
@@ -812,7 +702,6 @@ module.exports ={
                 receipt: ''+orderID  //to get receipt from razorpay we concatenate string to get it as a string
               };
               instance.orders.create(options, function(err, order) {
-                console.log(order,'this is the order');
                 resolve({razorPaySuccess:true,order,products})
               });
             
@@ -848,7 +737,6 @@ module.exports ={
                 }
             }).then(()=>{
                 db.get().collection(collection.CART_COLLECTION).deleteOne({user:objectId(userID)})
-
                 resolve()
             })
         })
@@ -864,28 +752,19 @@ module.exports ={
     },
 
     searchProduct:(searchData)=>{
-        console.log(searchData,"LLLLLLLLLLLLLLLLLLLLLL");
         return new Promise(async(resolve,reject)=>{
             var re = new RegExp(searchData, "i");
-            console.log(re,"reeeeeeeeee");
            let products= await db.get().collection(collection.PRODUCT_COLLECTION).find({product:re}).toArray()
-           console.log(products)
            if(products.length==0){
-            console.log('hiting')
             reject({productNotFound:true})
-
            }
            else{
-            console.log(products,'haaaaaaaayeeeeeeeeeee')
             resolve(products)
-           
-           }
-           
+           }           
         })
     },
 
     filterPrice:(min,max)=>{
-        console.log(min,max)
         min = parseInt(min)
         max = parseInt(max)
         let products = null
@@ -905,7 +784,6 @@ module.exports ={
     getOrderPaymentDetail:(orderID)=>{
         return new Promise(async(resolve,reject)=>{
             let orderDetail = await db.get().collection(collection.ORDER_COLLECTION).findOne({_id:objectId(orderID)})
-            console.log(orderDetail.paymentMethod,'paymentdetail helper')
             let orderPaymentMethod = orderDetail.paymentMethod
             resolve(orderPaymentMethod)
         })
@@ -941,15 +819,9 @@ module.exports ={
         return new Promise((resolve,reject)=>{
 
           if(products!=null){
-            console.log(products,'remove stock helper')
             let Products = JSON.parse(products)
             let limit = Products.length
-            console.log(Products.length,'product array length')
-            console.log(Products,'fiankdadksfjaoksjd');
-            
-          
             for(i=0;i<limit;i++){
-
                 let proID = Products[i].item
                 let proQuantity = Products[i].quantity
         
@@ -962,9 +834,6 @@ module.exports ={
           else{
             reject()
           }
-
-          
-
         })
     },
 
@@ -972,16 +841,7 @@ module.exports ={
     getPaypalOrderDetail:(orderID)=>{
         return new Promise(async(resolve,reject)=>{
             let itemQuantity = await db.get().collection(collection.ORDER_COLLECTION).aggregate([{$match:{_id:objectId(orderID)}},{$project:{_id:0,products:1}}]).toArray()
-            console.log(itemQuantity[0].products)
             resolve(itemQuantity[0].products)
-        })
-       
-        
-    }
-
-
-
-
-
-   
+        }) 
+    }   
 }

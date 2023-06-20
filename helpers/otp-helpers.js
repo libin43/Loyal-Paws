@@ -1,11 +1,11 @@
 const { response } = require('../app')
 const env = require('dotenv').config()
 
-var accountSid = process.env.Twilio_sid
-var authToken = process.env.Twilio_Token
-var serviceId = process.env.Twilio_serviceid
+let accountSid = process.env.Twilio_sid
+let authToken = process.env.Twilio_Token
+let serviceId = process.env.Twilio_serviceid
 const client = require('twilio')(accountSid,authToken,serviceId)
-let mobile
+let mobile;
 module.exports= {
     sendOtp:(phoneData)=>{
        mobile = phoneData
@@ -25,15 +25,13 @@ module.exports= {
     },
 
     verifyOtp:(otpData)=>{
-
         return new Promise((resolve,reject)=>{
             client.verify.services(serviceId)
             .verificationChecks.create({
                 to: `+${mobile}`,
                 code: otpData
             })
-            .then((response)=>{
-                
+            .then((response)=>{    
                 resolve(mobile)
             })
             .catch(()=>{

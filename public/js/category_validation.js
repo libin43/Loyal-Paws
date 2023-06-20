@@ -1,1 +1,1 @@
-let catNameError = document.getElementById('cat-name-error')
+// let catNameError = document.getElementById('cat-name-error')

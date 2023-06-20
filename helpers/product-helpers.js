@@ -5,8 +5,7 @@ var objectId = require('mongodb').ObjectId
 module.exports ={
     addProduct:(adminData)=>{
         return new Promise((resolve,reject)=>{
-            db.get().collection(collection.PRODUCT_COLLECTION).insertOne(adminData).then((data)=>{
-               
+            db.get().collection(collection.PRODUCT_COLLECTION).insertOne(adminData).then((data)=>{     
                 resolve(data.insertedId)
             })
         })
@@ -14,13 +13,11 @@ module.exports ={
     getAllProduct:()=>{
         return new Promise(async(resolve,reject)=>{
             let prod_data = await db.get().collection(collection.PRODUCT_COLLECTION).find().sort({_id:-1}).toArray()
-            console.log(prod_data);
             resolve(prod_data) 
         })
     },
     deleteProduct:(prodID)=>{
         return new Promise((resolve,reject)=>{
-            console.log(prodID)
             db.get().collection(collection.PRODUCT_COLLECTION).deleteOne({_id:objectId(prodID)}).then((response)=>{
                 resolve({prodDeleted:true})
             })
@@ -30,7 +27,6 @@ module.exports ={
      getProductDetails:(prodID)=>{
         return new Promise((resolve,reject)=>{
              db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:objectId(prodID)}).then((prod_data)=>{
-                console.log(prod_data)
                 resolve(prod_data)
              })
         })
@@ -66,7 +62,6 @@ module.exports ={
      fetchImages:(prodID)=>{
         return new Promise(async(resolve,reject)=>{
             let data = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:objectId(prodID)})
-            console.log(data)
             resolve(data.imageMany)
         })
      },
@@ -74,7 +69,6 @@ module.exports ={
      getProductFromCategory:(catName)=>{
         return new Promise(async(resolve,reject)=>{
             let prodCat = await db.get().collection(collection.PRODUCT_COLLECTION).find({category:catName}).toArray()
-            console.log(prodCat,'hai testtttttttttttttttt')
             resolve(prodCat)
         })
        
@@ -82,7 +76,6 @@ module.exports ={
 
      updateCategoryModedProduct:(catOffer,catName)=>{
          let categoryOffer = parseInt(catOffer)
-         console.log(categoryOffer,catName)
         return new Promise((resolve,reject)=>{ 
 
             //updating offer changed in category into product collection

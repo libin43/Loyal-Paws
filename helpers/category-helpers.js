@@ -7,8 +7,7 @@ var objectId = require('mongodb').ObjectId
 module.exports ={
     addCategory:(adminData)=>{
         return new Promise((resolve,reject)=>{
-            db.get().collection(collection.CATEGORY_COLLECTION).insertOne(adminData).then((data)=>{
-               
+            db.get().collection(collection.CATEGORY_COLLECTION).insertOne(adminData).then((data)=>{  
                 resolve(data.insertedId)
             })
         })
@@ -18,16 +17,12 @@ module.exports ={
         return new Promise((resolve,reject)=>{
              db.get().collection(collection.CATEGORY_COLLECTION).find().toArray().then((cat_data)=>{
                 resolve(cat_data)
-             })
-             
-         
-             
+             })  
         })
     },
 
     deleteCategory:(catID)=>{
         return new Promise((resolve,reject)=>{
-            console.log(catID)
             db.get().collection(collection.CATEGORY_COLLECTION).deleteOne({_id:objectId(catID)}).then((response)=>{
                 resolve({catDeleted:true})
             })
@@ -37,7 +32,6 @@ module.exports ={
      getCategoryDetails:(catID)=>{
         return new Promise((resolve,reject)=>{
              db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:objectId(catID)}).then((cat_data)=>{
-                console.log(cat_data)
                 resolve(cat_data)
              })
         })
@@ -51,20 +45,16 @@ module.exports ={
                     description: categoryDetails.description,
                     categoryOffer: categoryDetails.categoryOffer,
                     image:categoryDetails.image
-                    
                 }
             }).then(()=>{
                 resolve()
             })
-
         })
-
      },
 
      fetchImage:(catID)=>{
         return new Promise(async(resolve,reject)=>{
             let data = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:objectId(catID)})
-            console.log(data)
             resolve(data.image)
         })
      },
