@@ -28,26 +28,26 @@ Welcome to Loyal Paws, an ecommerce website designed specifically for dog lovers
 
 To set up the Loyal Paws Ecommerce Website on your local machine, follow these steps:
 
-1. Clone the GitHub repository:
-
-git clone [link to the GitHub repo]
-
-
-2. Navigate to the project directory:
-
-cd loyal-paws
+1. **Clone the GitHub repository:**
+   ```shell
+   git clone [link to the GitHub repo]
 
 
-3. Install the dependencies using npm:
+2. **Navigate to the project directory:**
+   ```shell
+   cd loyal-paws
 
-npm install
+
+3. **Install the dependencies using npm:**
+   ```shell
+   npm install
 
 
 4. Set up the required environment variables. You will need to provide credentials for the integrated services such as Razorpay, Paypal, and Twilio. Refer to the documentation for more information.
 
-5. Start the application:
-
-npm start
+5. **Start the application**:
+   ```shell
+   npm start
 
 
 6. Open your web browser and access the website at `http://localhost:3000`.
