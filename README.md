@@ -30,7 +30,7 @@ To set up the Loyal Paws Ecommerce Website on your local machine, follow these s
 
 1. **Clone the GitHub repository:**
    ```shell
-   git clone [link to the GitHub repo]
+   git clone https://github.com/libin43/loyal-paws.git
 
 
 2. **Navigate to the project directory:**
