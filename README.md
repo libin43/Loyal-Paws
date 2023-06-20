@@ -2,7 +2,7 @@
 
 Welcome to Loyal Paws, an ecommerce website designed specifically for dog lovers. This project is built using Node.js, Express.js, Handlebars, HTML, CSS, and Bootstrap. The goal of this application is to provide a seamless online shopping experience for dog-related products, catering to the needs of dog owners and enthusiasts.
 
-[![Video](https://img.youtube.com/vi/YOUR_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=X6DTOKdWGqM)
+[![Video](https://img.youtube.com/vi/X6DTOKdWGqM/0.jpg)](https://www.youtube.com/watch?v=X6DTOKdWGqM)
 
 ## Technologies Used
 
