@@ -316,15 +316,12 @@ $(document).ready(function(){
 	 function submitDate(){
 	    var startDate = document.getElementById('start').value
 	    var endDate = document.getElementById('end').value
-	  console.log(startDate,'kkkkkkkkkkkkkkkkkkkkkkk')
-	  console.log(endDate,'lllllllllllllllllllllllllllll')
 	 }
 
 
 
 	   function export2excel(){
 		let table2excel = new Table2Excel();
-		console.log(table2excel)
         table2excel.export(document.querySelectorAll("table.table"));
 	   }
 

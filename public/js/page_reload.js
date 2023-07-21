@@ -1,14 +1,26 @@
 
 function calculate() {
     let mrp = document.getElementById('originalPrice').value
+    mrp = Math.abs(mrp);
     let categoryOffer = document.getElementById('catOffer').value
     let productOffer = document.getElementById('offer').value
+    if (!/^\d+$/.test(productOffer)) {
+        document.getElementById('btn-add').disabled = true
+        document.getElementById('offer-error').innerHTML ='Enter numbers only'
+        setTimeout(function(){
+            document.getElementById('offer-error').innerHTML =''
+           }, 2000);
+      }
+      else{
+        document.getElementById('btn-add').disabled = false
+      }
     let totalOffer = parseInt(categoryOffer) + parseInt(productOffer)
     if(totalOffer>90){
         document.getElementById('offer-error').innerHTML ='Offer cannot be above 90%'
         setTimeout(function(){
             document.getElementById('offer-error').innerHTML =''
            }, 2000);
+           document.getElementById('btn-add').disabled = true
     }
     else{
         let firstStep = (mrp / 100) * totalOffer
@@ -56,6 +68,7 @@ function changeQuantity(cartId,prodId,userId,count){
     let stock = parseInt(document.getElementById('stock'+prodId).value)
     let reminder = stock-(quantity+count)
 
+
     if(reminder<3 && reminder>=0){
             document.getElementById('stock-message'+prodId).innerHTML = 'Only '+reminder+' left in stock'
         setTimeout(function(){
@@ -64,29 +77,63 @@ function changeQuantity(cartId,prodId,userId,count){
        
     }
     if(finalQuantity<=stock){
-        $.ajax({
-            url:'/change-product-quantity',
-            data:{
-                user:userId,
-                cart:cartId,
-                product:prodId,
-                count:count,
-                quantity:quantity
-            },
-            method: 'post',
-            success:(response)=>{
-                if(response.removeProduct){
-                    swal("Item Deleted!", "Your item removed from cart!", "success");
-                    location.reload()
-                }else{
-                    document.getElementById(prodId).innerHTML=quantity+count
-                    document.getElementById('total').innerHTML = response.totalView
-                    let productSinglePrice = parseInt(document.getElementById('productSingle'+prodId).innerHTML)
-                    document.getElementById('productTotal'+prodId).innerHTML = productSinglePrice *(quantity+count)
+        if(finalQuantity < 1){
+            swal({
+                title: "Do you wish to delete !",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+              })
+              .then((willDelete) => {
+                if (willDelete) {
+                    swal("Your item has been deleted!", {
+                        icon: "success",
+                    });
+    
+                    $.ajax({
+                        url: '/delete-cart-product',
+                        data: {
+                            cart: cartId,
+                            product: prodId,
+                        },
+                        method: 'post',
+                        success: (response) => {
+                            if (response.deleteProduct) {
+                                location.reload()
+                            }
+                        }
+                    })
+                } else {
+                  return;
                 }
-                
-            }
-        })
+              });
+        }
+        else{
+            $.ajax({
+                url:'/change-product-quantity',
+                data:{
+                    user:userId,
+                    cart:cartId,
+                    product:prodId,
+                    count:count,
+                    quantity:quantity
+                },
+                method: 'post',
+                success:(response)=>{
+                    if(response.removeProduct){
+                        swal("Item Deleted!", "Your item removed from cart!", "success");
+                        location.reload()
+                    }else{
+                        document.getElementById(prodId).innerHTML=quantity+count
+                        document.getElementById('total').innerHTML = response.totalView
+                        let productSinglePrice = parseInt(document.getElementById('productSingle'+prodId).innerHTML)
+                        document.getElementById('productTotal'+prodId).innerHTML = productSinglePrice *(quantity+count)
+                    }
+                    
+                }
+            })
+        }
+
     }
     else{
         swal({

@@ -252,8 +252,7 @@
 				method: 'post',
 				data: $('#checkout-form').serialize(),
 				success: (response) => {
-					alert(response)
-					console.log(response, 'checking....')
+
 
 					if (response.codSuccess) {
 						console.log(response.products, 'ORDER products in cod')
@@ -330,9 +329,6 @@
 				"image": "https://example.com/your_logo",
 				"order_id": order.id,
 				"handler": function (response) {
-					alert(response.razorpay_payment_id);
-					alert(response.razorpay_order_id);
-					alert(response.razorpay_signature)
 
 					verifyPayment(response, order, products)          //aftergetting these ids and signature pass it to ajax with order 
 

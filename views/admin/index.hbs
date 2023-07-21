@@ -154,18 +154,15 @@
                   {{#each weeklyrevenue}}
                   date.unshift('{{this.ddmmyy}}')
                   {{/each}}
-                  console.log(date,'monnnnnnnnnnnnnnnnnnn')
 
                   const Revenue = []
                   {{#each weeklyrevenue}}
                   Revenue.unshift('{{this.revenue}}')
-                  console.log(Revenue,'monnnnnnnnnnnnnnnnnnn')
                   {{/each}} 
 
                   const quantity = []
                   {{#each weeklyquantity}}
                   quantity.unshift('{{this.quantity}}')
-                  console.log(quantity,'hot quantiy')
                   {{/each}}
 
                     document.addEventListener("DOMContentLoaded", () => {
@@ -249,12 +246,10 @@
                   {{#each monthlygraph}}
                   month.unshift('{{this.month}}')
                   {{/each}}
-                  console.log(month,'monnnnnnnnnnnnnnnnnnn')
 
                   const monthlyRevenue = []
                   {{#each monthlygraph}}
                   monthlyRevenue.unshift('{{this.totalAmount}}')
-                  console.log(monthlyRevenue,'monnnnnnnnnnnnnnnnnnn')
                   {{/each}} 
 
                   //----------------------------------------------------------//

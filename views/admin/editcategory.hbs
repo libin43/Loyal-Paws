@@ -31,9 +31,10 @@
                   <div class="col-sm-10 w-25">
                 
                     <div class="form-floating">
-                      <input name="categoryOffer" value="{{catID.categoryOffer}}" type="text" class="form-control" id="offer" placeholder="City">
+                      <input name="categoryOffer" value="{{catID.categoryOffer}}" type="text" class="form-control" id="offer" placeholder="City" onkeyup="validateCategoryOffer()">
                       <label for="floatingCity">Category Offer %</label>
                     </div>
+                    <span style="color: red;" id="catOffer-error"></span>
                   </div>
                 </div>
                
@@ -56,7 +57,7 @@
              
                
                 <div class="text-center">
-                  <button type="submit" class="btn btn-primary">Update</button>
+                  <button type="submit" id="catUpdate-btn" class="btn btn-primary">Update</button>
                   <button type="reset" class="btn btn-secondary">Cancel</button>
                 </div>
               </form><!-- End Horizontal Form -->
@@ -67,5 +68,23 @@
           <script>
             function viewImage(event){
                 document.getElementById('imgView').src = URL.createObjectURL(event.target.files[0])
+            }
+
+            function validateCategoryOffer(){
+              const catOfferValue = document.getElementById('offer').value
+              if(!/^\d+$/.test(catOfferValue)){
+                document.getElementById('catUpdate-btn').disabled = true
+                document.getElementById('catOffer-error').innerHTML = 'Add numbers only'
+                setTimeout(()=>{
+                  document.getElementById('catOffer-error').innerHTML = ''
+                },2000);
+              }
+              else if(catOfferValue >= 90){
+                 document.getElementById('catUpdate-btn').disabled = true
+                document.getElementById('catOffer-error').innerHTML = 'Offer can be added upto 90%'
+              }
+              else{
+                document.getElementById('catUpdate-btn').disabled = false
+              }
             }
           </script>

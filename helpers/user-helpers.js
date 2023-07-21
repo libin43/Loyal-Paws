@@ -364,24 +364,24 @@ module.exports ={
     details.quantity = parseInt(details.quantity)
    
     return new Promise((resolve,reject)=>{
-        if(details.count==-1 && details.quantity==1){
-            db.get().collection(collection.CART_COLLECTION).updateOne(
-                {_id:objectId(details.cart)},
-                {
-                    $pull:{products:{item:objectId(details.product)}}
-                }
-            ).then((response)=>{
-                resolve({removeProduct:true})
-            })
-        }
-        else{
+        // if(details.count==-1 && details.quantity==1){
+        //     db.get().collection(collection.CART_COLLECTION).updateOne(
+        //         {_id:objectId(details.cart)},
+        //         {
+        //             $pull:{products:{item:objectId(details.product)}}
+        //         }
+        //     ).then((response)=>{
+        //         resolve({removeProduct:true})
+        //     })
+        // }
+    
             db.get().collection(collection.CART_COLLECTION).updateOne(
                 {_id:objectId(details.cart),'products.item':objectId(details.product)},
                 {$inc: {'products.$.quantity':details.count}}
             ).then((response)=>{
                 resolve({status:true})
             })
-        }
+
     })
    },
 
@@ -451,7 +451,6 @@ module.exports ={
            
         }
         else{
-            console.log(total,'this is total')
             resolve(total[0].total)
         }
         
@@ -797,7 +796,6 @@ module.exports ={
             let walletDetail = await db.get().collection(collection.USER_COLLECTION).findOne({_id:objectId(userID)})
             let walletTotal = walletDetail.wallet
             if(totalDeducted>walletTotal){
-               console.log('Insufficient wallet balance')
                db.get().collection(collection.ORDER_COLLECTION).deleteMany( { products: {$elemMatch: { status:'Pending' } } }).then(()=>{
                 reject()       
                })
